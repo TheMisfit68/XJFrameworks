@@ -16,6 +16,12 @@ Inherits regex
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Shared Function optionalGroup(uncapturedExpression as String) As String
+		  return "(?:"+uncapturedExpression+")*"
+		End Function
+	#tag EndMethod
+
 
 	#tag ViewBehavior
 		#tag ViewProperty
