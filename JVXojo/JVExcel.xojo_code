@@ -18,32 +18,52 @@ Inherits ExcelApplication
 
 	#tag Method, Flags = &h0
 		Sub copyDownFrom(sheetNumber as Integer = 1, startRange as String = "A1")
-		  me.sheets(sheetNumber).activate
 		  
-		  dim firstCellValue as string = me.range(startRange).Cells(1,1).value
-		  
-		  // Like Ctrl+Shift+Down-arrow
-		  if firstCellValue <> "" then
-		    
-		    dim rangeToCopy as ExcelRange = me.Range(me.range(startRange),me.range(startRange).End_(Office.xlDown))
-		    rangeToCopy.copy
-		    
-		  end if
+		  expandRangeDown(me.sheets(sheetNumber).range(startRange)).copy
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub copyRightFrom(sheetNumber as Integer = 1, startRange as String = "A1")
 		  
-		  me.sheets(sheetNumber).activate
-		  
+		  expandRangeRight(me.sheets(sheetNumber).range(startRange)).copy
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function expandRangeDown(startRange as ExcelRange) As ExcelRange
 		  dim firstCellValue as string = me.range(startRange).Cells(1,1).value
 		  
-		  // Like Ctrl+Shift+Right-arrow
+		  // Like Ctrl+Shift+Down-arrow
 		  if firstCellValue <> "" then
-		    me.Range(me.range(startRange),me.range(startRange).End_(Office.xlToRight)).Copy
+		    
+		    dim expandedRange as ExcelRange = me.Range(me.range(startRange),me.range(startRange).End_(Office.xlDown))
+		    return expandedRange
+		    
+		  else
+		     
+		    return startRange
+		    
 		  end if
-		End Sub
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function expandRangeRight(startRange as ExcelRange) As ExcelRange
+		  dim firstCellValue as string = me.range(startRange).Cells(1,1).value
+		  
+		  // Like Ctrl+Shift+Down-arrow
+		  if firstCellValue <> "" then
+		    
+		    dim expandedRange as ExcelRange = me.Range(me.range(startRange),me.range(startRange).End_(Office.xlToRight))
+		    return expandedRange
+		    
+		  else
+		    
+		    return startRange
+		    
+		  end if
+		End Function
 	#tag EndMethod
 
 
