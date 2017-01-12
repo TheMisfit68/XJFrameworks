@@ -32,16 +32,16 @@ Inherits ExcelApplication
 
 	#tag Method, Flags = &h0
 		Function expandRangeDown(startRange as ExcelRange) As ExcelRange
-		  dim firstCellValue as string = me.range(startRange).Cells(1,1).value
+		  dim firstCellValue as string = startRange.Cells(1,1).value
 		  
 		  // Like Ctrl+Shift+Down-arrow
 		  if firstCellValue <> "" then
 		    
-		    dim expandedRange as ExcelRange = me.Range(me.range(startRange),me.range(startRange).End_(Office.xlDown))
+		    dim expandedRange as ExcelRange = me.Range(startRange,startRange.End_(Office.xlDown))
 		    return expandedRange
 		    
 		  else
-		     
+		    
 		    return startRange
 		    
 		  end if
@@ -55,7 +55,7 @@ Inherits ExcelApplication
 		  // Like Ctrl+Shift+Down-arrow
 		  if firstCellValue <> "" then
 		    
-		    dim expandedRange as ExcelRange = me.Range(me.range(startRange),me.range(startRange).End_(Office.xlToRight))
+		    dim expandedRange as ExcelRange = me.Range(startRange,startRange.End_(Office.xlToRight))
 		    return expandedRange
 		    
 		  else
