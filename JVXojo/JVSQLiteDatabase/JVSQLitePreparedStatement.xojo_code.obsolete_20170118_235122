@@ -1,0 +1,65 @@
+#tag Class
+Protected Class JVSQLitePreparedStatement
+Inherits SQLitePreparedStatement
+	#tag Method, Flags = &h0
+		Sub setBindTypes(fields as Dictionary)
+		  dim fieldNumber as Integer = 0
+		  for  each fieldValue as Variant in fields.Values
+		    
+		    select case fieldValue.type
+		    case Variant.TypeBoolean
+		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BOOLEAN)
+		     case Variant.TypeDouble
+		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_DOUBLE
+		     case Variant.TypeInt64
+		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_INT64)
+		    case Variant.TypeInteger
+		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_INTEGER)
+		    case Variant.TypeNil
+		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_NULL)
+		    case Variant.TypeString
+		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_TEXT)
+		    else
+		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BLOB)
+		    end select
+		    
+		    fieldNumber = fieldNumber+1
+		  next
+		End Sub
+	#tag EndMethod
+
+
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			Type="Integer"
+		#tag EndViewProperty
+	#tag EndViewBehavior
+End Class
+#tag EndClass
