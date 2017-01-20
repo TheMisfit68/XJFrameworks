@@ -1,26 +1,25 @@
-#tag Class
-Protected Class JVSQLitePreparedStatement
-Inherits SQLitePreparedStatement
+#tag Module
+Protected Module JVSQLiteExtensions
 	#tag Method, Flags = &h0
-		Sub setBindTypes(fields as Dictionary)
+		Sub bindType(extends statement as SqlitePreparedStatement, fieldValues() as Variant)
 		  dim fieldNumber as Integer = 0
-		  for  each fieldValue as Variant in fields.Values
+		  for  each fieldValue as Variant in fieldValues
 		    
 		    select case fieldValue.type
 		    case Variant.TypeBoolean
-		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BOOLEAN)
-		     case Variant.TypeDouble
-		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_DOUBLE
-		     case Variant.TypeInt64
-		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_INT64)
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BOOLEAN)
+		    case Variant.TypeDouble
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_DOUBLE)
+		    case Variant.TypeInt64
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_INT64)
 		    case Variant.TypeInteger
-		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_INTEGER)
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_INTEGER)
 		    case Variant.TypeNil
-		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_NULL)
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_NULL)
 		    case Variant.TypeString
-		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_TEXT)
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_TEXT)
 		    else
-		      BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BLOB)
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BLOB)
 		    end select
 		    
 		    fieldNumber = fieldNumber+1
@@ -34,12 +33,14 @@ Inherits SQLitePreparedStatement
 			Name="Index"
 			Visible=true
 			Group="ID"
+			InitialValue="-2147483648"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
+			InitialValue="0"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -58,8 +59,9 @@ Inherits SQLitePreparedStatement
 			Name="Top"
 			Visible=true
 			Group="Position"
+			InitialValue="0"
 			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Class
-#tag EndClass
+End Module
+#tag EndModule

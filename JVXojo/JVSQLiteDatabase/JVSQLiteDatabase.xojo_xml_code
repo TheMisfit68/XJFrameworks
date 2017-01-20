@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RBProject version="2016r4.1" FormatVersion="2" MinIDEVersion="20070100">
+<block type="Module" ID="1727178751">
+ <ObjName>JVSQLiteDatabase</ObjName>
+ <ObjContainerID>1830289407</ObjContainerID>
+ <IsClass>1</IsClass>
+ <Superclass>SQLiteDatabase</Superclass>
+ <ItemFlags>1</ItemFlags>
+ <IsInterface>0</IsInterface>
+ <Compatibility></Compatibility>
+ <Method>
+  <ItemName>InsertOrUpdate</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function InsertOrUpdate(tableName as String, matchFields() as String, fields as Dictionary) As Boolean</SourceLine>
+   <SourceLine>if fields.HasKey("ID") then</SourceLine>
+   <SourceLine>fields.Remove("ID") // Never update or insert a PK</SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim updatesFields() as String</SourceLine>
+   <SourceLine>redim updatesFields(-1)</SourceLine>
+   <SourceLine>dim insertFields() as String</SourceLine>
+   <SourceLine>redim insertFields(-1)</SourceLine>
+   <SourceLine>dim insertPlaceholders() as String</SourceLine>
+   <SourceLine>redim insertPlaceholders(-1)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>for each fieldKey as Variant in fields.Keys</SourceLine>
+   <SourceLine>dim fieldName as String = fieldKey.StringValue</SourceLine>
+   <SourceLine>updatesFields.append(fieldName+ "=?") </SourceLine>
+   <SourceLine>insertFields.append(fieldName) </SourceLine>
+   <SourceLine>insertPlaceholders.Append("?")</SourceLine>
+   <SourceLine>next</SourceLine>
+   <SourceLine>dim updatesFieldsString as String= join(updatesFields, ", ")</SourceLine>
+   <SourceLine>dim insertFieldsString as String= join(insertFields, ", ")</SourceLine>
+   <SourceLine>dim insertPlaceholdersString as String= join(insertPlaceholders, ", ")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim updateConditions() as String</SourceLine>
+   <SourceLine>redim updateConditions(-1)</SourceLine>
+   <SourceLine>for each matchfield as String in matchFields</SourceLine>
+   <SourceLine>updateConditions.append(matchfield+" = '"+fields.value(matchfield)+"'")</SourceLine>
+   <SourceLine>next</SourceLine>
+   <SourceLine>dim updateConditionsString as String = Join(updateConditions, " AND ")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim updateStatement as SQLitePreparedStatement = Prepare("UPDATE "+tableName+" SET "+updatesFieldsString+" WHERE "+updateConditionsString)</SourceLine>
+   <SourceLine>updateStatement.bindType(fields.values)</SourceLine>
+   <SourceLine>updateStatement.bind(fields.values)</SourceLine>
+   <SourceLine>updateStatement.SQLExecute</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Error Then</SourceLine>
+   <SourceLine>MsgBox("DB Error: " + ErrorMessage)</SourceLine>
+   <SourceLine>Return False</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim InsertStatement As SQLitePreparedStatement = Prepare("INSERT INTO "+tableName+" ("+insertFieldsString+") SELECT "+insertPlaceholdersString+" WHERE Changes() = 0")</SourceLine>
+   <SourceLine>InsertStatement.bindType(fields.values)</SourceLine>
+   <SourceLine>InsertStatement.bind(fields.values)</SourceLine>
+   <SourceLine>InsertStatement.SQLExecute</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Error Then</SourceLine>
+   <SourceLine>MsgBox("DB Error: " + ErrorMessage)</SourceLine>
+   <SourceLine>Return False</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>tableName as String, matchFields() as String, fields as Dictionary</ItemParams>
+  <ItemResult>Boolean</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>lastRowIDFromTable</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function lastRowIDFromTable(TableName as String) As Integer</SourceLine>
+   <SourceLine>dim rowIDs as RecordSet= SQLSelect("select seq from sqlite_sequence where name='"+TableName +"';")</SourceLine>
+   <SourceLine>return rowIDs.Field("seq").IntegerValue</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>TableName as String</ItemParams>
+  <ItemResult>Integer</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>lookupRecord</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function lookupRecord(lookupTable as String,lookupField as String, lookupValue as string) As Recordset</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim previousRecords as Recordset = SQLSelect("Select ID From "+lookupTable+"' WHERE "+lookupField+"='"+lookupValue+"';")</SourceLine>
+   <SourceLine>previousRecords.MoveFirst</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>return previousRecords</SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>lookupTable as String,lookupField as String, lookupValue as string</ItemParams>
+  <ItemResult>Recordset</ItemResult>
+ </Method>
+ <ViewBehavior>
+  <ViewProperty>
+   <ObjName>DatabaseFile</ObjName>
+   <Visible>1</Visible>
+   <ItemType>FolderItem</ItemType>
+   <EditorType>FolderItem</EditorType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>DebugMode</ObjName>
+   <Visible>1</Visible>
+   <ItemType>Boolean</ItemType>
+   <EditorType>Boolean</EditorType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>EncryptionKey</ObjName>
+   <Visible>1</Visible>
+   <ItemType>String</ItemType>
+   <EditorType>String</EditorType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Index</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Left</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>LoadExtensions</ObjName>
+   <Visible>1</Visible>
+   <ItemType>Boolean</ItemType>
+   <EditorType>Boolean</EditorType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>MultiUser</ObjName>
+   <Visible>1</Visible>
+   <ItemType>Boolean</ItemType>
+   <EditorType>Boolean</EditorType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Name</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <ItemType>String</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>ShortColumnNames</ObjName>
+   <Visible>1</Visible>
+   <ItemType>Boolean</ItemType>
+   <EditorType>Boolean</EditorType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Super</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>ID</PropertyGroup>
+   <ItemType>String</ItemType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>ThreadYieldInterval</ObjName>
+   <Visible>1</Visible>
+   <ItemType>Integer</ItemType>
+   <EditorType>Integer</EditorType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Timeout</ObjName>
+   <Visible>1</Visible>
+   <ItemType>Double</ItemType>
+   <EditorType>Double</EditorType>
+  </ViewProperty>
+  <ViewProperty>
+   <ObjName>Top</ObjName>
+   <Visible>1</Visible>
+   <PropertyGroup>Position</PropertyGroup>
+   <ItemType>Integer</ItemType>
+  </ViewProperty>
+ </ViewBehavior>
+</block>
+</RBProject>
