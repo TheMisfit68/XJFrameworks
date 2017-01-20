@@ -96,12 +96,12 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function lookupRecord(lookupTable as String,lookupField as String, lookupValue as string) As Recordset</SourceLine>
+   <SourceLine>Function lookupRecord(lookupTable as String,lookupField as String, lookupValue as string) As Integer</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim previousRecords as Recordset = SQLSelect("Select ID From "+lookupTable+"' WHERE "+lookupField+"='"+lookupValue+"';")</SourceLine>
-   <SourceLine>previousRecords.MoveFirst</SourceLine>
+   <SourceLine>dim matchingRecords as Recordset = SQLSelect("Select ID From "+lookupTable+"' WHERE "+lookupField+"='"+lookupValue+"';")</SourceLine>
+   <SourceLine>matchingRecords.MoveFirst // Move to the first match</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>return previousRecords</SourceLine>
+   <SourceLine>return matchingRecords.Field("ID").IntegerValue // And return its ID</SourceLine>
    <SourceLine>End Function</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
@@ -109,6 +109,39 @@
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
   <ItemParams>lookupTable as String,lookupField as String, lookupValue as string</ItemParams>
+  <ItemResult>Integer</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>findRecords</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function findRecords(tableName as String, fields as Dictionary) As Recordset</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim searchConditions() as String</SourceLine>
+   <SourceLine>redim searchConditions(-1)</SourceLine>
+   <SourceLine>for each searchfieldName as String in fields.keys</SourceLine>
+   <SourceLine>searchConditions.append(searchfieldName+" = ?")</SourceLine>
+   <SourceLine>next</SourceLine>
+   <SourceLine>dim searchConditionsString as String = Join(searchConditions, " AND ")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim updateStatement as SQLitePreparedStatement = Prepare("SELECT * FROM "+tableName+" WHERE "+searchConditionsString)</SourceLine>
+   <SourceLine>updateStatement.bindType(fields.values)</SourceLine>
+   <SourceLine>updateStatement.bind(fields.values)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>return updateStatement.SQLSelect</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>tableName as String, fields as Dictionary</ItemParams>
   <ItemResult>Recordset</ItemResult>
  </Method>
  <ViewBehavior>
