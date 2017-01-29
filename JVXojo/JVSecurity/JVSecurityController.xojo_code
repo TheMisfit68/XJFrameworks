@@ -28,7 +28,7 @@ Protected Class JVSecurityController
 			    
 			  #else
 			    
-			    return (UpperCase(currentWindowsUser) = "USER2418")  or (Titlecase(currentWindowsUser) = Titlecase(app.developer) ) 
+			    return (UpperCase(currentWindowsUser) = "USER2418")  or (Titlecase(currentWindowsUser) = Titlecase(app.developer) )
 			    
 			    
 			  #Endif

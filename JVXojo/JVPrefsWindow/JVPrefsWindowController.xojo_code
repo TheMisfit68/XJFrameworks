@@ -1,7 +1,7 @@
 #tag Class
 Protected Class JVPrefsWindowController
 Inherits NSWindowController
-Implements NSWindowDelegate, JVPrefsChangedNotifier
+Implements NSWindowDelegate,JVPrefsChangedNotifier
 	#tag Method, Flags = &h0
 		Sub cancel()
 		  syncInterface(True) // Cancel any adjustments

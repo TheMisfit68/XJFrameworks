@@ -1,7 +1,7 @@
 #tag Class
 Protected Class JVDevelopmentViewController
 Inherits NSViewController
-Implements  NSViewDelegate
+Implements NSViewDelegate
 	#tag Method, Flags = &h0
 		Sub adaptView()
 		  // Add or remove as necessary
