@@ -294,6 +294,43 @@
   <ItemParams>emptyFieldNames() as String</ItemParams>
   <ItemResult></ItemResult>
  </Method>
+ <Method>
+  <ItemName>findRelatedRecords</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function findRelatedRecords(relationShip as JVSQLiteRelationship) As Recordset</SourceLine>
+   <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(relationShip.SQLiteView)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim allVariables() as Variant = concatenate(mainFilter.values, fieldConditions.values)</SourceLine>
+   <SourceLine>sqlStatement.bindType(allVariables)</SourceLine>
+   <SourceLine>sqlStatement.bind(allVariables)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim recordsFound as recordset = sqlStatement.SQLSelect</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>If Error Then</SourceLine>
+   <SourceLine>#if debugbuild then</SourceLine>
+   <SourceLine>system.debuglog( _</SourceLine>
+   <SourceLine>"[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _</SourceLine>
+   <SourceLine>sqlString)</SourceLine>
+   <SourceLine>#endif</SourceLine>
+   <SourceLine>Return nil</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>return recordsFound</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>relationShip as JVSQLiteRelationship</ItemParams>
+  <ItemResult>Recordset</ItemResult>
+ </Method>
  <Property>
   <ItemName>tables</ItemName>
   <Compatibility></Compatibility>
