@@ -1,35 +1,104 @@
 #tag Class
-Protected Class NSButton
-Inherits pushButton
-	#tag Event
-		Sub Action()
-		  action.invoke(me)
-		End Sub
-	#tag EndEvent
-
-
-	#tag DelegateDeclaration, Flags = &h0
-		Delegate Sub Action(sender as NSButton)
-	#tag EndDelegateDeclaration
-
+Protected Class NSView
+Inherits ContainerControl
 	#tag Method, Flags = &h0
-		Sub constructor(caption as String, action as Action)
+		Sub constructor()
 		  // Calling the overridden superclass constructor.
 		  Super.Constructor
 		  
-		  me.Caption = caption
-		  me.action =  action
-		  
+		  // Fit view to superview by default
+		  lockLeft =True
+		  lockRight =True
+		  lockTop =True
+		  lockBottom =True
 		End Sub
 	#tag EndMethod
 
 
-	#tag Property, Flags = &h0
-		action As Action
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  if (window <> nil) and (trueWindow <> nil) then
+			    return TRUE
+			  else
+			    return FALSE
+			  end if
+			  
+			End Get
+		#tag EndGetter
+		isInstalled As Boolean
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mviewDelegate As NSViewDelegate
 	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		owner As NSViewController
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mviewDelegate
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  
+			  if mviewDelegate <> nil then
+			    
+			    // Remove any previously set delegate
+			    RemoveHandler open, AddressOf mviewDelegate.onViewOpen
+			    RemoveHandler activate, AddressOf mviewDelegate.onViewActivate
+			    RemoveHandler close, AddressOf mviewDelegate.onviewClose
+			    RemoveHandler contentsChanged, AddressOf mviewDelegate.onviewContentsChanged
+			    
+			    
+			  end if
+			  
+			  // Set the delegate
+			  mviewDelegate = value
+			  
+			  if mviewDelegate <> nil then
+			    
+			    // Redirect all events to the delegate
+			    AddHandler open, AddressOf mviewDelegate.onViewOpen
+			    AddHandler activate, AddressOf mviewDelegate.onViewActivate
+			    AddHandler close, AddressOf mviewDelegate.onViewClose
+			    AddHandler contentsChanged, AddressOf mviewDelegate.onviewContentsChanged
+			    
+			  end if
+			  
+			  
+			  
+			  
+			  
+			  
+			End Set
+		#tag EndSetter
+		viewDelegate As NSViewDelegate
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="AcceptFocus"
+			Visible=true
+			Group="Behavior"
+			InitialValue="False"
+			Type="Boolean"
+			EditorType="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AcceptTabs"
+			Visible=true
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoDeactivate"
 			Visible=true
@@ -38,49 +107,18 @@ Inherits pushButton
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Bold"
-			Visible=true
-			Group="Font"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="ButtonStyle"
+			Name="BackColor"
 			Visible=true
 			Group="Appearance"
-			InitialValue="0"
-			Type="ButtonFrameStyle"
-			EditorType="Enum"
-			#tag EnumValues
-				"0 - Push"
-				"1 - Gradient"
-				"2 - Rounded"
-				"3 - Recessed"
-				"4 - Textured"
-				"5 - Rounded Textured"
-				"6 - Square"
-				"7 - Bevel"
-				"8 - Round"
-				"9 - Help"
-			#tag EndEnumValues
+			InitialValue="&hFFFFFF"
+			Type="Color"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Cancel"
+			Name="Backdrop"
 			Visible=true
 			Group="Appearance"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Caption"
-			Visible=true
-			Group="Appearance"
-			InitialValue="Untitled"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Default"
-			Visible=true
-			Group="Appearance"
-			Type="Boolean"
+			Type="Picture"
+			EditorType="Picture"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Enabled"
@@ -88,12 +126,28 @@ Inherits pushButton
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
+			EditorType="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="EraseBackground"
+			Visible=true
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HasBackColor"
+			Visible=true
+			Group="Appearance"
+			InitialValue="False"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Height"
 			Visible=true
 			Group="Position"
-			InitialValue="20"
+			InitialValue="300"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -101,29 +155,22 @@ Inherits pushButton
 			Visible=true
 			Group="Appearance"
 			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Index"
-			Visible=true
-			Group="ID"
-			Type="Integer"
-			EditorType="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InitialParent"
+			Group="Position"
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Italic"
-			Visible=true
-			Group="Font"
+			Name="isInstalled"
+			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
+			InitialValue="0"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -173,7 +220,7 @@ Inherits pushButton
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabPanelIndex"
-			Group="Position"
+			Group="Behavior"
 			InitialValue="0"
 			Type="Integer"
 		#tag EndViewProperty
@@ -183,47 +230,30 @@ Inherits pushButton
 			Group="Position"
 			InitialValue="True"
 			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="TextFont"
-			Visible=true
-			Group="Font"
-			InitialValue="System"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="TextSize"
-			Visible=true
-			Group="Font"
-			InitialValue="0"
-			Type="Single"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="TextUnit"
-			Visible=true
-			Group="Font"
-			InitialValue="0"
-			Type="FontUnits"
-			EditorType="Enum"
-			#tag EnumValues
-				"0 - Default"
-				"1 - Pixel"
-				"2 - Point"
-				"3 - Inch"
-				"4 - Millimeter"
-			#tag EndEnumValues
+			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
+			InitialValue="0"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Underline"
+			Name="Transparent"
 			Visible=true
-			Group="Font"
+			Group="Behavior"
+			InitialValue="True"
 			Type="Boolean"
+			EditorType="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseFocusRing"
+			Visible=true
+			Group="Appearance"
+			InitialValue="False"
+			Type="Boolean"
+			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Visible"
@@ -231,12 +261,13 @@ Inherits pushButton
 			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
+			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Width"
 			Visible=true
 			Group="Position"
-			InitialValue="80"
+			InitialValue="300"
 			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior

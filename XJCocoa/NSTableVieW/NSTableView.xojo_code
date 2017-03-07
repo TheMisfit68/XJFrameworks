@@ -1,30 +1,11 @@
 #tag Class
-Protected Class JVTreeView
+Protected Class NSTableView
 Inherits Listbox
-	#tag Event
-		Sub ExpandRow(row As Integer)
-		  expandRow(row)
-		End Sub
-	#tag EndEvent
-
-
 	#tag Method, Flags = &h0
-		Sub expandRow(row as Integer)
-		  // When the disclosure triangle is clicked show the childRows that where stored in the rowtag
-		  if me.rowtag(row) <> nil then
-		    
-		    dim childrows(-1,-1) as String = me.RowTag(row)
-		    
-		    for childRowNumber as Integer = 0 to ubound(childrows,1)
-		      dim rowText() as String
-		      for childColumnNumber as Integer = 0 to Ubound(childrows, 2)
-		        rowText.append(childrows(childRowNumber,childColumnNumber))
-		      next
-		      AddRow(rowText)
-		    next
-		    
-		  end if
-		  
+		Sub constructor()
+		  // Calling the overridden superclass constructor.
+		  Super.Constructor
+		  Hierarchical = FALSE
 		  
 		End Sub
 	#tag EndMethod

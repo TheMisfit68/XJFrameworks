@@ -9,64 +9,6 @@
  <IsInterface>0</IsInterface>
  <Compatibility></Compatibility>
  <Method>
-  <ItemName>InsertOrUpdateRecord</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function InsertOrUpdateRecord(ioRecord as Dictionary) As Boolean</SourceLine>
-   <SourceLine>// Try to update first</SourceLine>
-   <SourceLine>if ioRecord.HasKey("ID") then</SourceLine>
-   <SourceLine>ioRecord.Remove("ID") // Never update or insert a PK</SourceLine>
-   <SourceLine>end if</SourceLine>
-   <SourceLine>call updateRecords(ioRecord)</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>Dim newValues() as String</SourceLine>
-   <SourceLine>if ioRecord.Count &lt;&gt; 0 then</SourceLine>
-   <SourceLine>for each fieldName as String in ioRecord.Keys</SourceLine>
-   <SourceLine>newValues.append(fieldName+" = ?")</SourceLine>
-   <SourceLine>next</SourceLine>
-   <SourceLine>end if</SourceLine>
-   <SourceLine>dim newValuesString as String= join(newValues, ", ")</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>// Insert if no changes where made by the previous statement</SourceLine>
-   <SourceLine>dim insertConditions as String</SourceLine>
-   <SourceLine>if  conditions &lt;&gt; "" then</SourceLine>
-   <SourceLine>insertConditions = conditions+" AND Changes() = 0"</SourceLine>
-   <SourceLine>else</SourceLine>
-   <SourceLine>insertConditions = conditions+"Changes() = 0"</SourceLine>
-   <SourceLine>end if</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>dim sqlString as String = "INSERT INTO "+tables+" ("+newValuesString+") SELECT WHERE "+insertConditions</SourceLine>
-   <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>dim allVariables() as Variant = concatenate(iorecord.values, mainFilter.values, fieldConditions.values)</SourceLine>
-   <SourceLine>sqlStatement.bindType(allVariables)</SourceLine>
-   <SourceLine>sqlStatement.bind(allVariables)</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>sqlStatement.SQLExecute</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>If Error Then</SourceLine>
-   <SourceLine>#if debugbuild then</SourceLine>
-   <SourceLine>system.debuglog( _</SourceLine>
-   <SourceLine>"[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _</SourceLine>
-   <SourceLine>sqlString)</SourceLine>
-   <SourceLine>#endif</SourceLine>
-   <SourceLine>Return FALSE</SourceLine>
-   <SourceLine>End If</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>return TRUE</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>End Function</SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <AliasName></AliasName>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
-  <ItemParams>ioRecord as Dictionary</ItemParams>
-  <ItemResult>Boolean</ItemResult>
- </Method>
- <Method>
   <ItemName>lastRowIDFromTable</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
@@ -107,7 +49,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function lookupID(lookupTable as String,lookupFieldName as String, lookupValue as string) As Integer</SourceLine>
+   <SourceLine>Function lookupID(lookupTable as String, lookupFieldName as String, lookupValue as string) As Integer</SourceLine>
    <SourceLine>dim sqlString as String = "Select ID From "+lookupTable+"' WHERE "+lookupFieldName+"=?"</SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine></SourceLine>
@@ -135,62 +77,57 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>lookupTable as String,lookupFieldName as String, lookupValue as string</ItemParams>
+  <ItemParams>lookupTable as String, lookupFieldName as String, lookupValue as string</ItemParams>
   <ItemResult>Integer</ItemResult>
  </Method>
  <Method>
-  <ItemName>findRecords</ItemName>
+  <ItemName>InsertOrUpdateRecords</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function findRecords() As Recordset</SourceLine>
-   <SourceLine>dim sqlString as String ="SELECT * FROM "+tables+" WHERE "+conditions</SourceLine>
-   <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
+   <SourceLine>Sub InsertOrUpdateRecords(tableName as String, matchFields as Dictionary, newFields as Dictionary)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim allVariables() as Variant = concatenate(mainFilter.values, fieldConditions.values)</SourceLine>
-   <SourceLine>sqlStatement.bindType(allVariables)</SourceLine>
-   <SourceLine>sqlStatement.bind(allVariables)</SourceLine>
+   <SourceLine>dim recordsToUpdate as RecordSet = selectRecords(tableName, matchFields)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim recordsFound as recordset = sqlStatement.SQLSelect</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>If Error Then</SourceLine>
-   <SourceLine>#if debugbuild then</SourceLine>
-   <SourceLine>system.debuglog( _</SourceLine>
-   <SourceLine>"[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _</SourceLine>
-   <SourceLine>sqlString)</SourceLine>
-   <SourceLine>#endif</SourceLine>
-   <SourceLine>Return nil</SourceLine>
-   <SourceLine>End If</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>return recordsFound</SourceLine>
+   <SourceLine>if recordsToUpdate &lt;&gt; nil  then </SourceLine>
+   <SourceLine>updateRecords(tableName, recordsToUpdate, newFields)</SourceLine>
+   <SourceLine>else</SourceLine>
+   <SourceLine>insertRecords(tableName, newFields)</SourceLine>
+   <SourceLine>end if</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine></SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>End Function</SourceLine>
+   <SourceLine>End Sub</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams></ItemParams>
-  <ItemResult>Recordset</ItemResult>
+  <ItemParams>tableName as String, matchFields as Dictionary, newFields as Dictionary</ItemParams>
+  <ItemResult></ItemResult>
  </Method>
  <Method>
-  <ItemName>findDuplicateRecords</ItemName>
+  <ItemName>selectRecords</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function findDuplicateRecords(summaryFieldNames() as String) As RecordSet</SourceLine>
-   <SourceLine>dim sqlString as String = "SELECT * FROM "+tables+" WHERE " +conditions+" GROUP BY  "+Join(summaryFieldNames, ", ")+" HAVING COUNT(*) &gt;= 2"</SourceLine>
+   <SourceLine>Function selectRecords(tableName as String, matchFields as Dictionary) As Recordset</SourceLine>
+   <SourceLine>Dim matchFieldNames() as String</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>for each fieldName as String in matchFields.Keys</SourceLine>
+   <SourceLine>matchFieldNames.append(fieldName+" = ?")</SourceLine>
+   <SourceLine>next</SourceLine>
+   <SourceLine>dim matchFieldsString as String= join(matchFieldNames, ", ")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim sqlString as String = "SELECT FROM "+tableName+" WHERE "+matchFieldsString</SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim allVariables() as Variant = concatenate(mainFilter.values, fieldConditions.values)</SourceLine>
-   <SourceLine>sqlStatement.bindType(allVariables)</SourceLine>
-   <SourceLine>sqlStatement.bind(allVariables)</SourceLine>
+   <SourceLine>sqlStatement.bindType(matchFields.Values)</SourceLine>
+   <SourceLine>sqlStatement.bind(matchFields.Values)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim recordsFound as recordset = sqlStatement.SQLSelect</SourceLine>
+   <SourceLine>dim foundRecords as RecordSet = sqlStatement.SQLSelect</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>If Error Then</SourceLine>
    <SourceLine>#if debugbuild then</SourceLine>
@@ -201,9 +138,7 @@
    <SourceLine>Return nil</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>return recordsFound</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine></SourceLine>
+   <SourceLine>return foundRecords</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End Function</SourceLine>
   </ItemSource>
@@ -211,8 +146,8 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>summaryFieldNames() as String</ItemParams>
-  <ItemResult>RecordSet</ItemResult>
+  <ItemParams>tableName as String, matchFields as Dictionary</ItemParams>
+  <ItemResult>Recordset</ItemResult>
  </Method>
  <Method>
   <ItemName>updateRecords</ItemName>
@@ -220,21 +155,58 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function updateRecords(updatedIORecord as dictionary) As Boolean</SourceLine>
-   <SourceLine>Dim updatedValues() as String</SourceLine>
-   <SourceLine>if updatedIORecord.Count &lt;&gt; 0 then</SourceLine>
-   <SourceLine>for each fieldName as String in updatedIORecord.Keys</SourceLine>
-   <SourceLine>updatedValues.append(fieldName+" = ?")</SourceLine>
-   <SourceLine>next</SourceLine>
-   <SourceLine>end if</SourceLine>
-   <SourceLine>dim updatedValuesString as String= join(updatedValues, ", ")</SourceLine>
+   <SourceLine>Sub updateRecords(tableName as String, records as RecordSet, newFields as Dictionary)</SourceLine>
+   <SourceLine>newFields = stripPKsFromRecord(tableName, newFields)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim sqlString as String = "UPDATE "+tables+" SET "+updatedValuesString+" WHERE "+ conditions</SourceLine>
+   <SourceLine>If records &lt;&gt; Nil Then</SourceLine>
+   <SourceLine>records.MoveFirst</SourceLine>
+   <SourceLine>records.Edit</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>  While Not records.EOF</SourceLine>
+   <SourceLine>&#32;&#32;&#32;&#32;</SourceLine>
+   <SourceLine>for each fieldName as String in newFields.keys</SourceLine>
+   <SourceLine>dim fieldValue as Variant = newFields.value(fieldName)</SourceLine>
+   <SourceLine>records.field(fieldName).value = fieldValue</SourceLine>
+   <SourceLine>next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>    records.Update</SourceLine>
+   <SourceLine>    records.MoveNext</SourceLine>
+   <SourceLine>  Wend</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>  records.Close</SourceLine>
+   <SourceLine>End If</SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>tableName as String, records as RecordSet, newFields as Dictionary</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>insertRecords</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub insertRecords(tableName as String, newFields as Dictionary)</SourceLine>
+   <SourceLine>newfields = stripPKsFromRecord(tableName, newFields)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim newFieldNames() as String</SourceLine>
+   <SourceLine>dim placeHolders() as String</SourceLine>
+   <SourceLine>for each fieldName as String in newFields.keys</SourceLine>
+   <SourceLine>newFieldNames.append(fieldName)</SourceLine>
+   <SourceLine>placeHolders.append("?")</SourceLine>
+   <SourceLine>next</SourceLine>
+   <SourceLine>dim newFieldNamesString as String= join(newFieldNames, ", ")</SourceLine>
+   <SourceLine>dim placeHolderString as String= join(placeHolders, ", ")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim sqlString as String = "INSERT INTO "+tableName+" ("+newFieldNamesString+") VALUES ("+placeHolderString+")" </SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim allVariables() as Variant = concatenate(updatedIORecord.values, mainFilter.values, fieldConditions.values)</SourceLine>
-   <SourceLine>sqlStatement.bindType(allVariables)</SourceLine>
-   <SourceLine>sqlStatement.bind(allVariables)</SourceLine>
+   <SourceLine>sqlStatement.bindType(newFields.Values)</SourceLine>
+   <SourceLine>sqlStatement.bind(newFields.Values)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>sqlStatement.SQLExecute</SourceLine>
    <SourceLine></SourceLine>
@@ -244,29 +216,8 @@
    <SourceLine>"[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _</SourceLine>
    <SourceLine>sqlString)</SourceLine>
    <SourceLine>#endif</SourceLine>
-   <SourceLine>Return FALSE</SourceLine>
-   <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>return TRUE</SourceLine>
-   <SourceLine>End Function</SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <AliasName></AliasName>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
-  <ItemParams>updatedIORecord as dictionary</ItemParams>
-  <ItemResult>Boolean</ItemResult>
- </Method>
- <Method>
-  <ItemName>constructor</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub constructor()</SourceLine>
-   <SourceLine>Tables = ""</SourceLine>
-   <SourceLine>mainFilter = new Dictionary</SourceLine>
-   <SourceLine>fieldConditions = new Dictionary</SourceLine>
+   <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End Sub</SourceLine>
   </ItemSource>
@@ -274,136 +225,40 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams></ItemParams>
+  <ItemParams>tableName as String, newFields as Dictionary</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
-  <ItemName>findEmptyFields</ItemName>
+  <ItemName>stripPKsFromRecord</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub findEmptyFields(emptyFieldNames() as String)</SourceLine>
+   <SourceLine>Function stripPKsFromRecord(tableName as String, record as Dictionary) As Dictionary</SourceLine>
+   <SourceLine> // Make sure to exclude any Primary Keys from the new values</SourceLine>
+   <SourceLine>dim fieldsInTable as RecordSet = FieldSchema(tableName)</SourceLine>
+   <SourceLine>If fieldsInTable &lt;&gt; Nil Then</SourceLine>
+   <SourceLine>  While Not fieldsInTable.EOF</SourceLine>
+   <SourceLine>dim isPrimaryField as Boolean = fieldsInTable.Field("IsPrimary")</SourceLine>
+   <SourceLine>dim fieldName as String =  fieldsInTable.Field("ColumnName")</SourceLine>
+   <SourceLine>if isPrimaryField and record.Keys.IndexOf(fieldname) &gt;=0 then</SourceLine>
+   <SourceLine>record.Remove(fieldname)</SourceLine>
+   <SourceLine>end If</SourceLine>
+   <SourceLine>    fieldsInTable.MoveNext</SourceLine>
+   <SourceLine>  Wend</SourceLine>
+   <SourceLine>  fieldsInTable.Close</SourceLine>
+   <SourceLine>End If </SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>End Sub</SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <AliasName></AliasName>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
-  <ItemParams>emptyFieldNames() as String</ItemParams>
-  <ItemResult></ItemResult>
- </Method>
- <Method>
-  <ItemName>findRelatedRecords</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function findRelatedRecords(relationShip as JVSQLiteRelationship) As Recordset</SourceLine>
-   <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(relationShip.SQLiteView)</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>dim allVariables() as Variant = concatenate(mainFilter.values, fieldConditions.values)</SourceLine>
-   <SourceLine>sqlStatement.bindType(allVariables)</SourceLine>
-   <SourceLine>sqlStatement.bind(allVariables)</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>dim recordsFound as recordset = sqlStatement.SQLSelect</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>If Error Then</SourceLine>
-   <SourceLine>#if debugbuild then</SourceLine>
-   <SourceLine>system.debuglog( _</SourceLine>
-   <SourceLine>"[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _</SourceLine>
-   <SourceLine>sqlString)</SourceLine>
-   <SourceLine>#endif</SourceLine>
-   <SourceLine>Return nil</SourceLine>
-   <SourceLine>End If</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>return recordsFound</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine></SourceLine>
+   <SourceLine>return record</SourceLine>
    <SourceLine>End Function</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
   <AliasName></AliasName>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
-  <ItemParams>relationShip as JVSQLiteRelationship</ItemParams>
-  <ItemResult>Recordset</ItemResult>
- </Method>
- <Property>
-  <ItemName>tables</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>tables As String</SourceLine>
-   <SourceLine></SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>tables As String</ItemDeclaration>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
- </Property>
- <Property>
-  <ItemName>conditions</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>conditions As String</SourceLine>
-   <SourceLine></SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>conditions As String</ItemDeclaration>
   <ItemFlags>33</ItemFlags>
   <IsShared>0</IsShared>
-  <SetAccessor>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Set</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>End Set</SourceLine>
-  </SetAccessor>
-  <GetAccessor>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Get</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>// Translate the filtes into a string that can be used as a condition in a SQLPreparedstatement</SourceLine>
-   <SourceLine>Dim conditions() as String</SourceLine>
-   <SourceLine>if mainFilter &lt;&gt; nil and mainFilter.Count &lt;&gt; 0 then</SourceLine>
-   <SourceLine>for each fieldName as String in mainFilter.Keys</SourceLine>
-   <SourceLine>conditions.append(fieldName+" = ?")</SourceLine>
-   <SourceLine>next</SourceLine>
-   <SourceLine>end if</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>if fieldConditions &lt;&gt; nil and fieldConditions.Count &lt;&gt; 0 then</SourceLine>
-   <SourceLine>for each fieldName as String in fieldConditions.Keys</SourceLine>
-   <SourceLine>conditions.append(fieldName+" = ?")</SourceLine>
-   <SourceLine>next</SourceLine>
-   <SourceLine>end if</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>If conditions.ubound &lt;&gt; -1 then</SourceLine>
-   <SourceLine> return Join(conditions, " AND ")</SourceLine>
-   <SourceLine>else</SourceLine>
-   <SourceLine>return ""</SourceLine>
-   <SourceLine>end if</SourceLine>
-   <SourceLine>End Get</SourceLine>
-  </GetAccessor>
- </Property>
- <Property>
-  <ItemName>mainFilter</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>mainFilter As Dictionary</SourceLine>
-   <SourceLine></SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>mainFilter As Dictionary</ItemDeclaration>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
- </Property>
+  <ItemParams>tableName as String, record as Dictionary</ItemParams>
+  <ItemResult>Dictionary</ItemResult>
+ </Method>
  <Property>
   <ItemName>fieldConditions</ItemName>
   <Compatibility></Compatibility>
@@ -510,12 +365,6 @@
    <Visible>1</Visible>
    <PropertyGroup>Position</PropertyGroup>
    <ItemType>Integer</ItemType>
-  </ViewProperty>
-  <ViewProperty>
-   <ObjName>tables</ObjName>
-   <PropertyGroup>Behavior</PropertyGroup>
-   <ItemType>String</ItemType>
-   <EditorType>MultiLineEditor</EditorType>
   </ViewProperty>
  </ViewBehavior>
 </block>

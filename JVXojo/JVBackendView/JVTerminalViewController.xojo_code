@@ -22,10 +22,14 @@ Inherits NSViewController
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub execute(DOSCommand As String)
+		Sub execute(DOSCommand As String, optional parameters As String ="")
 		  // Show each command in the Terminal-view
 		  dim seperatedBatchCommands as String  = DOSCommand.Replace(" && ", EndOfLine)
-		  dosField.appendText(seperatedBatchCommands)+EndOfLine
+		  if parameters = "" then
+		    dosField.appendText(seperatedBatchCommands)+EndOfLine
+		  else
+		    dosField.appendText(seperatedBatchCommands)+", "+parameters+EndOfLine
+		  end if
 		  dosField.ScrollPosition = dosField.LineNumAtCharPos(len(dosField.Text))
 		  
 		  // When used remotely use WinRS to execute the command
@@ -33,15 +37,12 @@ Inherits NSViewController
 		    dim WINRSPrefix as String = "WINRS -r:"+remoteHost+" -u:"+remoteUserName+" -p:"+remotePassword+" "
 		    DOSCommand = WINRSPrefix + DOSCommand
 		  end if
-		  terminal.Execute(DOSCommand)
+		  terminal.Execute(DOSCommand, parameters )
 		  
 		  if terminal.ErrorCode <> 0 then
 		    dim logger as JVLogViewController = JVBackendViewController.sharedBackendViewController.logController
 		    logger.LogAsError("Error executing command: "+ENDOFLINE+DOSCommand+ENDOFLINE+terminal.result)
 		  end if
-		  
-		  
-		  
 		  
 		End Sub
 	#tag EndMethod
