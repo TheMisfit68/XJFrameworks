@@ -15,14 +15,32 @@ Inherits NSViewController
 
 	#tag Method, Flags = &h0
 		Function arrangedObjects() As Object
-		  // if (contentmode = CONTENTMODES.SQLITEBASED) and (content isa Recordset) and (content <> nil)
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub arrangeObjects(contentToArange() as Object)
+		  // 
+		  // if (contentmode = CONTENTMODES.SQLITEBASED)  and (content <> nil) and (content isa Recordset) then
+		  // 
+		  // dim currentLevelObjects() as String
+		  // dim nextLevelObjects() as String
 		  // 
 		  // dim data as recordset = content
 		  // data.MoveFirst
+		  // 
 		  // while not data.EOF
 		  // 
-		  // for fieldName = 1 to data.FieldCount
-		  // dim currentTable as String = data.
+		  // 
+		  // for fieldNumber as Integer = 1 to data.FieldCount
+		  // dim fieldName as String = data.IdxField(fieldNumber).name
+		  // dim fieldValue as String = data.field(fieldName).StringValue
+		  // dim isChilnode as Boolean = (fieldName =childrenKeyPath)
+		  // 
+		  // if Not isChilnode then
+		  // currentLevelObjects.append(fieldValue)
+		  // end if
 		  // 
 		  // next
 		  // 
@@ -30,12 +48,13 @@ Inherits NSViewController
 		  // wend
 		  // 
 		  // 
-		  // else
+		  // else if (contentmode = CONTENTMODES.CLASSBASED) 
 		  // 
-		  // 
+		  // // Future implementation for object based content instead of SQLite
 		  // 
 		  // end if
-		End Function
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -56,9 +75,15 @@ Inherits NSViewController
 		childrenKeyPath As String = "Children"
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
+	#tag ComputedProperty, Flags = &h0
+		#tag Setter
+			Set
+			  mcontent = value
+			  arrangeObjects(mcontent)
+			End Set
+		#tag EndSetter
 		content As variant
-	#tag EndProperty
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
 		contentMode As CONTENTMODES = CONTENTMODES.SQLITEBASED
@@ -66,6 +91,10 @@ Inherits NSViewController
 
 	#tag Property, Flags = &h0
 		isLeafKeypath As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mcontent As variant
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0

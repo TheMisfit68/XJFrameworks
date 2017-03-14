@@ -49,15 +49,31 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function lookupID(lookupTable as String, lookupFieldName as String, lookupValue as string) As Integer</SourceLine>
-   <SourceLine>dim sqlString as String = "Select ID From "+lookupTable+"' WHERE "+lookupFieldName+"=?"</SourceLine>
+   <SourceLine>Function lookupID(lookupTable as String, lookupFields as Dictionary) As Integer</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim pkField As String</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim tableInfo as RecordSet = FieldSchema(lookupTable)</SourceLine>
+   <SourceLine>while not tableInfo.eof</SourceLine>
+   <SourceLine>if tableInfo.Field("IsPrimary").BooleanValue = TRUE then</SourceLine>
+   <SourceLine>pkField = tableInfo.Field("ColumnName")</SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine>wend</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Dim matchFieldNames() as String</SourceLine>
+   <SourceLine>for each fieldName as String in lookupFields.Keys</SourceLine>
+   <SourceLine>matchFieldNames.append(fieldName+" = ?")</SourceLine>
+   <SourceLine>next</SourceLine>
+   <SourceLine>dim matchFieldsString as String= join(matchFieldNames, ", ")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim sqlString as String = "SELECT "+pkField+" FROM "+lookupTable+" WHERE "+matchFieldsString</SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim allVariables() as Variant = concatenate(array(lookupValue))</SourceLine>
-   <SourceLine>sqlStatement.bindType(allVariables)</SourceLine>
-   <SourceLine>sqlStatement.bind(allVariables)</SourceLine>
+   <SourceLine>sqlStatement.bindType(lookupFields.Values)</SourceLine>
+   <SourceLine>sqlStatement.bind(lookupFields.Values)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim recordsFound as recordset = sqlStatement.SQLSelect</SourceLine>
+   <SourceLine>dim foundRecords as RecordSet = sqlStatement.SQLSelect</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>If Error Then</SourceLine>
    <SourceLine>#if debugbuild then</SourceLine>
@@ -65,19 +81,23 @@
    <SourceLine>"[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _</SourceLine>
    <SourceLine>sqlString)</SourceLine>
    <SourceLine>#endif</SourceLine>
-   <SourceLine>Return -1</SourceLine>
+   <SourceLine>return -1</SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>if foundRecords &lt;&gt; nil then</SourceLine>
+   <SourceLine>foundRecords.moveFirst</SourceLine>
+   <SourceLine>return foundRecords.field(pkField).IntegerValue</SourceLine>
+   <SourceLine>else</SourceLine>
+   <SourceLine>return -1</SourceLine>
+   <SourceLine>end if</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>recordsFound.MoveFirst // Move to the first match</SourceLine>
-   <SourceLine>return recordsFound.Field("seq").IntegerValue</SourceLine>
    <SourceLine>End Function</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>lookupTable as String, lookupFieldName as String, lookupValue as string</ItemParams>
+  <ItemParams>lookupTable as String, lookupFields as Dictionary</ItemParams>
   <ItemResult>Integer</ItemResult>
  </Method>
  <Method>
