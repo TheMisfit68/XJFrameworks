@@ -58,6 +58,7 @@
    <SourceLine>if tableInfo.Field("IsPrimary").BooleanValue = TRUE then</SourceLine>
    <SourceLine>pkField = tableInfo.Field("ColumnName")</SourceLine>
    <SourceLine>end if</SourceLine>
+   <SourceLine>tableInfo.MoveNext</SourceLine>
    <SourceLine>wend</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine></SourceLine>
@@ -279,34 +280,6 @@
   <ItemParams>tableName as String, record as Dictionary</ItemParams>
   <ItemResult>Dictionary</ItemResult>
  </Method>
- <Property>
-  <ItemName>fieldConditions</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>fieldConditions As Dictionary</SourceLine>
-   <SourceLine></SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>fieldConditions As Dictionary</ItemDeclaration>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
- </Property>
- <Property>
-  <ItemName>summaryFields()</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>summaryFields() As String</SourceLine>
-   <SourceLine></SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>summaryFields() As String</ItemDeclaration>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
- </Property>
  <ViewBehavior>
   <ViewProperty>
    <ObjName>DatabaseFile</ObjName>

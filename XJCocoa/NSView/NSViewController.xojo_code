@@ -13,8 +13,8 @@ Implements NSViewDelegate
 		  if model.IsArray then
 		    
 		    // Encapsulate arrays using an NSArrayController
-		    Dim controller as NSArrayController = new NSArrayController(model)
-		    self.representedObject = controller 
+		    // Dim controller as NSArrayController = new NSArrayController(model)
+		    // self.representedObject = controller 
 		    
 		  else
 		    self.representedObject = model
