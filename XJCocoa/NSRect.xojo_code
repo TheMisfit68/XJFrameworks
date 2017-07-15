@@ -19,7 +19,7 @@ Protected Class NSRect
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return new NSRect(NSpoint.ZeroPoint, NSSize.ZeroSize) 
+			  return new NSRect(NSpoint.ZeroPoint, NSSize.ZeroSize)
 			End Get
 		#tag EndGetter
 		Shared ZeroRect As NSRect
