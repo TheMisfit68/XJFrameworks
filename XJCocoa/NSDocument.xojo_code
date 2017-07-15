@@ -66,7 +66,7 @@ Protected Class NSDocument
 		    end if
 		    
 		  end if
-		   
+		  
 		End Sub
 	#tag EndMethod
 

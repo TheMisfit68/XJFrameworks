@@ -30,17 +30,21 @@ Protected Class JVPathFinder
 		    dim currentDirectory as folderItem = subDirectoriesToSearch(0)
 		    
 		    for i as Integer=1 to currentDirectory.Count
-		      dim currentItem as FolderItem = currentDirectory.Item(i)
+		      dim currentItem as FolderItem = currentDirectory.TrueItem(i)
 		      
-		      if currentItem.Directory then
-		        subDirectoriesToSearch.Append(currentItem)
-		      else
+		      if not currentItem.alias then
 		        
-		        if currentItem.name = fileName  then
-		          completeMatch = currentItem
-		          exit for
-		        elseif instr(currentItem.name,fileName)<>0  then
-		          partialMatch = currentItem
+		        if currentItem.Directory then
+		          subDirectoriesToSearch.Append(currentItem)
+		        else
+		          
+		          if currentItem.name = fileName  then
+		            completeMatch = currentItem
+		            exit for
+		          elseif instr(currentItem.name,fileName)<>0  then
+		            partialMatch = currentItem
+		          end if
+		          
 		        end if
 		        
 		      end if
@@ -73,17 +77,19 @@ Protected Class JVPathFinder
 		    dim currentDirectory as folderItem = subDirectoriesToSearch(0)
 		    
 		    for i as Integer=1 to currentDirectory.Count
-		      dim currentItem as FolderItem = currentDirectory.Item(i)
+		      dim currentItem as FolderItem = currentDirectory.trueItem(i)
 		      
-		      if currentItem.Directory then
+		      if not currentItem.alias then
 		        
-		        if  currentItem.name = folderName then
-		          completeMatch = currentItem
-		          exit for
-		        elseif  instr(currentItem.name,folderName)<>0  then
-		          partialMatch = currentItem
-		        else
-		          subDirectoriesToSearch.Append(currentItem)
+		        if currentItem.Directory then
+		          
+		          if  currentItem.name = folderName then
+		            completeMatch = currentItem
+		            exit for
+		          elseif  instr(currentItem.name,folderName)<>0  then
+		            partialMatch = currentItem
+		          end if
+		          
 		        end if
 		        
 		      end if

@@ -4,32 +4,35 @@ Protected Class JVSQLiteDataSource
 		Sub constructor(dataBase as JVSQLiteDatabase,Statement as String)
 		  me.dataBase = dataBase
 		  me.preparedStatement = dataBase.Prepare(statement)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function fieldLevels() As Integer()
 		  
+		  // Combine each tableName and fieldName in to a longFieldName
 		  
-		  if mfieldLevels = nil then
+		  dim tables as recordSet = dataBase.TableSchema
+		  while not tables.EOF
+		    dim tableName as String= tables.field("TableName").StringValue
 		    
-		    dim tables as recordSet = dataBase.TableSchema
-		    
-		    // Store the tableNames in an array
-		    dim tableNames() as String
-		    while not tables.EOF
-		      tableNames.Append(tables.IdxField(1).StringValue)
-		      tables.MoveNext
+		    dim fields as RecordSet = database.FieldSchema(tableName)
+		    while not fields.EOF
+		      
+		      dim fieldName as String = fields.Field("ColumnName").StringValue
+		      dim longFieldName as String = tableName+"."+fieldName
+		      
+		      // dim isPrimaryKeyField as Boolean = fields.Field("IsPrimary").BooleanValue
+		      // dim isIntegerField as Boolean = (fields.Field("FieldType").IntegerValue = 19)
+		      // dim isForeignKeyField as Boolean =  (not isPrimaryKeyField) and isIntegerField and (fieldName.right(2) = "ID")
+		      // 
+		      // if  not isForeignKeyField and not fieldTables.HasKey(longFieldName) then
+		      longFieldNames.Append(longFieldName)
+		      System.DebugLog("Field "+longFieldName+" exists on table "+tableName)
+		      // end if
+		      
+		      fields.MoveNext
+		      
 		    wend
 		    
-		    for fieldNumber as Integer = 1 to foundRecords.FieldCount
-		      dim fieldName as String = foundRecords.IdxField(fieldNumber).Name
-		    next
-		    
-		  end if
-		  
-		  return mfieldLevels
-		End Function
+		    tables.MoveNext
+		  wend
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -59,6 +62,7 @@ Protected Class JVSQLiteDataSource
 			  // return objects
 			  
 			  
+			  
 			End Get
 		#tag EndGetter
 		arrangedObjects As Object
@@ -72,8 +76,8 @@ Protected Class JVSQLiteDataSource
 		foundRecords As recordSet
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private mfieldLevels() As Integer
+	#tag Property, Flags = &h0
+		longFieldNames() As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

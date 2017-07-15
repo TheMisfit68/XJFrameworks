@@ -64,7 +64,7 @@ Protected Class NSDocumentController
 
 	#tag Method, Flags = &h0
 		Shared Function saveDialog(existingFile as FolderItem) As FolderItem
-		   // Propose current filename and type if it exist
+		  // Propose current filename and type if it exist
 		  //  or default to "Untitled"
 		  
 		  dim fileName  as String = "Untitled"

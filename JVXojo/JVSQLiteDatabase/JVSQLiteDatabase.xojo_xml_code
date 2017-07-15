@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RBProject version="2016r4.1" FormatVersion="2" MinIDEVersion="20070100">
+<RBProject version="2017r1.1" FormatVersion="2" MinIDEVersion="20070100">
 <block type="Module" ID="1727178751">
  <ObjName>JVSQLiteDatabase</ObjName>
- <ObjContainerID>1830289407</ObjContainerID>
+ <ObjContainerID>1009907711</ObjContainerID>
  <IsClass>1</IsClass>
  <Superclass>SQLiteDatabase</Superclass>
  <ItemFlags>1</ItemFlags>
@@ -14,7 +14,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function lastRowIDFromTable(TableName as String) As Integer</SourceLine>
+   <SourceLine>Function lastRowIDFromTable(tableName as String) As Integer</SourceLine>
    <SourceLine>dim sqlString as String = "select seq from sqlite_sequence where name=?"</SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine></SourceLine>
@@ -280,6 +280,141 @@
   <ItemParams>tableName as String, record as Dictionary</ItemParams>
   <ItemResult>Dictionary</ItemResult>
  </Method>
+ <Method>
+  <ItemName>determineHierarchyForviews</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function determineHierarchyForviews() As Dictionary</SourceLine>
+   <SourceLine>dim viewInfo as recordSet = me.SQLSelect("SELECT * FROM sqlite_master  where type='view' or type='table'  ORDER BY type DESC")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim hierarchies as new Dictionary</SourceLine>
+   <SourceLine>dim tableNames() as String</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>while not viewInfo.EOF</SourceLine>
+   <SourceLine>dim type as String = viewInfo.Field("type")</SourceLine>
+   <SourceLine>dim name as String = viewInfo.Field("name")</SourceLine>
+   <SourceLine>dim tableName as String = viewInfo.Field("tbl_name")</SourceLine>
+   <SourceLine>dim SQLCreate as String = viewInfo.Field("SQL")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>if (tableName&lt;&gt; "sqlite_sequence") and not hierarchies.HasKey(name) then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>if type = "view" then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim filteredHierarchyInfo as String = SQLCreate</SourceLine>
+   <SourceLine>filteredHierarchyInfo = SQLCreate.Replace("^(.*)(?:\r?\n?)","$1"+ENDOFLINE , TRUE)  // Convert any line-endings to the current platform</SourceLine>
+   <SourceLine>filteredHierarchyInfo = filteredHierarchyInfo.Replace("(?&lt;!^)(FROM|JOIN)", ENDOFLINE+"$1", TRUE)  // Push each FROM- or JOIN-statement to a seperate line</SourceLine>
+   <SourceLine>filteredHierarchyInfo = filteredHierarchyInfo.Replace("^(?!FROM|JOIN).*(?:\r?\n?)", "", TRUE)   // Delete all other lines beacause they are not part of the hierarchy</SourceLine>
+   <SourceLine>filteredHierarchyInfo = filteredHierarchyInfo.Replace("^.*?(?:(?:FROM|JOIN)\s+(\S*)\s)+.*(\r?\n?)?" ,"$1"+ENDOFLINE, TRUE)     // Filter down to the name of the table mentioned in the hierarchy info</SourceLine>
+   <SourceLine>filteredHierarchyInfo = filteredHierarchyInfo.trim</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim allTableNames() as string = filteredHierarchyInfo.split(ENDOFLINE)</SourceLine>
+   <SourceLine>dim uniqueTableNames() as string</SourceLine>
+   <SourceLine>for each item as string in allTableNames</SourceLine>
+   <SourceLine>if uniqueTableNames.IndexOf(item) = -1 then</SourceLine>
+   <SourceLine>uniqueTableNames.append(item)</SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine>next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>tableNames = uniqueTableNames  // Store array of the tables that are in the view</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>elseif type = "table" then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>tableNames = array(tableName) // Store single tableName if there was no view available</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>hierarchies.value(name) = tableNames</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>viewInfo.MoveNext</SourceLine>
+   <SourceLine>wend</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>return hierarchies</SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>33</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams></ItemParams>
+  <ItemResult>Dictionary</ItemResult>
+ </Method>
+ <Method>
+  <ItemName>determineHierarchyForviews1</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Function determineHierarchyForviews1() As Dictionary</SourceLine>
+   <SourceLine>dim viewInfo as recordSet = me.SQLSelect("SELECT * FROM sqlite_master  where type='view' or type='table'  ORDER BY type DESC")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim hierarchies as new Dictionary</SourceLine>
+   <SourceLine>dim tableNames() as String</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>while not viewInfo.EOF</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim type as String = viewInfo.Field("type")</SourceLine>
+   <SourceLine>dim name as String = viewInfo.Field("name")</SourceLine>
+   <SourceLine>dim tableName as String = viewInfo.Field("tbl_name")</SourceLine>
+   <SourceLine>dim SQLCreate as String = viewInfo.Field("SQL")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>if (tableName&lt;&gt; "sqlite_sequence") and not hierarchies.HasKey(name) then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>if type = "view" then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim filteredHierarchyInfo as String = SQLCreate</SourceLine>
+   <SourceLine>filteredHierarchyInfo = SQLCreate.Replace("^.*SELECT (.*) FROM (.*)","$1" , TRUE)  // Convert any line-endings to the current platform</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// dim allTableNames() as string = filteredHierarchyInfo.split(ENDOFLINE)</SourceLine>
+   <SourceLine>// dim uniqueTableNames() as string</SourceLine>
+   <SourceLine>// for each item as string in allTableNames</SourceLine>
+   <SourceLine>// if uniqueTableNames.IndexOf(item) = -1 then</SourceLine>
+   <SourceLine>// uniqueTableNames.append(item)</SourceLine>
+   <SourceLine>// end if</SourceLine>
+   <SourceLine>// next</SourceLine>
+   <SourceLine>// </SourceLine>
+   <SourceLine>// tableNames = uniqueTableNames  // Store array of the tables that are in the view</SourceLine>
+   <SourceLine>// </SourceLine>
+   <SourceLine>// elseif type = "table" then</SourceLine>
+   <SourceLine>// </SourceLine>
+   <SourceLine>// tableNames = array(tableName) // Store single tableName if there was no view available</SourceLine>
+   <SourceLine>// </SourceLine>
+   <SourceLine> end if</SourceLine>
+   <SourceLine>// </SourceLine>
+   <SourceLine>// hierarchies.value(name) = tableNames</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>viewInfo.MoveNext</SourceLine>
+   <SourceLine>wend</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>return hierarchies</SourceLine>
+   <SourceLine>End Function</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams></ItemParams>
+  <ItemResult>Dictionary</ItemResult>
+ </Method>
+ <Property>
+  <ItemName>hierarchyInfo</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>hierarchyInfo As Integer</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>hierarchyInfo As Integer</ItemDeclaration>
+  <ItemFlags>33</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
  <ViewBehavior>
   <ViewProperty>
    <ObjName>DatabaseFile</ObjName>

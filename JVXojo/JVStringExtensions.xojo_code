@@ -3,10 +3,7 @@ Protected Module JVStringExtensions
 	#tag Method, Flags = &h0
 		Function contains(extends source as String, searchPattern as string) As Boolean
 		  
-		  return (source.InStr(searchPattern) <> 0) or _
-		  (source.InStr(LowerCase(searchPattern)) <> 0) or _
-		  (source.InStr(UpperCase(searchPattern)) <> 0) or _
-		  (source.InStr(TitleCase(searchPattern))  <> 0)
+		  return (source.InStr(searchPattern) <> 0)
 		End Function
 	#tag EndMethod
 
@@ -96,6 +93,7 @@ Protected Module JVStringExtensions
 	#tag Method, Flags = &h0
 		Function replace(extends source as String, searchPattern as String, replacementPattern as String, useRegex as Boolean) As String
 		  if useRegex then
+		    
 		    dim regex as RegEx = new RegEx
 		    regex.SearchPattern = searchPattern
 		    regex.ReplacementPattern = replacementPattern

@@ -1,18 +1,57 @@
 #tag Class
-Protected Class NSOutlineView
-Inherits Listbox
+Protected Class JVTreeView
+Inherits ListBox
 	#tag Method, Flags = &h0
 		Sub constructor()
 		  // Calling the overridden superclass constructor.
 		  Super.Constructor
-		  Hierarchical = True
-		  
+		  hierarchical=TRUE
 		End Sub
 	#tag EndMethod
 
 
+	#tag Property, Flags = &h0
+		mTreeViewDelegate As JVTreeViewDelegate
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		owner As JVTreeController
+	#tag EndProperty
+
 	#tag ComputedProperty, Flags = &h0
-		viewDelegate As NSViewDelegate
+		#tag Getter
+			Get
+			  return mTreeViewDelegate
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  
+			  if mTreeViewDelegate <> nil then
+			    
+			    // Remove any previously set delegate
+			    RemoveHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
+			    
+			  end if
+			  
+			  // Set the delegate
+			  mTreeViewDelegate = value
+			  
+			  if mTreeViewDelegate <> nil then
+			    
+			    // Redirect all events to the delegate
+			    AddHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
+			    
+			  end if
+			  
+			  
+			  
+			  
+			  
+			  
+			End Set
+		#tag EndSetter
+		treeViewDelegate As JVTreeViewDelegate
 	#tag EndComputedProperty
 
 

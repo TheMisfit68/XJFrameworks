@@ -1,7 +1,7 @@
 #tag Module
 Protected Module JVSQLiteExtensions
 	#tag Method, Flags = &h0
-		Sub bindType(extends statement as SqlitePreparedStatement, fieldValues() as Variant)
+		Sub bindType(extends statement as SQLitePreparedStatement, fieldValues() as Variant)
 		  dim fieldNumber as Integer = 0
 		  for  each fieldValue as Variant in fieldValues
 		    
@@ -24,6 +24,14 @@ Protected Module JVSQLiteExtensions
 		    
 		    fieldNumber = fieldNumber+1
 		  next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub bindVariables(extends statement as SQLitePreparedStatement, variables() as Variant)
+		  statement.BindType(variables)
+		  statement.Bind(variables)
+		  
 		End Sub
 	#tag EndMethod
 
