@@ -1,37 +1,37 @@
 #tag Class
 Protected Class JVSQLiteDataSource
 	#tag Method, Flags = &h0
-		Sub constructor(dataBase as JVSQLiteDatabase,Statement as String)
-		  me.dataBase = dataBase
-		  me.preparedStatement = dataBase.Prepare(statement)
-		  
-		  // Combine each tableName and fieldName in to a longFieldName
-		  
-		  dim tables as recordSet = dataBase.TableSchema
-		  while not tables.EOF
-		    dim tableName as String= tables.field("TableName").StringValue
-		    
-		    dim fields as RecordSet = database.FieldSchema(tableName)
-		    while not fields.EOF
-		      
-		      dim fieldName as String = fields.Field("ColumnName").StringValue
-		      dim longFieldName as String = tableName+"."+fieldName
-		      
-		      // dim isPrimaryKeyField as Boolean = fields.Field("IsPrimary").BooleanValue
-		      // dim isIntegerField as Boolean = (fields.Field("FieldType").IntegerValue = 19)
-		      // dim isForeignKeyField as Boolean =  (not isPrimaryKeyField) and isIntegerField and (fieldName.right(2) = "ID")
-		      // 
-		      // if  not isForeignKeyField and not fieldTables.HasKey(longFieldName) then
-		      longFieldNames.Append(longFieldName)
-		      System.DebugLog("Field "+longFieldName+" exists on table "+tableName)
-		      // end if
-		      
-		      fields.MoveNext
-		      
-		    wend
-		    
-		    tables.MoveNext
-		  wend
+		Sub constructor()
+		  // me.dataBase = dataBase
+		  // me.preparedStatement = dataBase.Prepare(statement)
+		  // 
+		  // // Combine each tableName and fieldName in to a longFieldName
+		  // 
+		  // dim tables as recordSet = dataBase.TableSchema
+		  // while not tables.EOF
+		  // dim tableName as String= tables.field("TableName").StringValue
+		  // 
+		  // dim fields as RecordSet = database.FieldSchema(tableName)
+		  // while not fields.EOF
+		  // 
+		  // dim fieldName as String = fields.Field("ColumnName").StringValue
+		  // dim longFieldName as String = tableName+"."+fieldName
+		  // 
+		  // // dim isPrimaryKeyField as Boolean = fields.Field("IsPrimary").BooleanValue
+		  // // dim isIntegerField as Boolean = (fields.Field("FieldType").IntegerValue = 19)
+		  // // dim isForeignKeyField as Boolean =  (not isPrimaryKeyField) and isIntegerField and (fieldName.right(2) = "ID")
+		  // // 
+		  // // if  not isForeignKeyField and not fieldTables.HasKey(longFieldName) then
+		  // longFieldNames.Append(longFieldName)
+		  // System.DebugLog("Field "+longFieldName+" exists on table "+tableName)
+		  // // end if
+		  // 
+		  // fields.MoveNext
+		  // 
+		  // wend
+		  // 
+		  // tables.MoveNext
+		  // wend
 		End Sub
 	#tag EndMethod
 
