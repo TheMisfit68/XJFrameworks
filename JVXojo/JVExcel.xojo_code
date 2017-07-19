@@ -33,17 +33,23 @@ Inherits ExcelApplication
 	#tag Method, Flags = &h0
 		Function expandRangeDown(startRange as ExcelRange, numberOfTimes as Integer =1) As ExcelRange
 		  dim firstCellValue as string = startRange.Cells(1,1).value
+		  dim firstColumn as Integer = startRange.Column
+		  dim finalRow as Integer = startRange.Worksheet.Rows.count
+		  dim lastUsedRow as Integer
 		  dim expandedRange as ExcelRange
 		  
-		  // Like Ctrl+Shift+Down-arrow
 		  if firstCellValue <> "" then
 		    
-		    dim endRange as ExcelRange = StartRange
-		    for expansion as integer = 1 to numberOfTimes
-		      endRange = endRange.End_(Office.xlDown)
-		    next
+		    if skipEmptyLines then
+		      // Like Ctrl+Up-arrow starting at the bottom of the sheet
+		      lastUsedRow = startRange.Worksheet.cells(finalRow, firstColumn).End_(Office.xlUp).row
+		    else
+		      // Like Ctrl+Down-arrow
+		      lastUsedRow = StartRange.End_(Office.xlDown).Row
+		    end if
 		    
-		    expandedRange = me.range(startRange, endRange)
+		    expandedRange = startRange .resize(lastUsedRow-startRange.row+1, startRange.columns.count)
+		    
 		    return expandedRange
 		    
 		  else
@@ -57,17 +63,23 @@ Inherits ExcelApplication
 	#tag Method, Flags = &h0
 		Function expandRangeRight(startRange as ExcelRange, numberOfTimes  as Integer=1) As ExcelRange
 		  dim firstCellValue as string = startRange.Cells(1,1).value
+		  dim firstRow as Integer = startRange.row
+		  dim finalColumn as Integer = startRange.Worksheet.Columns.count
+		  dim lastUsedColumn as Integer
 		  dim expandedRange as ExcelRange
 		  
-		  // Like Ctrl+Shift+Down-arrow
 		  if firstCellValue <> "" then
 		    
-		    dim endRange as ExcelRange = StartRange
-		    for expansion as integer = 1 to numberOfTimes
-		      endRange = endRange.End_(Office.xlToRight)
-		    next
+		    if skipEmptyLines then
+		      // Like Ctrl+Left-arrow but starting at the far right of the sheet
+		      lastUsedColumn = startRange.Worksheet.cells(firstRow, finalColumn).End_(Office.xlleft).row
+		    else
+		      // Like Ctrl+Right-arrow
+		      lastUsedColumn = StartRange.End_(Office.xlRight).Column
+		    end if
 		    
-		    expandedRange = me.range(startRange, endRange)
+		    expandedRange = startRange .resize(startRange.rows.count,lastUsedColumn-startRange.Column+1)
+		    
 		    return expandedRange
 		    
 		  else
@@ -75,6 +87,8 @@ Inherits ExcelApplication
 		    return startRange
 		    
 		  end if
+		  
+		  
 		End Function
 	#tag EndMethod
 
