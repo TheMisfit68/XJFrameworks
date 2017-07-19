@@ -31,7 +31,7 @@ Inherits ExcelApplication
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function expandRangeDown(startRange as ExcelRange, numberOfTimes as Integer =1) As ExcelRange
+		Function expandRangeDown(startRange as ExcelRange, skipEmptyLines as Boolean = FALSE) As ExcelRange
 		  dim firstCellValue as string = startRange.Cells(1,1).value
 		  dim firstColumn as Integer = startRange.Column
 		  dim finalRow as Integer = startRange.Worksheet.Rows.count
@@ -61,7 +61,7 @@ Inherits ExcelApplication
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function expandRangeRight(startRange as ExcelRange, numberOfTimes  as Integer=1) As ExcelRange
+		Function expandRangeRight(startRange as ExcelRange, optional skipEmptyLines as Boolean = FALSE) As ExcelRange
 		  dim firstCellValue as string = startRange.Cells(1,1).value
 		  dim firstRow as Integer = startRange.row
 		  dim finalColumn as Integer = startRange.Worksheet.Columns.count
