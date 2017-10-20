@@ -6,14 +6,14 @@ Inherits FolderItem
 		  dim content as String
 		  dim t As TextInputStream
 		  
-		   Try
-		       t = TextInputStream.Open(me)
-		       t.Encoding = Encodings.MacRoman
-		       content = t.ReadAll
-		   Catch e As IOException
-		        t.Close
-		        MsgBox("Error accessing file.")
-		   End Try
+		  Try
+		    t = TextInputStream.Open(me)
+		    t.Encoding = Encodings.MacRoman
+		    content = t.ReadAll
+		  Catch e As IOException
+		    t.Close
+		    MsgBox("Error accessing file.")
+		  End Try
 		  
 		  return  content
 		  
@@ -22,17 +22,17 @@ Inherits FolderItem
 
 	#tag Method, Flags = &h0
 		Sub Write(content as String)
+		  Try
+		    Dim t as TextOutputStream = TextOutputStream.Create(me)
 		    Try
-		        Dim t as TextOutputStream = TextOutputStream.Create(me)
-		        Try
-		            t.WriteLine(content)
-		        Finally
-		            t.Close
-		            t = nil
-		        End Try
-		    Catch e as IOException
-		        //handle error
+		      t.WriteLine(content)
+		    Finally
+		      t.Close
+		      t = nil
 		    End Try
+		  Catch e as IOException
+		    //handle error
+		  End Try
 		  
 		End Sub
 	#tag EndMethod
