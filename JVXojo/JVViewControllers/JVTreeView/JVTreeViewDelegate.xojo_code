@@ -6,6 +6,12 @@ Protected Interface JVTreeViewDelegate
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub onSelectionDidChange(sender as JVTreeView)
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = Protocol description
 		Defines the protocol all JVTreeView-delegates must conform to

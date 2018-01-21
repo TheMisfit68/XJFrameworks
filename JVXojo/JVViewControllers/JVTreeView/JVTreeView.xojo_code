@@ -31,6 +31,7 @@ Inherits ListBox
 			    
 			    // Remove any previously set delegate
 			    RemoveHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
+			    RemoveHandler Change, AddressOf mTreeViewDelegate.onSelectionDidChange
 			    
 			  end if
 			  
@@ -41,6 +42,7 @@ Inherits ListBox
 			    
 			    // Redirect all events to the delegate
 			    AddHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
+			    AddHandler Change, AddressOf mTreeViewDelegate.onSelectionDidChange
 			    
 			  end if
 			  

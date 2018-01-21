@@ -1,6 +1,6 @@
 #tag Class
 Protected Class JVTreeController
-Implements JVTreeViewDelegate
+Implements  JVTreeViewDataSource, JVTreeViewDelegate
 	#tag Method, Flags = &h0
 		Sub addFolder(optional rowText as String = "")
 		  // Add a folder alongside the current row
@@ -35,7 +35,15 @@ Implements JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub constructor(treeView as JVTreeView)
+		Function child(index As Integer, item as Variant) As Variant
+		  // Part of the JVTreeViewDataSource interface.
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub constructor(treeView as JVTreeView, arrangedObjects() as NSTreeNode)
 		  me.treeView = treeView
 		  
 		  treeView.owner = me
@@ -80,7 +88,31 @@ Implements JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function isItemExpandable(item as Variant) As Boolean
+		  // Part of the JVTreeViewDataSource interface.
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function numberOfChildren(item as Variant) As Integer
+		  // Part of the JVTreeViewDataSource interface.
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub onListExpandRow(sender as JVTreeView, row as Integer)
+		  // Part of the JVTreeViewDelegate interface.
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub onSelectionDidChange(sender as JVTreeView)
 		  // Part of the JVTreeViewDelegate interface.
 		  
 		  

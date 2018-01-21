@@ -1,25 +1,29 @@
-#tag Class
-Protected Class NSIndexPath
+#tag Interface
+Protected Interface JVTreeViewDataSource
 	#tag Method, Flags = &h0
-		Sub constructor(row as Integer, section as Integer)
+		Function child(index As Integer, item as Variant) As Variant
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub index(atPosistion as integer)
+		Function isItemExpandable(item as Variant) As Boolean
 		  
-		End Sub
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function numberOfChildren(item as Variant) As Integer
+		  
+		End Function
 	#tag EndMethod
 
 
-	#tag Property, Flags = &h0
-		row As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		section As Integer
-	#tag EndProperty
+	#tag Note, Name = Protocol description
+		Defines the protocol all JVTreeView-dataSources must conform to
+		
+		
+	#tag EndNote
 
 
 	#tag ViewBehavior
@@ -44,16 +48,6 @@ Protected Class NSIndexPath
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="row"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="section"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -67,5 +61,5 @@ Protected Class NSIndexPath
 			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Class
-#tag EndClass
+End Interface
+#tag EndInterface
