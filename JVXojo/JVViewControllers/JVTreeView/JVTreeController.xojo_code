@@ -53,6 +53,35 @@ Implements JVTreeViewDataSource,JVTreeViewDelegate
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Sub displayNode(node as NSTreeNode)
+		  dim fieldsToDisplay() as String
+		  for each value as variant in node.representedObject.Values
+		    fieldsToDisplay.Append(value.StringValue)
+		  next
+		  treeView.ColumnCount = Max(treeView.ColumnCount, fieldsToDisplay.ubound+1)
+		  
+		  dim nodeIsAFolder as Boolean = not node.isLeaf
+		  if  nodeIsAFolder then
+		    
+		    for  column as Integer = 0 to fieldsToDisplay.ubound
+		      if column = 0 then
+		        treeView.AddFolder(fieldsToDisplay(column))
+		        treeview.RowTag(treeView.LastIndex) = node.children
+		      else
+		        treeView.Cell(treeview.LastIndex, column) = fieldsToDisplay(column)
+		      end if
+		      
+		    next
+		    
+		  else
+		    
+		    treeview.addrow(fieldsToDisplay)
+		    
+		  end if 
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function isItemExpandable(item as Variant) As Boolean
 		  // Part of the JVTreeViewDataSource interface.
@@ -71,6 +100,15 @@ Implements JVTreeViewDataSource,JVTreeViewDelegate
 	#tag Method, Flags = &h0
 		Sub onListExpandRow(sender as JVTreeView, row as Integer)
 		  // Part of the JVTreeViewDelegate interface.
+		  
+		  if sender.RowIsFolder(row) then
+		    
+		    dim childNodes() as NStreeNode = sender.RowTag(row)
+		    For each childNode as NSTreeNode in childNodes
+		      displayNode(childNode)
+		    next
+		    
+		  end if
 		  
 		  
 		End Sub
@@ -167,36 +205,16 @@ Implements JVTreeViewDataSource,JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub syncInterface(up as Boolean)
-		  
+		Sub syncInterface(optional up as Boolean = False)
 		  if up then
 		    
 		    if  arrangedObjects <> nil then
 		      
+		      treeView.DeleteAllRows
 		      dim nodesToDisplay() as NSTreeNode = arrangedObjects.children
-		      While nodesToDisplay.ubound >= 0
-		        
-		        dim currentNode as NSTreeNode = nodesToDisplay(0)
-		        nodesToDisplay.Remove(0)
-		        treeView.ColumnCount = currentnode.representedObject.Values.ubound+1
-		        
-		        dim fieldsToDisplay() as String
-		        for each value as variant in currentnode.representedObject.Values
-		          fieldsToDisplay.Append(value.StringValue)
-		        next
-		        
-		        if not currentNode.isLeaf then
-		          
-		          treeView.AddFolder(fieldsToDisplay(0))
-		          for each child as NSTreeNode in currentNode.children
-		            nodesToDisplay.Insert(0, child)
-		          next
-		          
-		        else
-		          
-		        end if 
-		        
-		      wend
+		      For each node as NSTreeNode in nodesToDisplay
+		        displayNode(node)
+		      next
 		      
 		    end if
 		    

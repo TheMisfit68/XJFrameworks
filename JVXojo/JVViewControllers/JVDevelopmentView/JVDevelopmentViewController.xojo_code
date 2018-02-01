@@ -123,6 +123,12 @@ Implements NSViewDelegate
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub syncInterface(optional up as Boolean = False)
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = Class description
 		

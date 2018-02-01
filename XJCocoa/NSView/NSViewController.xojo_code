@@ -62,10 +62,10 @@ Implements NSViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub syncInterface(up as Boolean)
-		  Dim e As RuntimeException = New RuntimeException
+		Sub syncInterface(optional up as Boolean = False)
+		   Dim e As RuntimeException = New RuntimeException
 		  e.ErrorNumber = -1
-		  e.Message = "You must overide the syncInterface-method for te NSViewController-class"
+		  // e.Message = "You must overide the syncInterface-method for the "+ me.className+"-class"
 		  Raise e
 		End Sub
 	#tag EndMethod

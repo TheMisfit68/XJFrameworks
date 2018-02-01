@@ -9,7 +9,6 @@ Protected Module JVSQLiteExtensions
 		  dim currentBranches() as NSTreeNode
 		  dim currentBranchNumber as Integer = 0
 		  dim previousBranchFieldValues as new Dictionary
-		  dim branchFieldHasChanged as Boolean
 		  
 		  dim currentIndexPath() as Integer
 		  for i as Integer = 0 to branchFields.Ubound
@@ -20,70 +19,86 @@ Protected Module JVSQLiteExtensions
 		  dim currentNode as  NSTreeNode
 		  dim currentParent as  NSTreeNode = baseNode
 		  
-		  
-		  records.MoveFirst
 		  // For every record that was found
+		  records.MoveFirst
 		  While Not records.EOF
 		    
-		    // Create a new node
-		    branchFieldHasChanged= False
-		    dim representedObject as new Dictionary
+		    // Check every field to see if it is a branchfield and if it might have changed
+		    Dim fieldNumber as Integer =1
+		    Dim startOfBranchDetected as Boolean = False
+		    Dim endOfbranchDetected as Boolean = False
+		    Dim Representedobject as new Dictionary
 		    
-		    // Check every field,
-		    for columNumber as Integer = 1 to  records.fieldcount
+		    While (fieldNumber<=records.FieldCount) and not(startOfBranchDetected and endOfbranchDetected)
 		      
-		      dim field as DatabaseField = records.IdxField(columNumber)
+		      dim field as DatabaseField = records.IdxField(fieldNumber)
 		      dim fieldName as String = field.Name
 		      dim fieldValue as Variant = field.Value
-		      representedObject.value(fieldName) = fieldValue
 		      
-		      // to see if it is responsible for creating a new branch
 		      dim matchingBranch as Integer= branchFields.IndexOf(FieldName)
 		      dim itsAbranchField as boolean = (matchingBranch >=0)
-		      if  itsAbranchField then
+		      if  itsAbranchField  then
 		        
-		         if  not branchFieldHasChanged then
+		        if not startOfBranchDetected  then 
 		          
-		          branchFieldHasChanged = (not  previousBranchFieldValues.hasKey(fieldName)) or  (previousBranchFieldValues.value(fieldName) <> fieldValue)
+		          if (not  previousBranchFieldValues.hasKey(fieldName)) or  (previousBranchFieldValues.value(fieldName) <> fieldValue) then
+		            startOfBranchDetected =  True // Start capturing a new branch when a branchfield has changed  in value
+		            currentBranchNumber = matchingBranch
+		          end if
 		          previousBranchFieldValues.value(fieldName) = fieldValue
 		          
-		          // if so Increase the Indexpath,
-		          if branchFieldHasChanged then
-		            representedObject = new Dictionary
-		            
-		            currentBranchNumber = matchingBranch
-		            representedObject.value(fieldName) = fieldValue
-		            
-		            currentIndexPath(currentBranchNumber) = currentIndexPath(currentBranchNumber)+1
-		            for subBrancheNumber as Integer = currentBranchNumber+1 to currentBranches.Ubound
-		              currentIndexPath(subBrancheNumber) = 0
-		            Next
-		            
-		            // Determine the parent
-		            if currentBranchNumber > 0 then
-		              currentParent = currentBranches(currentBranchNumber-1)
-		            else
-		              currentParent = baseNode
-		            end if
-		            
-		          end if
+		        else
+		          
+		          endOfbranchDetected = True // Always stop capturing fields when another branchfield was reached
 		          
 		        end if
 		        
-		      end if 
+		      end if
 		      
-		    next
+		      // Parse the data for the current branch
+		      if  startOfBranchDetected and not endOfbranchDetected then
+		        
+		        // Determine the parent
+		        if currentBranchNumber > 0 then
+		          currentParent = currentBranches(currentBranchNumber-1)
+		        else
+		          currentParent = baseNode
+		        end if
+		        
+		        // The indexPath
+		        currentIndexPath(currentBranchNumber) = currentIndexPath(currentBranchNumber)+1
+		        for subBrancheNumber as Integer = currentBranchNumber+1 to currentBranches.Ubound
+		          currentIndexPath(subBrancheNumber) = 0
+		          dim subBrancheName as String = branchFields(subBrancheNumber)
+		          if previousBranchFieldValues.HasKey(subBrancheName) then
+		            previousBranchFieldValues.remove(subBrancheName)
+		          end if
+		        Next
+		        
+		        
+		        // And the Representedobject
+		        representedObject.value(fieldName) = fieldValue
+		        
+		      end if
+		      
+		      fieldNumber =  fieldNumber+1
+		    wend
+		    
 		    
 		    // Add the currentNode to the nodetree
-		    currentNode = new NSTreeNode(representedObject)
-		    currentNode.indexPath = currentIndexPath
-		    currentNode.parent = currentParent
-		    currentParent.children.Append(currentNode)
-		    
-		    // Adjust the current branches 
-		    for subBrancheNumber as Integer= currentBranchNumber to currentBranches.Ubound
-		      currentBranches(subBrancheNumber) = currentNode
-		    next
+		    if representedObject.Values.ubound >=0 then
+		      
+		      currentNode = new NSTreeNode(representedObject)
+		      currentNode.parent = currentParent
+		      currentNode.indexPath = currentIndexPath
+		      currentParent.children.Append(currentNode)
+		      
+		      // Adjust the current branches 
+		      for subBrancheNumber as Integer= currentBranchNumber to currentBranches.Ubound
+		        currentBranches(subBrancheNumber) = currentNode
+		      next
+		      
+		    end if
 		    
 		    records.MoveNext
 		  Wend
