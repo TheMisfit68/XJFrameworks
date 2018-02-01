@@ -1,6 +1,99 @@
 #tag Module
 Protected Module JVSQLiteExtensions
 	#tag Method, Flags = &h0
+		Function asTreeNode(extends records as RecordSet, branchFields() as String) As NSTreeNode
+		  // Create a basenode to be used as a container for the actual nodes
+		  dim  baseNode as new  NSTreeNode(nil)
+		  baseNode.parent = nil
+		  
+		  dim currentBranches() as NSTreeNode
+		  dim currentBranchNumber as Integer = 0
+		  dim previousBranchFieldValues as new Dictionary
+		  dim branchFieldHasChanged as Boolean
+		  
+		  dim currentIndexPath() as Integer
+		  for i as Integer = 0 to branchFields.Ubound
+		    currentBranches.append(baseNode)
+		    currentIndexPath.append(0)
+		  next
+		  
+		  dim currentNode as  NSTreeNode
+		  dim currentParent as  NSTreeNode = baseNode
+		  
+		  
+		  records.MoveFirst
+		  // For every record that was found
+		  While Not records.EOF
+		    
+		    // Create a new node
+		    branchFieldHasChanged= False
+		    dim representedObject as new Dictionary
+		    
+		    // Check every field,
+		    for columNumber as Integer = 1 to  records.fieldcount
+		      
+		      dim field as DatabaseField = records.IdxField(columNumber)
+		      dim fieldName as String = field.Name
+		      dim fieldValue as Variant = field.Value
+		      representedObject.value(fieldName) = fieldValue
+		      
+		      // to see if it is responsible for creating a new branch
+		      dim matchingBranch as Integer= branchFields.IndexOf(FieldName)
+		      dim itsAbranchField as boolean = (matchingBranch >=0)
+		      if  itsAbranchField then
+		        
+		         if  not branchFieldHasChanged then
+		          
+		          branchFieldHasChanged = (not  previousBranchFieldValues.hasKey(fieldName)) or  (previousBranchFieldValues.value(fieldName) <> fieldValue)
+		          previousBranchFieldValues.value(fieldName) = fieldValue
+		          
+		          // if so Increase the Indexpath,
+		          if branchFieldHasChanged then
+		            representedObject = new Dictionary
+		            
+		            currentBranchNumber = matchingBranch
+		            representedObject.value(fieldName) = fieldValue
+		            
+		            currentIndexPath(currentBranchNumber) = currentIndexPath(currentBranchNumber)+1
+		            for subBrancheNumber as Integer = currentBranchNumber+1 to currentBranches.Ubound
+		              currentIndexPath(subBrancheNumber) = 0
+		            Next
+		            
+		            // Determine the parent
+		            if currentBranchNumber > 0 then
+		              currentParent = currentBranches(currentBranchNumber-1)
+		            else
+		              currentParent = baseNode
+		            end if
+		            
+		          end if
+		          
+		        end if
+		        
+		      end if 
+		      
+		    next
+		    
+		    // Add the currentNode to the nodetree
+		    currentNode = new NSTreeNode(representedObject)
+		    currentNode.indexPath = currentIndexPath
+		    currentNode.parent = currentParent
+		    currentParent.children.Append(currentNode)
+		    
+		    // Adjust the current branches 
+		    for subBrancheNumber as Integer= currentBranchNumber to currentBranches.Ubound
+		      currentBranches(subBrancheNumber) = currentNode
+		    next
+		    
+		    records.MoveNext
+		  Wend
+		  
+		  records.MoveFirst // Reset the pointer
+		  return baseNode
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub bindType(extends statement as SQLitePreparedStatement, fieldValues() as Variant)
 		  dim fieldNumber as Integer = 0
 		  for  each fieldValue as Variant in fieldValues

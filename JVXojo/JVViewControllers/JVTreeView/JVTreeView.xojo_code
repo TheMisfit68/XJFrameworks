@@ -21,6 +21,15 @@ Inherits ListBox
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return JVTreeController(owner)
+			End Get
+		#tag EndGetter
+		treeController As JVTreeController
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  return mTreeViewDelegate
 			End Get
 		#tag EndGetter
@@ -30,8 +39,9 @@ Inherits ListBox
 			  if mTreeViewDelegate <> nil then
 			    
 			    // Remove any previously set delegate
+			    RemoveHandler Open, AddressOf mTreeViewDelegate.onListOpen
 			    RemoveHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
-			    RemoveHandler Change, AddressOf mTreeViewDelegate.onSelectionDidChange
+			    RemoveHandler Change, AddressOf mTreeViewDelegate.onListSelectionDidChange
 			    
 			  end if
 			  
@@ -41,8 +51,9 @@ Inherits ListBox
 			  if mTreeViewDelegate <> nil then
 			    
 			    // Redirect all events to the delegate
+			    AddHandler Open, AddressOf mTreeViewDelegate.onListOpen
 			    AddHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
-			    AddHandler Change, AddressOf mTreeViewDelegate.onSelectionDidChange
+			    AddHandler Change, AddressOf mTreeViewDelegate.onListSelectionDidChange
 			    
 			  end if
 			  

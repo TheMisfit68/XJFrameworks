@@ -7,7 +7,13 @@ Protected Interface JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub onSelectionDidChange(sender as JVTreeView)
+		Sub onListOpen(sender as JVTreeView)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub onListSelectionDidChange(sender as JVTreeView)
 		  
 		End Sub
 	#tag EndMethod
