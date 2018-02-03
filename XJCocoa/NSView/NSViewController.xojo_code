@@ -63,7 +63,7 @@ Implements NSViewDelegate
 
 	#tag Method, Flags = &h0
 		Sub syncInterface(optional up as Boolean = False)
-		   Dim e As RuntimeException = New RuntimeException
+		  Dim e As RuntimeException = New RuntimeException
 		  e.ErrorNumber = -1
 		  // e.Message = "You must overide the syncInterface-method for the "+ me.className+"-class"
 		  Raise e

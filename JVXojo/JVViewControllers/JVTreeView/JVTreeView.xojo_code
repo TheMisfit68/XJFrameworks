@@ -9,6 +9,27 @@ Inherits ListBox
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub drawPopUpTriangle(g as Graphics, optional color as Color =  &cC0C0C0)
+		  
+		  // Draw an arrow to indicate that clicking this field will
+		  // display a menu
+		  g.ForeColor = color
+		  
+		  // Points for a triangle on the left side of the cell
+		  Dim points(6) As Integer
+		  points(1) = 2
+		  points(2) = 2
+		  points(3) = 12
+		  points(4) = 2
+		  points(5) =7
+		  points(6) = 12
+		  
+		  g.FillPolygon(points)
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		mTreeViewDelegate As JVTreeViewDelegate

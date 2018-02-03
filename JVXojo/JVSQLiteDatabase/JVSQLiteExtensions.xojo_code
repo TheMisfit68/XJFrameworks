@@ -1,7 +1,7 @@
 #tag Module
 Protected Module JVSQLiteExtensions
 	#tag Method, Flags = &h0
-		Function asTreeNode(extends records as RecordSet, branchFields() as String) As NSTreeNode
+		Function asTreeNode(extends records as RecordSet, paramarray branchFields as String) As NSTreeNode
 		  // Create a basenode to be used as a container for the actual nodes
 		  dim  baseNode as new  NSTreeNode(nil)
 		  baseNode.parent = nil

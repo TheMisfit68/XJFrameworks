@@ -6,7 +6,12 @@ Inherits TabPanel
 		  
 		  
 		  dim subViewsLeft as Integer = 0
-		  dim subViewsTop as Integer = 20 // keep some space for the tabs
+		  #if TargetMacOS then
+		    dim subViewsTop as Integer = 30 // keep some space for the tabs
+		  #else
+		    dim subViewsTop as Integer = 20 // These tabs are smaller on the windows platform
+		  #Endif
+		  
 		  dim subViewsWidth as Integer = me.Width
 		  dim subViewsHeight as Integer = me.Height-subViewsTop
 		  
@@ -130,7 +135,7 @@ Inherits TabPanel
 		#tag ViewProperty
 			Name="TabDefinition"
 			Group="Appearance"
-			InitialValue="Tab 0\\\\rTab 1"
+			InitialValue="Tab 0\\\\\\\\\\\\\\\\rTab 1"
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
