@@ -55,30 +55,41 @@ Implements JVTreeViewDataSource,JVTreeViewDelegate
 
 	#tag Method, Flags = &h21
 		Private Sub displayNode(node as NSTreeNode)
-		  dim fieldsToDisplay() as String
-		  for each value as variant in node.representedObject.Values
-		    fieldsToDisplay.Append(value.StringValue)
-		  next
-		  treeView.ColumnCount = Max(treeView.ColumnCount, fieldsToDisplay.ubound+1)
+		  // Adjust the number of columns if needed
+		  dim numberOfFields as Integer = node.representedObject.keys.ubound+1
+		  treeView.ColumnCount = Max(treeView.ColumnCount, numberOfFields)
 		  
-		  dim nodeIsAFolder as Boolean = not node.isLeaf
-		  if  nodeIsAFolder then
-		    
-		    for  column as Integer = 0 to fieldsToDisplay.ubound
-		      if column = 0 then
-		        treeView.AddFolder(fieldsToDisplay(column))
-		        treeview.RowTag(treeView.LastIndex) = node.children
-		      else
-		        treeView.Cell(treeview.LastIndex, column) = fieldsToDisplay(column)
-		      end if
-		      
-		    next
-		    
+		  
+		  // Proces the record
+		  dim itsaParentNode as Boolean = not node.isLeaf
+		  if   itsaParentNode then // Add an empty Folder or an empty row
+		    treeView.AddFolder("")
 		  else
+		    treeView.AddRow()
+		  end if
+		  dim newRowNumber as Integer = treeView.LastIndex
+		  treeview.RowTag(newRowNumber) = node
+		  
+		  
+		  // Proces the individual fields
+		  for  fieldNumber as Integer = 0 to numberOfFields-1
 		    
-		    treeview.addrow(fieldsToDisplay)
+		    dim key as Variant = node.representedObject.key(fieldNumber)
+		    dim value as  Variant = node.representedObject.value(Key)
 		    
-		  end if 
+		    treeView.cell(newRowNumber, fieldNumber) = value
+		    
+		    // Attach each field to the cell
+		    dim field as  new Dictionary(key: value)
+		    treeview.cellTag(newRowNumber, fieldNumber) = field
+		    
+		  next
+		  
+		  
+		  
+		  
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -103,8 +114,8 @@ Implements JVTreeViewDataSource,JVTreeViewDelegate
 		  
 		  if sender.RowIsFolder(row) then
 		    
-		    dim childNodes() as NStreeNode = sender.RowTag(row)
-		    For each childNode as NSTreeNode in childNodes
+		    dim parentNode as NStreeNode = sender.RowTag(row)
+		    For each childNode as NSTreeNode in parentNode.children
 		      displayNode(childNode)
 		    next
 		    

@@ -103,7 +103,7 @@ Protected Module JVSQLiteExtensions
 		    records.MoveNext
 		  Wend
 		  
-		  records.MoveFirst // Reset the pointer
+		  records.MoveFirst // Reset the cursor
 		  return baseNode
 		End Function
 	#tag EndMethod

@@ -10,7 +10,7 @@ Inherits ListBox
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub drawPopUpTriangle(g as Graphics, optional color as Color =  &cC0C0C0)
+		Sub drawPopUpTriangle(g as Graphics, row as integer, column as Integer, optional color as Color =  &cC0C0C0)
 		  
 		  // Draw an arrow to indicate that clicking this field will
 		  // display a menu
@@ -27,6 +27,7 @@ Inherits ListBox
 		  
 		  g.FillPolygon(points)
 		  
+		  me.CellAlignmentOffset(row, column) = 10
 		End Sub
 	#tag EndMethod
 
