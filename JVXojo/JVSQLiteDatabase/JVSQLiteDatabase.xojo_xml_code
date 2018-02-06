@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RBProject version="2017r1.1" FormatVersion="2" MinIDEVersion="20070100">
+<RBProject version="2017r2.1" FormatVersion="2" MinIDEVersion="20070100">
 <block type="Module" ID="1727178751">
  <ObjName>JVSQLiteDatabase</ObjName>
- <ObjContainerID>1009907711</ObjContainerID>
+ <ObjContainerID>1830289407</ObjContainerID>
  <IsClass>1</IsClass>
  <Superclass>SQLiteDatabase</Superclass>
  <ItemFlags>1</ItemFlags>
@@ -66,7 +66,7 @@
    <SourceLine>for each fieldName as String in lookupFields.Keys</SourceLine>
    <SourceLine>matchFieldNames.append(fieldName+" = ?")</SourceLine>
    <SourceLine>next</SourceLine>
-   <SourceLine>dim matchFieldsString as String= join(matchFieldNames, ", ")</SourceLine>
+   <SourceLine>dim matchFieldsString as String= join(matchFieldNames, " AND ")</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>dim sqlString as String = "SELECT "+pkField+" FROM "+lookupTable+" WHERE "+matchFieldsString</SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>

@@ -2,39 +2,6 @@
 Protected Class JVTreeController
 Implements JVTreeViewDataSource,JVTreeViewDelegate
 	#tag Method, Flags = &h0
-		Sub addFolder(optional rowText as String = "")
-		  // // Add a folder alongside the current row
-		  // Dim selectedRow As Integer = treeView.listIndex
-		  // 
-		  // If selectedRow >= 0 Then
-		  // 
-		  // dim rowNode as NSTreeNode = treeView.RowTag(selectedRow)
-		  // 
-		  // // Get row indent level
-		  // Dim indexPath As NSIndexPath
-		  // dim indexSection as integer
-		  // if indexPath <> nil then
-		  // indexPath = rowNode.indexPath
-		  // Else
-		  // indexPath = new NSIndexPath(0,0)
-		  // end if
-		  // indexSection= indexPath.section
-		  // treevIew.InsertFolder(selectedRow+1, rowText,  indexSection+1)
-		  // 
-		  // dim newRowNode as new NSTreeNode(nil)
-		  // newRowNode.indexPath = new NSIndexPath(0, indexSection+1)
-		  // treeView.RowTag(selectedRow+1) = newRowNode
-		  // 
-		  // Else
-		  // 
-		  // treeView.AddFolder(rowText)
-		  // 
-		  // End If
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function child(index As Integer, item as Variant) As Variant
 		  // Part of the JVTreeViewDataSource interface.
 		  
@@ -82,6 +49,8 @@ Implements JVTreeViewDataSource,JVTreeViewDelegate
 		    // Attach each field to the cell
 		    dim field as  new Dictionary(key: value)
 		    treeview.cellTag(newRowNumber, fieldNumber) = field
+		    // and document each cell with the fieldName
+		    // treeView.CellHelpTag(newRowNumber, fieldNumber) = key
 		    
 		  next
 		  
