@@ -140,7 +140,7 @@
    <SourceLine>for each fieldName as String in matchFields.Keys</SourceLine>
    <SourceLine>matchFieldNames.append(fieldName+" = ?")</SourceLine>
    <SourceLine>next</SourceLine>
-   <SourceLine>dim matchFieldsString as String= join(matchFieldNames, ", ")</SourceLine>
+   <SourceLine>dim matchFieldsString as String= join(matchFieldNames, " AND ")</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>dim sqlString as String = "SELECT FROM "+tableName+" WHERE "+matchFieldsString</SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>

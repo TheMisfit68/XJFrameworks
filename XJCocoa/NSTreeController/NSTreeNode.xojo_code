@@ -28,25 +28,6 @@ Implements JVCustomStringConvertable
 	#tag EndMethod
 
 
-	#tag Note, Name = TreeExample
-		
-		Project1 PLC1 TAG1
-		Project1 PLC1 TAG1
-		Project1 PLC1 TAG2
-		Project1 PLC1 TAG2
-		 
-		Project1 PLC2 TAG1
-		Project1 PLC2 TAG1
-		Project1 PLC2 TAG2
-		Project1 PLC2 TAG2
-		 
-		Project2 PLC2 TAG1
-		Project2 PLC2 TAG1
-		Project2 PLC2 TAG2
-		Project2 PLC2 TAG2
-	#tag EndNote
-
-
 	#tag Property, Flags = &h0
 		children() As NSTreeNode
 	#tag EndProperty
