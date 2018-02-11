@@ -69,6 +69,12 @@ Protected Module JVStringExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function isEmpty(extends source as String) As Boolean
+		  return (source = "")
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function pad(extends stringValue as String, totalLength as Integer, char as String) As String
 		  dim charcount as Integer = stringValue.Len
 		  dim paddingChar as String = left(char,1)
@@ -86,7 +92,7 @@ Protected Module JVStringExtensions
 
 	#tag Method, Flags = &h0
 		Function quote(unquotedString as String) As String
-		  return DOUBLEQUOTE+unquotedString +DOUBLEQUOTE
+		  return DOUBLEQUOTEMARK+unquotedString +DOUBLEQUOTEMARK
 		End Function
 	#tag EndMethod
 
@@ -109,6 +115,12 @@ Protected Module JVStringExtensions
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function singleQuote(unquotedString as String) As String
+		  return SINGLEQUOTEMARK+unquotedString +SINGLEQUOTEMARK
+		End Function
+	#tag EndMethod
+
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -125,7 +137,7 @@ Protected Module JVStringExtensions
 			  return chr(34)
 			End Get
 		#tag EndGetter
-		DOUBLEQUOTE As String
+		DOUBLEQUOTEMARK As String
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -135,6 +147,15 @@ Protected Module JVStringExtensions
 			End Get
 		#tag EndGetter
 		LF As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return chr(39)
+			End Get
+		#tag EndGetter
+		SINGLEQUOTEMARK As String
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -155,7 +176,7 @@ Protected Module JVStringExtensions
 			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DOUBLEQUOTE"
+			Name="DOUBLEQUOTEMARK"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
@@ -185,6 +206,12 @@ Protected Module JVStringExtensions
 			Visible=true
 			Group="ID"
 			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SINGLEQUOTEMARK"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

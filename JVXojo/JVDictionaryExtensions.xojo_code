@@ -1,35 +1,18 @@
-#tag Interface
-Protected Interface JVTreeViewDelegate
+#tag Module
+Protected Module JVDictionaryExtensions
 	#tag Method, Flags = &h0
-		Sub onCellAction(sender as JVTreeview, row as Integer, column as Integer)
+		Function pairs(extends dictionary as Dictionary) As Pair()
+		  dim pairs() as Pair 
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub onListExpandRow(sender as JVTreeView, row as Integer)
+		  for each key as Variant in dictionary.keys
+		    dim value as Variant = dictionary.value(key)
+		    dim pair as New Pair(key, value)
+		    pairs.Append(pair)
+		  next key
 		  
-		End Sub
+		  return pairs
+		End Function
 	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub onListOpen(sender as JVTreeView)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub onListSelectionDidChange(sender as JVTreeView)
-		  
-		End Sub
-	#tag EndMethod
-
-
-	#tag Note, Name = Protocol description
-		Defines the protocol all JVTreeView-delegates must conform to
-		
-		
-	#tag EndNote
 
 
 	#tag ViewBehavior
@@ -67,5 +50,5 @@ Protected Interface JVTreeViewDelegate
 			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Interface
-#tag EndInterface
+End Module
+#tag EndModule

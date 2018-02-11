@@ -1,7 +1,7 @@
 #tag Module
 Protected Module JVSQLiteExtensions
 	#tag Method, Flags = &h0
-		Function asTreeNode(extends records as RecordSet, paramarray branchFields as String) As NSTreeNode
+		Function asTreeNode(extends records as RecordSet, paramArray branchFields as String) As NSTreeNode
 		  // Create a basenode to be used as a container for the actual nodes
 		  dim  baseNode as new  NSTreeNode(nil)
 		  baseNode.parent = nil
@@ -35,9 +35,9 @@ Protected Module JVSQLiteExtensions
 		      dim fieldName as String = field.Name
 		      dim fieldValue as Variant = field.Value
 		      
-		      dim matchingBranch as Integer= branchFields.IndexOf(FieldName)
-		      dim itsAbranchField as boolean = (matchingBranch >=0)
-		      if  itsAbranchField  then
+		      dim matchingBranch as Integer= branchFields.IndexOf(fieldName)
+		      dim itsaBranchField as Boolean = matchingBranch>=0
+		      if  itsaBranchField  then
 		        
 		        if not startOfBranchDetected  then 
 		          
@@ -108,8 +108,8 @@ Protected Module JVSQLiteExtensions
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub bindType(extends statement as SQLitePreparedStatement, fieldValues() as Variant)
+	#tag Method, Flags = &h21
+		Private Sub bindType(extends statement as SQLitePreparedStatement, fieldValues() as Variant)
 		  dim fieldNumber as Integer = 0
 		  for  each fieldValue as Variant in fieldValues
 		    

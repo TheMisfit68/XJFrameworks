@@ -65,6 +65,7 @@ Inherits ListBox
 			    RemoveHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
 			    RemoveHandler Change, AddressOf mTreeViewDelegate.onListSelectionDidChange
 			    
+			    RemoveHandler CellAction, AddressOf mTreeViewDelegate.onCellAction
 			  end if
 			  
 			  // Set the delegate
@@ -76,6 +77,8 @@ Inherits ListBox
 			    AddHandler Open, AddressOf mTreeViewDelegate.onListOpen
 			    AddHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
 			    AddHandler Change, AddressOf mTreeViewDelegate.onListSelectionDidChange
+			    
+			    AddHandler CellAction, AddressOf mTreeViewDelegate.onCellAction
 			    
 			  end if
 			  

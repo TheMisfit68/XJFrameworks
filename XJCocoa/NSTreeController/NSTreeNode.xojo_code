@@ -3,6 +3,7 @@ Protected Class NSTreeNode
 Implements JVCustomStringConvertable
 	#tag Method, Flags = &h0
 		Sub constructor(representedObject as Variant)
+		  
 		  me.representedObject = representedObject
 		  
 		  dim emptyArray() as NSTreeNode

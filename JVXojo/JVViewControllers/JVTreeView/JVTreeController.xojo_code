@@ -78,6 +78,12 @@ Implements JVTreeViewDataSource,JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub onCellAction(sender as JVTreeview, row as Integer, column as Integer)
+		  system.debuglog("Cell was changed to "+sender.Cell(row, column).ToText)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub onListExpandRow(sender as JVTreeView, row as Integer)
 		  // Part of the JVTreeViewDelegate interface.
 		  
@@ -105,7 +111,11 @@ Implements JVTreeViewDataSource,JVTreeViewDelegate
 		Sub onListSelectionDidChange(sender as JVTreeView)
 		  // Part of the JVTreeViewDelegate interface.
 		  
-		  selectedObject = treeView.rowTag(sender.ListIndex)
+		  if sender.ListIndex >= 0 and sender.ListIndex < sender.ListCount then
+		    selectedObject = treeView.rowTag(sender.ListIndex)
+		  else
+		    selectedObject = nil
+		  end if
 		  
 		End Sub
 	#tag EndMethod

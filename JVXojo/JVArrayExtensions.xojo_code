@@ -16,6 +16,12 @@ Protected Module JVArrayExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function containsElement(extends arrayToSearch() as Variant, item as Variant) As Boolean
+		  return (arrayToSearch.IndexOf(item) >=0)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function firstElement(extends sourceArray() as Variant) As Variant
 		  if sourceArray.ubound >=0 then
 		    Return sourceArray(0)

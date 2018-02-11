@@ -19,7 +19,7 @@
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>dim allVariables() as Variant = concatenate(array(tablename))</SourceLine>
-   <SourceLine>sqlStatement.bindType(allVariables)</SourceLine>
+   <SourceLine>// sqlStatement.bindType(allVariables)</SourceLine>
    <SourceLine>sqlStatement.bind(allVariables)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>dim recordsFound as recordset = sqlStatement.SQLSelect</SourceLine>
@@ -49,30 +49,24 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function lookupID(lookupTable as String, lookupFields as Dictionary) As Integer</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>dim pkField As String</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>dim tableInfo as RecordSet = FieldSchema(lookupTable)</SourceLine>
-   <SourceLine>while not tableInfo.eof</SourceLine>
-   <SourceLine>if tableInfo.Field("IsPrimary").BooleanValue = TRUE then</SourceLine>
-   <SourceLine>pkField = tableInfo.Field("ColumnName")</SourceLine>
-   <SourceLine>end if</SourceLine>
-   <SourceLine>tableInfo.MoveNext</SourceLine>
-   <SourceLine>wend</SourceLine>
+   <SourceLine>Function lookupID(lookupTable as String, matchFields as Dictionary) As Integer</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>Dim matchFieldNames() as String</SourceLine>
-   <SourceLine>for each fieldName as String in lookupFields.Keys</SourceLine>
+   <SourceLine>dim fieldValues() as Variant</SourceLine>
+   <SourceLine>for each fieldName as String in matchFields.keys</SourceLine>
+   <SourceLine>dim fieldValue as Variant = matchFields.value(fieldName)</SourceLine>
    <SourceLine>matchFieldNames.append(fieldName+" = ?")</SourceLine>
+   <SourceLine>fieldValues.append(fieldValue)</SourceLine>
    <SourceLine>next</SourceLine>
    <SourceLine>dim matchFieldsString as String= join(matchFieldNames, " AND ")</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>dim pkfield as String= pkForTable(lookupTable)</SourceLine>
    <SourceLine>dim sqlString as String = "SELECT "+pkField+" FROM "+lookupTable+" WHERE "+matchFieldsString</SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>sqlStatement.bindType(lookupFields.Values)</SourceLine>
-   <SourceLine>sqlStatement.bind(lookupFields.Values)</SourceLine>
+   <SourceLine>// sqlStatement.bindType(matchingRecord.Values)</SourceLine>
+   <SourceLine>sqlStatement.bind(fieldValues)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>dim foundRecords as RecordSet = sqlStatement.SQLSelect</SourceLine>
    <SourceLine></SourceLine>
@@ -98,7 +92,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>lookupTable as String, lookupFields as Dictionary</ItemParams>
+  <ItemParams>lookupTable as String, matchFields as Dictionary</ItemParams>
   <ItemResult>Integer</ItemResult>
  </Method>
  <Method>
@@ -107,16 +101,22 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub InsertOrUpdateRecords(tableName as String, matchFields as Dictionary, newFields as Dictionary)</SourceLine>
+   <SourceLine>Sub InsertOrUpdateRecords(tableName as String, records() as Dictionary)</SourceLine>
+   <SourceLine>for each record as Dictionary in records</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim recordsToUpdate as RecordSet = selectRecords(tableName, matchFields)</SourceLine>
+   <SourceLine>splitFieldsAndKeyFields(record)</SourceLine>
+   <SourceLine>dim newRecord as Dictionary = fields</SourceLine>
+   <SourceLine>dim request as Dictionary = keyFields</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>if recordsToUpdate &lt;&gt; nil  then </SourceLine>
-   <SourceLine>updateRecords(tableName, recordsToUpdate, newFields)</SourceLine>
+   <SourceLine>dim recordsToUpdate as RecordSet = selectRecords(tableName, Array(request))</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>if recordsToUpdate &lt;&gt; nil  and recordsToUpdate.RecordCount &gt; 0 then </SourceLine>
+   <SourceLine>updateRecords(tableName, recordsToUpdate, newRecord)</SourceLine>
    <SourceLine>else</SourceLine>
-   <SourceLine>insertRecords(tableName, newFields)</SourceLine>
+   <SourceLine>insertRecords(tableName, array(newRecord))</SourceLine>
    <SourceLine>end if</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>next record</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>End Sub</SourceLine>
@@ -125,7 +125,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String, matchFields as Dictionary, newFields as Dictionary</ItemParams>
+  <ItemParams>tableName as String, records() as Dictionary</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
@@ -134,20 +134,34 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function selectRecords(tableName as String, matchFields as Dictionary) As Recordset</SourceLine>
+   <SourceLine>Function selectRecords(tableName as String, searchRequests() as Dictionary) As Recordset</SourceLine>
    <SourceLine>Dim matchFieldNames() as String</SourceLine>
+   <SourceLine>dim matchFieldValues() as Variant</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>for each fieldName as String in matchFields.Keys</SourceLine>
+   <SourceLine>dim requests() as String</SourceLine>
+   <SourceLine>dim requestsString as String</SourceLine>
+   <SourceLine>for each request as Dictionary in searchRequests</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>for each fieldName as String in  request.keys</SourceLine>
+   <SourceLine>dim fieldValue as String = request.Value(fieldName)</SourceLine>
    <SourceLine>matchFieldNames.append(fieldName+" = ?")</SourceLine>
-   <SourceLine>next</SourceLine>
-   <SourceLine>dim matchFieldsString as String= join(matchFieldNames, " AND ")</SourceLine>
+   <SourceLine>matchFieldValues.append(fieldValue)</SourceLine>
+   <SourceLine>next fieldName</SourceLine>
+   <SourceLine>requestsString = join(matchFieldNames, " AND ")</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim sqlString as String = "SELECT FROM "+tableName+" WHERE "+matchFieldsString</SourceLine>
+   <SourceLine>requests.Append(requestsString)</SourceLine>
+   <SourceLine>next request</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>requestsString = join(requests, ") OR (")</SourceLine>
+   <SourceLine>if requests.ubound &gt; 0 then</SourceLine>
+   <SourceLine>requestsString = "("+requestsString+")"</SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine>&#32;</SourceLine>
+   <SourceLine>// Execute the SQL</SourceLine>
+   <SourceLine>dim sqlString as String = "SELECT * FROM "+tableName+" WHERE "+requestsString</SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>sqlStatement.bindType(matchFields.Values)</SourceLine>
-   <SourceLine>sqlStatement.bind(matchFields.Values)</SourceLine>
-   <SourceLine></SourceLine>
+   <SourceLine>// sqlStatement.bindType(matchFields.Values)</SourceLine>
+   <SourceLine>sqlStatement.bind(matchFieldValues)</SourceLine>
    <SourceLine>dim foundRecords as RecordSet = sqlStatement.SQLSelect</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>If Error Then</SourceLine>
@@ -167,7 +181,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String, matchFields as Dictionary</ItemParams>
+  <ItemParams>tableName as String, searchRequests() as Dictionary</ItemParams>
   <ItemResult>Recordset</ItemResult>
  </Method>
  <Method>
@@ -185,10 +199,10 @@
    <SourceLine></SourceLine>
    <SourceLine>  While Not records.EOF</SourceLine>
    <SourceLine>&#32;&#32;&#32;&#32;</SourceLine>
-   <SourceLine>for each fieldName as String in newFields.keys</SourceLine>
+   <SourceLine>for  each fieldName as String in newFields.keys</SourceLine>
    <SourceLine>dim fieldValue as Variant = newFields.value(fieldName)</SourceLine>
    <SourceLine>records.field(fieldName).value = fieldValue</SourceLine>
-   <SourceLine>next</SourceLine>
+   <SourceLine>next fieldName</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>    records.Update</SourceLine>
    <SourceLine>    records.MoveNext</SourceLine>
@@ -211,14 +225,23 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub insertRecords(tableName as String, newFields as Dictionary)</SourceLine>
-   <SourceLine>newfields = stripPKsFromRecord(tableName, newFields)</SourceLine>
+   <SourceLine>Sub insertRecords(tableName as String, newRecords() as Dictionary)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>for each newRecord as Dictionary in newRecords</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>splitFieldsAndKeyFields(newRecord)</SourceLine>
+   <SourceLine>dim record as Dictionary = fields</SourceLine>
+   <SourceLine>dim newfields as Dictionary = stripPKsFromRecord(tableName, record)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>dim newFieldNames() as String</SourceLine>
    <SourceLine>dim placeHolders() as String</SourceLine>
+   <SourceLine>dim newFieldValues() as Variant</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>for each fieldName as String in newFields.keys</SourceLine>
+   <SourceLine>dim fieldValue as Variant = newFields.value(fieldName)</SourceLine>
    <SourceLine>newFieldNames.append(fieldName)</SourceLine>
    <SourceLine>placeHolders.append("?")</SourceLine>
+   <SourceLine>newFieldValues.append(fieldValue)</SourceLine>
    <SourceLine>next</SourceLine>
    <SourceLine>dim newFieldNamesString as String= join(newFieldNames, ", ")</SourceLine>
    <SourceLine>dim placeHolderString as String= join(placeHolders, ", ")</SourceLine>
@@ -226,9 +249,8 @@
    <SourceLine>dim sqlString as String = "INSERT INTO "+tableName+" ("+newFieldNamesString+") VALUES ("+placeHolderString+")" </SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>sqlStatement.bindType(newFields.Values)</SourceLine>
-   <SourceLine>sqlStatement.bind(newFields.Values)</SourceLine>
-   <SourceLine></SourceLine>
+   <SourceLine>// sqlStatement.bindType(newFields.Values)</SourceLine>
+   <SourceLine>sqlStatement.bind(newFieldValues)</SourceLine>
    <SourceLine>sqlStatement.SQLExecute</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>If Error Then</SourceLine>
@@ -240,13 +262,15 @@
    <SourceLine></SourceLine>
    <SourceLine>End If</SourceLine>
    <SourceLine></SourceLine>
+   <SourceLine>next newRecord</SourceLine>
+   <SourceLine></SourceLine>
    <SourceLine>End Sub</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String, newFields as Dictionary</ItemParams>
+  <ItemParams>tableName as String, newRecords() as Dictionary</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
@@ -255,163 +279,126 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function stripPKsFromRecord(tableName as String, record as Dictionary) As Dictionary</SourceLine>
-   <SourceLine> // Make sure to exclude any Primary Keys from the new values</SourceLine>
-   <SourceLine>dim fieldsInTable as RecordSet = FieldSchema(tableName)</SourceLine>
-   <SourceLine>If fieldsInTable &lt;&gt; Nil Then</SourceLine>
-   <SourceLine>  While Not fieldsInTable.EOF</SourceLine>
-   <SourceLine>dim isPrimaryField as Boolean = fieldsInTable.Field("IsPrimary")</SourceLine>
-   <SourceLine>dim fieldName as String =  fieldsInTable.Field("ColumnName")</SourceLine>
-   <SourceLine>if isPrimaryField and record.Keys.IndexOf(fieldname) &gt;=0 then</SourceLine>
-   <SourceLine>record.Remove(fieldname)</SourceLine>
+   <SourceLine>Function stripPKsFromRecord(tableName as String, fields as Dictionary) As Dictionary</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim primaryFieldName as String = pkForTable(tableName)</SourceLine>
+   <SourceLine>if fields.HasKey(primaryFieldName) then</SourceLine>
+   <SourceLine>fields.Remove(primaryFieldName)</SourceLine>
    <SourceLine>end If</SourceLine>
-   <SourceLine>    fieldsInTable.MoveNext</SourceLine>
-   <SourceLine>  Wend</SourceLine>
-   <SourceLine>  fieldsInTable.Close</SourceLine>
-   <SourceLine>End If </SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>return record</SourceLine>
+   <SourceLine>return fields</SourceLine>
    <SourceLine>End Function</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
   <AliasName></AliasName>
   <ItemFlags>33</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String, record as Dictionary</ItemParams>
+  <ItemParams>tableName as String, fields as Dictionary</ItemParams>
   <ItemResult>Dictionary</ItemResult>
  </Method>
  <Method>
-  <ItemName>determineHierarchyForviews</ItemName>
+  <ItemName>pkForTable</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function determineHierarchyForviews() As Dictionary</SourceLine>
-   <SourceLine>dim viewInfo as recordSet = me.SQLSelect("SELECT * FROM sqlite_master  where type='view' or type='table'  ORDER BY type DESC")</SourceLine>
+   <SourceLine>Function pkForTable(tableName as String) As String</SourceLine>
+   <SourceLine>dim pkField As String = ""</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim hierarchies as new Dictionary</SourceLine>
-   <SourceLine>dim tableNames() as String</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>while not viewInfo.EOF</SourceLine>
-   <SourceLine>dim type as String = viewInfo.Field("type")</SourceLine>
-   <SourceLine>dim name as String = viewInfo.Field("name")</SourceLine>
-   <SourceLine>dim tableName as String = viewInfo.Field("tbl_name")</SourceLine>
-   <SourceLine>dim SQLCreate as String = viewInfo.Field("SQL")</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>if (tableName&lt;&gt; "sqlite_sequence") and not hierarchies.HasKey(name) then</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>if type = "view" then</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>dim filteredHierarchyInfo as String = SQLCreate</SourceLine>
-   <SourceLine>filteredHierarchyInfo = SQLCreate.Replace("^(.*)(?:\r?\n?)","$1"+ENDOFLINE , TRUE)  // Convert any line-endings to the current platform</SourceLine>
-   <SourceLine>filteredHierarchyInfo = filteredHierarchyInfo.Replace("(?&lt;!^)(FROM|JOIN)", ENDOFLINE+"$1", TRUE)  // Push each FROM- or JOIN-statement to a seperate line</SourceLine>
-   <SourceLine>filteredHierarchyInfo = filteredHierarchyInfo.Replace("^(?!FROM|JOIN).*(?:\r?\n?)", "", TRUE)   // Delete all other lines beacause they are not part of the hierarchy</SourceLine>
-   <SourceLine>filteredHierarchyInfo = filteredHierarchyInfo.Replace("^.*?(?:(?:FROM|JOIN)\s+(\S*)\s)+.*(\r?\n?)?" ,"$1"+ENDOFLINE, TRUE)     // Filter down to the name of the table mentioned in the hierarchy info</SourceLine>
-   <SourceLine>filteredHierarchyInfo = filteredHierarchyInfo.trim</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>dim allTableNames() as string = filteredHierarchyInfo.split(ENDOFLINE)</SourceLine>
-   <SourceLine>dim uniqueTableNames() as string</SourceLine>
-   <SourceLine>for each item as string in allTableNames</SourceLine>
-   <SourceLine>if uniqueTableNames.IndexOf(item) = -1 then</SourceLine>
-   <SourceLine>uniqueTableNames.append(item)</SourceLine>
+   <SourceLine>dim tableInfo as RecordSet = FieldSchema(tableName)</SourceLine>
+   <SourceLine>while pkField &lt;&gt; "" and not tableInfo.eof</SourceLine>
+   <SourceLine>if tableInfo.Field("IsPrimary").BooleanValue = TRUE then</SourceLine>
+   <SourceLine>pkField = tableInfo.Field("ColumnName")</SourceLine>
    <SourceLine>end if</SourceLine>
-   <SourceLine>next</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>tableNames = uniqueTableNames  // Store array of the tables that are in the view</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>elseif type = "table" then</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>tableNames = array(tableName) // Store single tableName if there was no view available</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>end if</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>hierarchies.value(name) = tableNames</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>end if</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>viewInfo.MoveNext</SourceLine>
+   <SourceLine>tableInfo.MoveNext</SourceLine>
    <SourceLine>wend</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>return hierarchies</SourceLine>
+   <SourceLine>return pkField</SourceLine>
    <SourceLine>End Function</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
   <AliasName></AliasName>
   <ItemFlags>33</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams></ItemParams>
-  <ItemResult>Dictionary</ItemResult>
+  <ItemParams>tableName as String</ItemParams>
+  <ItemResult>String</ItemResult>
  </Method>
  <Method>
-  <ItemName>determineHierarchyForviews1</ItemName>
+  <ItemName>splitFieldsAndKeyFields</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function determineHierarchyForviews1() As Dictionary</SourceLine>
-   <SourceLine>dim viewInfo as recordSet = me.SQLSelect("SELECT * FROM sqlite_master  where type='view' or type='table'  ORDER BY type DESC")</SourceLine>
+   <SourceLine>Sub splitFieldsAndKeyFields(record as Dictionary)</SourceLine>
+   <SourceLine>// This methods devides normal fields and key fields (those marked with an asterix  used during a record-update)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim hierarchies as new Dictionary</SourceLine>
-   <SourceLine>dim tableNames() as String</SourceLine>
+   <SourceLine>fields = new Dictionary</SourceLine>
+   <SourceLine>keyFields = new Dictionary</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>while not viewInfo.EOF</SourceLine>
+   <SourceLine>for  each key as String in record.keys</SourceLine>
+   <SourceLine>dim fieldName as String = key</SourceLine>
+   <SourceLine>dim fieldValue as Variant = record.Value(key)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim type as String = viewInfo.Field("type")</SourceLine>
-   <SourceLine>dim name as String = viewInfo.Field("name")</SourceLine>
-   <SourceLine>dim tableName as String = viewInfo.Field("tbl_name")</SourceLine>
-   <SourceLine>dim SQLCreate as String = viewInfo.Field("SQL")</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>if (tableName&lt;&gt; "sqlite_sequence") and not hierarchies.HasKey(name) then</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>if type = "view" then</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>dim filteredHierarchyInfo as String = SQLCreate</SourceLine>
-   <SourceLine>filteredHierarchyInfo = SQLCreate.Replace("^.*SELECT (.*) FROM (.*)","$1" , TRUE)  // Convert any line-endings to the current platform</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>// dim allTableNames() as string = filteredHierarchyInfo.split(ENDOFLINE)</SourceLine>
-   <SourceLine>// dim uniqueTableNames() as string</SourceLine>
-   <SourceLine>// for each item as string in allTableNames</SourceLine>
-   <SourceLine>// if uniqueTableNames.IndexOf(item) = -1 then</SourceLine>
-   <SourceLine>// uniqueTableNames.append(item)</SourceLine>
-   <SourceLine>// end if</SourceLine>
-   <SourceLine>// next</SourceLine>
-   <SourceLine>// </SourceLine>
-   <SourceLine>// tableNames = uniqueTableNames  // Store array of the tables that are in the view</SourceLine>
-   <SourceLine>// </SourceLine>
-   <SourceLine>// elseif type = "table" then</SourceLine>
-   <SourceLine>// </SourceLine>
-   <SourceLine>// tableNames = array(tableName) // Store single tableName if there was no view available</SourceLine>
-   <SourceLine>// </SourceLine>
-   <SourceLine> end if</SourceLine>
-   <SourceLine>// </SourceLine>
-   <SourceLine>// hierarchies.value(name) = tableNames</SourceLine>
-   <SourceLine></SourceLine>
+   <SourceLine>if left(fieldName, 1) = "*" then</SourceLine>
+   <SourceLine>fieldName = right(fieldName, len(fieldName)-1)</SourceLine>
+   <SourceLine>keyFields.value(fieldName) = fieldValue</SourceLine>
    <SourceLine>end if</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>viewInfo.MoveNext</SourceLine>
-   <SourceLine>wend</SourceLine>
+   <SourceLine>fields.value(fieldName) = fieldValue</SourceLine>
+   <SourceLine>next key</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>return hierarchies</SourceLine>
-   <SourceLine>End Function</SourceLine>
+   <SourceLine>End Sub</SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <AliasName></AliasName>
+  <ItemFlags>33</ItemFlags>
+  <IsShared>0</IsShared>
+  <ItemParams>record as Dictionary</ItemParams>
+  <ItemResult></ItemResult>
+ </Method>
+ <Method>
+  <ItemName>tableForField</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Sub tableForField(fieldName)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Sub</SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams></ItemParams>
-  <ItemResult>Dictionary</ItemResult>
+  <ItemParams>fieldName</ItemParams>
+  <ItemResult></ItemResult>
  </Method>
  <Property>
-  <ItemName>hierarchyInfo</ItemName>
+  <ItemName>fields</ItemName>
   <Compatibility></Compatibility>
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>hierarchyInfo As Integer</SourceLine>
+   <SourceLine>fields As Dictionary</SourceLine>
    <SourceLine></SourceLine>
   </ItemSource>
   <TextEncoding>134217984</TextEncoding>
-  <ItemDeclaration>hierarchyInfo As Integer</ItemDeclaration>
+  <ItemDeclaration>fields As Dictionary</ItemDeclaration>
+  <ItemFlags>33</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
+ <Property>
+  <ItemName>keyFields</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>keyFields As Dictionary</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>keyFields As Dictionary</ItemDeclaration>
   <ItemFlags>33</ItemFlags>
   <IsShared>0</IsShared>
  </Property>
