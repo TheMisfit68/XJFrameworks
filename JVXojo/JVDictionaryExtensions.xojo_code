@@ -1,6 +1,20 @@
 #tag Module
 Protected Module JVDictionaryExtensions
 	#tag Method, Flags = &h0
+		Function description(extends baseDict as Dictionary) As String
+		  dim description as String = "{"+EndOfLine
+		  
+		  For each key as String in baseDict.keys
+		    dim value as Variant = baseDict.value(key)
+		    description = description + key +" : "+value.StringValue+EndOfLine
+		  next key
+		  description = description+ "}"
+		  
+		  return description
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function pairs(extends dictionary as Dictionary) As Pair()
 		  dim pairs() as Pair 
 		  

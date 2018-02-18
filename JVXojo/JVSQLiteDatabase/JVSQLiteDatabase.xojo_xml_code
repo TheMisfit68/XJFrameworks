@@ -14,11 +14,11 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function lastRowIDFromTable(tableName as String) As Integer</SourceLine>
+   <SourceLine>Function lastRowIDFromTable(baseTableName as String) As Integer</SourceLine>
    <SourceLine>dim sqlString as String = "select seq from sqlite_sequence where name=?"</SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim allVariables() as Variant = concatenate(array(tablename))</SourceLine>
+   <SourceLine>dim allVariables() as Variant = concatenate(array(baseTableName))</SourceLine>
    <SourceLine>// sqlStatement.bindType(allVariables)</SourceLine>
    <SourceLine>sqlStatement.bind(allVariables)</SourceLine>
    <SourceLine></SourceLine>
@@ -40,7 +40,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String</ItemParams>
+  <ItemParams>baseTableName as String</ItemParams>
   <ItemResult>Integer</ItemResult>
  </Method>
  <Method>
@@ -101,19 +101,19 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub InsertOrUpdateRecords(tableName as String, records() as Dictionary)</SourceLine>
+   <SourceLine>Sub InsertOrUpdateRecords(baseTableName as String, records() as Dictionary)</SourceLine>
    <SourceLine>for each record as Dictionary in records</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>splitFieldsAndKeyFields(record)</SourceLine>
    <SourceLine>dim newRecord as Dictionary = fields</SourceLine>
    <SourceLine>dim request as Dictionary = keyFields</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim recordsToUpdate as RecordSet = selectRecords(tableName, Array(request))</SourceLine>
+   <SourceLine>dim recordsToUpdate as RecordSet = selectRecords(baseTableName, Array(request))</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>if recordsToUpdate &lt;&gt; nil  and recordsToUpdate.RecordCount &gt; 0 then </SourceLine>
-   <SourceLine>updateRecords(tableName, recordsToUpdate, newRecord)</SourceLine>
+   <SourceLine>updateRecords(baseTableName, recordsToUpdate, newRecord)</SourceLine>
    <SourceLine>else</SourceLine>
-   <SourceLine>insertRecords(tableName, array(newRecord))</SourceLine>
+   <SourceLine>insertRecords(baseTableName, array(newRecord))</SourceLine>
    <SourceLine>end if</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>next record</SourceLine>
@@ -125,7 +125,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String, records() as Dictionary</ItemParams>
+  <ItemParams>baseTableName as String, records() as Dictionary</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
@@ -134,7 +134,7 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function selectRecords(tableName as String, searchRequests() as Dictionary) As Recordset</SourceLine>
+   <SourceLine>Function selectRecords(baseTableName as String, searchRequests() as Dictionary) As Recordset</SourceLine>
    <SourceLine>Dim matchFieldNames() as String</SourceLine>
    <SourceLine>dim matchFieldValues() as Variant</SourceLine>
    <SourceLine></SourceLine>
@@ -158,7 +158,7 @@
    <SourceLine>end if</SourceLine>
    <SourceLine>&#32;</SourceLine>
    <SourceLine>// Execute the SQL</SourceLine>
-   <SourceLine>dim sqlString as String = "SELECT * FROM "+tableName+" WHERE "+requestsString</SourceLine>
+   <SourceLine>dim sqlString as String = "SELECT * FROM "+baseTableName+" WHERE "+requestsString</SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine>// sqlStatement.bindType(matchFields.Values)</SourceLine>
    <SourceLine>sqlStatement.bind(matchFieldValues)</SourceLine>
@@ -181,7 +181,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String, searchRequests() as Dictionary</ItemParams>
+  <ItemParams>baseTableName as String, searchRequests() as Dictionary</ItemParams>
   <ItemResult>Recordset</ItemResult>
  </Method>
  <Method>
@@ -190,8 +190,8 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub updateRecords(tableName as String, records as RecordSet, newFields as Dictionary)</SourceLine>
-   <SourceLine>newFields = stripPKsFromRecord(tableName, newFields)</SourceLine>
+   <SourceLine>Sub updateRecords(baseTableName as String, records as RecordSet, newFields as Dictionary)</SourceLine>
+   <SourceLine>newFields = stripPKsFromRecord(baseTableName, newFields)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>If records &lt;&gt; Nil Then</SourceLine>
    <SourceLine>records.MoveFirst</SourceLine>
@@ -216,7 +216,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String, records as RecordSet, newFields as Dictionary</ItemParams>
+  <ItemParams>baseTableName as String, records as RecordSet, newFields as Dictionary</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
@@ -225,13 +225,13 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub insertRecords(tableName as String, newRecords() as Dictionary)</SourceLine>
+   <SourceLine>Sub insertRecords(baseTableName as String, newRecords() as Dictionary)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>for each newRecord as Dictionary in newRecords</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>splitFieldsAndKeyFields(newRecord)</SourceLine>
    <SourceLine>dim record as Dictionary = fields</SourceLine>
-   <SourceLine>dim newfields as Dictionary = stripPKsFromRecord(tableName, record)</SourceLine>
+   <SourceLine>dim newfields as Dictionary = stripPKsFromRecord(baseTableName, record)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>dim newFieldNames() as String</SourceLine>
    <SourceLine>dim placeHolders() as String</SourceLine>
@@ -246,7 +246,7 @@
    <SourceLine>dim newFieldNamesString as String= join(newFieldNames, ", ")</SourceLine>
    <SourceLine>dim placeHolderString as String= join(placeHolders, ", ")</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim sqlString as String = "INSERT INTO "+tableName+" ("+newFieldNamesString+") VALUES ("+placeHolderString+")" </SourceLine>
+   <SourceLine>dim sqlString as String = "INSERT INTO "+baseTableName+" ("+newFieldNamesString+") VALUES ("+placeHolderString+")" </SourceLine>
    <SourceLine>dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>// sqlStatement.bindType(newFields.Values)</SourceLine>
@@ -270,7 +270,7 @@
   <AliasName></AliasName>
   <ItemFlags>0</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String, newRecords() as Dictionary</ItemParams>
+  <ItemParams>baseTableName as String, newRecords() as Dictionary</ItemParams>
   <ItemResult></ItemResult>
  </Method>
  <Method>
@@ -279,10 +279,10 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function stripPKsFromRecord(tableName as String, fields as Dictionary) As Dictionary</SourceLine>
+   <SourceLine>Function stripPKsFromRecord(baseTableName as String, fields as Dictionary) As Dictionary</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim primaryFieldName as String = pkForTable(tableName)</SourceLine>
+   <SourceLine>dim primaryFieldName as String = pkForTable(baseTableName)</SourceLine>
    <SourceLine>if fields.HasKey(primaryFieldName) then</SourceLine>
    <SourceLine>fields.Remove(primaryFieldName)</SourceLine>
    <SourceLine>end If</SourceLine>
@@ -294,7 +294,7 @@
   <AliasName></AliasName>
   <ItemFlags>33</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String, fields as Dictionary</ItemParams>
+  <ItemParams>baseTableName as String, fields as Dictionary</ItemParams>
   <ItemResult>Dictionary</ItemResult>
  </Method>
  <Method>
@@ -303,15 +303,15 @@
   <Visible>1</Visible>
   <ItemSource>
    <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Function pkForTable(tableName as String) As String</SourceLine>
+   <SourceLine>Function pkForTable(baseTableName as String) As String</SourceLine>
    <SourceLine>dim pkField As String = ""</SourceLine>
    <SourceLine></SourceLine>
-   <SourceLine>dim tableInfo as RecordSet = FieldSchema(tableName)</SourceLine>
-   <SourceLine>while pkField &lt;&gt; "" and not tableInfo.eof</SourceLine>
-   <SourceLine>if tableInfo.Field("IsPrimary").BooleanValue = TRUE then</SourceLine>
-   <SourceLine>pkField = tableInfo.Field("ColumnName")</SourceLine>
+   <SourceLine>dim tablesInfo as RecordSet = FieldSchema(baseTableName)</SourceLine>
+   <SourceLine>while pkField &lt;&gt; "" and not tablesInfo.eof</SourceLine>
+   <SourceLine>if tablesInfo.Field("IsPrimary").BooleanValue = TRUE then</SourceLine>
+   <SourceLine>pkField = tablesInfo.Field("ColumnName")</SourceLine>
    <SourceLine>end if</SourceLine>
-   <SourceLine>tableInfo.MoveNext</SourceLine>
+   <SourceLine>tablesInfo.MoveNext</SourceLine>
    <SourceLine>wend</SourceLine>
    <SourceLine></SourceLine>
    <SourceLine>return pkField</SourceLine>
@@ -321,7 +321,7 @@
   <AliasName></AliasName>
   <ItemFlags>33</ItemFlags>
   <IsShared>0</IsShared>
-  <ItemParams>tableName as String</ItemParams>
+  <ItemParams>baseTableName as String</ItemParams>
   <ItemResult>String</ItemResult>
  </Method>
  <Method>
@@ -357,23 +357,6 @@
   <ItemParams>record as Dictionary</ItemParams>
   <ItemResult></ItemResult>
  </Method>
- <Method>
-  <ItemName>tableForField</ItemName>
-  <Compatibility></Compatibility>
-  <Visible>1</Visible>
-  <ItemSource>
-   <TextEncoding>134217984</TextEncoding>
-   <SourceLine>Sub tableForField(fieldName)</SourceLine>
-   <SourceLine></SourceLine>
-   <SourceLine>End Sub</SourceLine>
-  </ItemSource>
-  <TextEncoding>134217984</TextEncoding>
-  <AliasName></AliasName>
-  <ItemFlags>0</ItemFlags>
-  <IsShared>0</IsShared>
-  <ItemParams>fieldName</ItemParams>
-  <ItemResult></ItemResult>
- </Method>
  <Property>
   <ItemName>fields</ItemName>
   <Compatibility></Compatibility>
@@ -401,6 +384,141 @@
   <ItemDeclaration>keyFields As Dictionary</ItemDeclaration>
   <ItemFlags>33</ItemFlags>
   <IsShared>0</IsShared>
+ </Property>
+ <Property>
+  <ItemName>maliasSchema</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>maliasSchema As Dictionary</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>maliasSchema As Dictionary</ItemDeclaration>
+  <ItemFlags>33</ItemFlags>
+  <IsShared>0</IsShared>
+ </Property>
+ <Property>
+  <ItemName>aliasSchema</ItemName>
+  <Compatibility></Compatibility>
+  <Visible>1</Visible>
+  <ItemSource>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>aliasSchema As Dictionary</SourceLine>
+   <SourceLine></SourceLine>
+  </ItemSource>
+  <TextEncoding>134217984</TextEncoding>
+  <ItemDeclaration>aliasSchema As Dictionary</ItemDeclaration>
+  <ItemFlags>0</ItemFlags>
+  <IsShared>0</IsShared>
+  <SetAccessor>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Set</SourceLine>
+   <SourceLine>maliasSchema = value</SourceLine>
+   <SourceLine>End Set</SourceLine>
+  </SetAccessor>
+  <GetAccessor>
+   <TextEncoding>134217984</TextEncoding>
+   <SourceLine>Get</SourceLine>
+   <SourceLine>// Lazy loading of tabelForField</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>if (maliasSchema = nil) or (maliasSchema.Count = 0) then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>maliasSchema = new Dictionary</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim tablesInfo as Recordset = SQLSelect("SELECT * FROM sqlite_master")</SourceLine>
+   <SourceLine>if tablesInfo &lt;&gt; nil then</SourceLine>
+   <SourceLine>while not tablesInfo.EOF</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim baseTableName as String = tablesInfo.field("tbl_name")</SourceLine>
+   <SourceLine>dim baseTableType as String = tablesInfo.field("type")</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim tableName as String</SourceLine>
+   <SourceLine>dim fieldName as String</SourceLine>
+   <SourceLine>dim fullyQualifiedAliasName as String</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Select Case baseTableType</SourceLine>
+   <SourceLine>Case "table"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim fieldInfo  as RecordSet = fieldSchema(baseTableName)</SourceLine>
+   <SourceLine>while not fieldInfo.EOF</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>fieldName = fieldInfo.field("ColumnName")</SourceLine>
+   <SourceLine>fullyQualifiedAliasName  = baseTableName+"."+fieldName</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>maliasSchema.Value(fullyQualifiedAliasName) = baseTableName+"."+fieldName</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>fieldInfo.MoveNext</SourceLine>
+   <SourceLine>wend</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "view"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Filter out the relevant part</SourceLine>
+   <SourceLine>dim sqlString  as String = tablesInfo.field("sql")</SourceLine>
+   <SourceLine>sqlString = ReplaceLineEndings(sqlString,"")</SourceLine>
+   <SourceLine>sqlString = sqlString.Replace("^.*SELECT\s+(.*)\s+FROM.*$","$1",True)</SourceLine>
+   <SourceLine>sqlString = sqlString.Replace("\s*,\s*",ENDOFLINE, True)</SourceLine>
+   <SourceLine>dim fieldAssignments() as String =  Split(sqlString, ENDOFLINE)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Split into tablename, fieldname and alias</SourceLine>
+   <SourceLine>for each fieldAssignment as String in fieldAssignments</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>dim fieldPart as String</SourceLine>
+   <SourceLine>dim aliasPart as String</SourceLine>
+   <SourceLine>if fieldAssignment.contains(" ") then</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>fieldPart = fieldAssignment.replace("(.*)\s(?:AS\s)?(.*)?","$1", True)</SourceLine>
+   <SourceLine>aliasPart= fieldAssignment.replace("(.*)\s(?:AS\s)?(.*)?","$2", True)</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>fieldPart = fieldAssignment</SourceLine>
+   <SourceLine>aliasPart = fieldAssignment</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>if fieldPart.contains(".") then</SourceLine>
+   <SourceLine>tableName = fieldPart.NthField( ".", 1)</SourceLine>
+   <SourceLine>fieldName = fieldPart.NthField( ".", 2)</SourceLine>
+   <SourceLine>else</SourceLine>
+   <SourceLine>tableName = baseTableName</SourceLine>
+   <SourceLine>fieldName = fieldPart</SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>if aliasPart.contains(".") then</SourceLine>
+   <SourceLine>fullyQualifiedAliasName  = baseTableName+"."+aliasPart.NthField( ".", 2)</SourceLine>
+   <SourceLine>else</SourceLine>
+   <SourceLine>fullyQualifiedAliasName  = baseTableName+"."+aliasPart</SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>// Assign to the result</SourceLine>
+   <SourceLine>maliasSchema.value(fullyQualifiedAliasName) = tableName+"."+fieldName</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>next</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Case "index"</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>Else</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>End Select</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>tablesInfo.MoveNext</SourceLine>
+   <SourceLine>wend</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>#if DebugBuild</SourceLine>
+   <SourceLine>system.DebugLog(maliasSchema.description)</SourceLine>
+   <SourceLine>#Endif</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>end if</SourceLine>
+   <SourceLine></SourceLine>
+   <SourceLine>return maliasSchema</SourceLine>
+   <SourceLine>End Get</SourceLine>
+  </GetAccessor>
  </Property>
  <ViewBehavior>
   <ViewProperty>

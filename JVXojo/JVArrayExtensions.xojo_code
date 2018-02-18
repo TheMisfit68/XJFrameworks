@@ -22,9 +22,22 @@ Protected Module JVArrayExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function firstElement(extends sourceArray() as Variant) As Variant
-		  if sourceArray.ubound >=0 then
-		    Return sourceArray(0)
+		Function description(extends baseArray() as Variant) As String
+		  dim description as String = "["+EndOfLine
+		  
+		  For each value as Variant in baseArray
+		    description = description +value.StringValue+EndOfLine
+		  next value
+		  description = description+ "]"
+		  
+		  return description
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function firstElement(extends baseArray() as Variant) As Variant
+		  if baseArray.ubound >=0 then
+		    Return baseArray(0)
 		  else
 		    return nil
 		  end if
@@ -32,9 +45,9 @@ Protected Module JVArrayExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function lastElement(extends sourceArray() as Variant) As Variant
-		  if sourceArray.ubound >=0 then
-		    Return sourceArray(sourceArray.ubound)
+		Function lastElement(extends baseArray() as Variant) As Variant
+		  if baseArray.ubound >=0 then
+		    Return baseArray(baseArray.ubound)
 		  else
 		    return nil
 		  end if

@@ -1,7 +1,42 @@
 #tag Module
 Protected Module JVSQLiteExtensions
+	#tag Method, Flags = &h21
+		Private Sub bindType(extends statement as SQLitePreparedStatement, fieldValues() as Variant)
+		  dim fieldNumber as Integer = 0
+		  for  each fieldValue as Variant in fieldValues
+		    
+		    select case fieldValue.type
+		    case Variant.TypeBoolean
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BOOLEAN)
+		    case Variant.TypeDouble
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_DOUBLE)
+		    case Variant.TypeInt64
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_INT64)
+		    case Variant.TypeInteger
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_INTEGER)
+		    case Variant.TypeNil
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_NULL)
+		    case Variant.TypeString
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_TEXT)
+		    else
+		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BLOB)
+		    end select
+		    
+		    fieldNumber = fieldNumber+1
+		  next
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
-		Function asTreeNode(extends records as RecordSet, paramArray branchFields as String) As NSTreeNode
+		Sub bindVariables(extends statement as SQLitePreparedStatement, variables() as Variant)
+		  statement.BindType(variables)
+		  statement.Bind(variables)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function treeNode(extends records as RecordSet, branchFields() as String) As NSTreeNode
 		  // Create a basenode to be used as a container for the actual nodes
 		  dim  baseNode as new  NSTreeNode(nil)
 		  baseNode.parent = nil
@@ -108,39 +143,12 @@ Protected Module JVSQLiteExtensions
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub bindType(extends statement as SQLitePreparedStatement, fieldValues() as Variant)
-		  dim fieldNumber as Integer = 0
-		  for  each fieldValue as Variant in fieldValues
-		    
-		    select case fieldValue.type
-		    case Variant.TypeBoolean
-		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BOOLEAN)
-		    case Variant.TypeDouble
-		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_DOUBLE)
-		    case Variant.TypeInt64
-		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_INT64)
-		    case Variant.TypeInteger
-		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_INTEGER)
-		    case Variant.TypeNil
-		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_NULL)
-		    case Variant.TypeString
-		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_TEXT)
-		    else
-		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BLOB)
-		    end select
-		    
-		    fieldNumber = fieldNumber+1
-		  next
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
-		Sub bindVariables(extends statement as SQLitePreparedStatement, variables() as Variant)
-		  statement.BindType(variables)
-		  statement.Bind(variables)
+		Function treeNode(extends records as RecordSet, paramArray branchFields as String) As NSTreeNode
 		  
-		End Sub
+		  // Overload of the same method that uses an array instead of the paramarray
+		  return records.treeNode(branchFields)
+		End Function
 	#tag EndMethod
 
 

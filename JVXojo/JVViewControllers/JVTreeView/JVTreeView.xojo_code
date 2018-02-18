@@ -49,6 +49,10 @@ Inherits ListBox
 		treeController As JVTreeController
 	#tag EndComputedProperty
 
+	#tag Property, Flags = &h0
+		treeViewDataSource As JVTreeDataSource
+	#tag EndProperty
+
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -64,6 +68,8 @@ Inherits ListBox
 			    RemoveHandler Open, AddressOf mTreeViewDelegate.onListOpen
 			    RemoveHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
 			    RemoveHandler Change, AddressOf mTreeViewDelegate.onListSelectionDidChange
+			    RemoveHandler DoubleClick, AddressOf mTreeViewDelegate.onListDoubleClick
+			    
 			    
 			    RemoveHandler CellAction, AddressOf mTreeViewDelegate.onCellAction
 			  end if
@@ -77,6 +83,7 @@ Inherits ListBox
 			    AddHandler Open, AddressOf mTreeViewDelegate.onListOpen
 			    AddHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
 			    AddHandler Change, AddressOf mTreeViewDelegate.onListSelectionDidChange
+			    AddHandler DoubleClick, AddressOf mTreeViewDelegate.onListDoubleClick
 			    
 			    AddHandler CellAction, AddressOf mTreeViewDelegate.onCellAction
 			    

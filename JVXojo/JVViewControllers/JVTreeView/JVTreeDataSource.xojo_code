@@ -1,19 +1,19 @@
 #tag Interface
-Protected Interface JVTreeViewDataSource
+Protected Interface JVTreeDataSource
 	#tag Method, Flags = &h0
-		Function child(index As Integer, item as Variant) As Variant
+		Function branchFields() As String()
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function isItemExpandable(item as Variant) As Boolean
+		Function sourceField(alias as String) As String
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function numberOfChildren(item as Variant) As Integer
+		Function treeNode() As NSTreeNode
 		  
 		End Function
 	#tag EndMethod

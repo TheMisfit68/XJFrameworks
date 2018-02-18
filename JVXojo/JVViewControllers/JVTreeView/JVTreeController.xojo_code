@@ -1,6 +1,6 @@
 #tag Class
 Protected Class JVTreeController
-Implements JVTreeViewDataSource,JVTreeViewDelegate
+Implements JVTreeViewDelegate
 	#tag Method, Flags = &h0
 		Function child(index As Integer, item as Variant) As Variant
 		  // Part of the JVTreeViewDataSource interface.
@@ -49,7 +49,7 @@ Implements JVTreeViewDataSource,JVTreeViewDelegate
 		    // Attach each field to the cell
 		    dim field as  new Dictionary(key: value)
 		    treeview.cellTag(newRowNumber, fieldNumber) = field
-		    // and document each cell with the fieldName
+		    // and optionaly document each cell with the fieldName
 		    // treeView.CellHelpTag(newRowNumber, fieldNumber) = key
 		    
 		  next
@@ -79,7 +79,35 @@ Implements JVTreeViewDataSource,JVTreeViewDelegate
 
 	#tag Method, Flags = &h0
 		Sub onCellAction(sender as JVTreeview, row as Integer, column as Integer)
-		  system.debuglog("Cell was changed to "+sender.Cell(row, column).ToText)
+		  
+		  
+		  if row < treeView.listcount then
+		    
+		    dim fieldInfo as Dictionary = treeView.CellTag(row, column)
+		    
+		    if fieldInfo <> nil then
+		      
+		      dim fieldAliasName as STring = fieldInfo.key(0)
+		      dim tableName as String = treeView.treeViewDataSource.sourceField(fieldAliasName)
+		      
+		      
+		      
+		    end if
+		    
+		  end if
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub onlistDoubleClick(sender as JVTreeView)
+		  
+		  dim rowNumber as Integer = treeView.ListIndex
+		  
+		  if treeview.RowIsFolder(rowNumber) then
+		    treeView.Expanded(rowNumber) = not treeView.Expanded(rowNumber) // Toggle the expansion state
+		  end if
 		End Sub
 	#tag EndMethod
 
