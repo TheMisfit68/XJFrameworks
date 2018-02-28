@@ -80,22 +80,23 @@ Implements JVTreeViewDelegate
 	#tag Method, Flags = &h0
 		Sub onCellAction(sender as JVTreeview, row as Integer, column as Integer)
 		  
-		  
-		  if row < treeView.listcount then
-		    
-		    dim fieldInfo as Dictionary = treeView.CellTag(row, column)
-		    
-		    if fieldInfo <> nil then
-		      
-		      dim fieldAliasName as STring = fieldInfo.key(0)
-		      dim tableName as String = treeView.treeViewDataSource.sourceField(fieldAliasName)
-		      
-		      
-		      
-		    end if
-		    
-		  end if
-		  
+		  // 
+		  // if row < treeView.listcount then
+		  // 
+		  // dim treenode as NSTreeNode = treeView.RowTag(row)
+		  // 
+		  // if treenode <> nil then
+		  // 
+		  // dim test as NSTreeNode = fieldInfo.
+		  // 
+		  // // test needs to be relocated
+		  // 
+		  // app.dataModel.selectRecords()
+		  // 
+		  // end if
+		  // 
+		  // end if
+		  // 
 		  
 		End Sub
 	#tag EndMethod
@@ -146,81 +147,6 @@ Implements JVTreeViewDelegate
 		  end if
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function selectItem(list as JVTreeView, data as RecordSet, optional selectAtIndentLevel as Integer = 0) As dictionary
-		  // data.MoveFirst
-		  // 
-		  // dim parentRowAtSelectionLevel as Integer
-		  // dim parentAtSelectionLevel as new dictionary
-		  // dim selection as new dictionary
-		  // 
-		  // for  rowNumber as integer = 0 to list.ListCount-1
-		  // 
-		  // dim indentLevel as Integer
-		  // dim rowInfo as Dictionary = list.rowtag(rowNumber)
-		  // if (rowInfo <> nil) and rowInfo.HasKey("indentLevel") then
-		  // indentLevel = rowInfo.value("indentLevel")
-		  // end if
-		  // 
-		  // if list.RowIsFolder(rownumber) and (indentLevel=selectAtIndentLevel) then
-		  // 
-		  // parentRowAtSelectionLevel = rowNumber
-		  // 
-		  // // Uncheck the parentfolder and
-		  // if list.ColumnType(parentRowAtSelectionLevel) = listbox.TypeCheckbox then
-		  // list.CellState(parentRowAtSelectionLevel, 0) = CheckBox.CheckedStates.UnChecked
-		  // end if
-		  // 
-		  // for fieldNumber as integer = 1 to data.FieldCount
-		  // dim fieldName as Variant = data.IdxField(fieldNumber).name
-		  // dim fieldValue as Variant = data.IdxField(fieldNumber)
-		  // parentAtSelectionLevel.Value(fieldName) = fieldValue
-		  // next
-		  // 
-		  // data.MovePrevious // Set the datapointer before  the beginning of the first child, there are no extra extra records for the enclosing folders
-		  // 
-		  // if list.Expanded(parentRowAtSelectionLevel) = FALSE then
-		  // // Skip data for child rows dat are invisible/collapsed and therefore will not be processed
-		  // if list.rowtag(rownumber) <> nil then
-		  // dim hiddenChildrows(-1,-1) as String = list.RowTag(rownumber)
-		  // for hiddenChildNumber as Integer = 0 to ubound(hiddenChildrows,1)
-		  // data.MoveNext
-		  // next
-		  // end if
-		  // 
-		  // end if
-		  // 
-		  // end if
-		  // 
-		  // 
-		  // if list.Selected(rowNumber) then
-		  // 
-		  // // Check the parentfolder if it has records selected within
-		  // if list.ColumnType(parentRowAtSelectionLevel) = listbox.TypeCheckbox then
-		  // list.CellState(parentRowAtSelectionLevel, 0) = CheckBox.CheckedStates.Checked
-		  // end if
-		  // 
-		  // // and keep de data that was stored before for the parentlevel
-		  // selection =  parentAtSelectionLevel
-		  // 
-		  // // Log each selection during debugging, since this is a complicated method
-		  // #if DebugBuild then
-		  // dim logValues() as String
-		  // for each key as string in selection.Keys 
-		  // logValues.Append(key+" = "+selection.value(key))
-		  // next
-		  // system.DebugLog("Selected record: "+join(logValues, ", "))
-		  // #endif
-		  // 
-		  // end if
-		  // 
-		  // data.MoveNext  // Move to the next visible record
-		  // next
-		  // 
-		  // return selection
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

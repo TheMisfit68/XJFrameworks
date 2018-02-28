@@ -15,11 +15,11 @@ Protected Module JVDictionaryExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function pairs(extends dictionary as Dictionary) As Pair()
+		Function pairs(extends baseDictionary as Dictionary) As Pair()
 		  dim pairs() as Pair 
 		  
-		  for each key as Variant in dictionary.keys
-		    dim value as Variant = dictionary.value(key)
+		  for each key as Variant in baseDictionary.keys
+		    dim value as Variant = baseDictionary.value(key)
 		    dim pair as New Pair(key, value)
 		    pairs.Append(pair)
 		  next key

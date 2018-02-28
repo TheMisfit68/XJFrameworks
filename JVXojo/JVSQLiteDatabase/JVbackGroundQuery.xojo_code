@@ -11,9 +11,6 @@ Inherits JVBackgroundTask
 	#tag Method, Flags = &h0
 		Sub bindVariables(optional variables() as Variant = nil)
 		  
-		  if variables =  nil then
-		    variables = emptyVariables
-		  end if
 		  
 		  preparedStatement.bindVariables(variables)
 		End Sub
@@ -25,24 +22,10 @@ Inherits JVBackgroundTask
 		  
 		  me.preparedStatement = database.Prepare(statementString)
 		  
-		  dim splitVariables() as string = statementString.Split("?")
-		  dim lastVariable as Integer = splitVariables.Ubound-1
-		  for  variableNumber as Integer = 0 to lastVariable
-		    dim variableString as String = splitVariables(variableNumber)
-		    if variableString.contains("Like") then
-		      emptyVariables.append ("%")
-		    else
-		      emptyVariables.append ("")
-		    end if
-		    
-		  next
+		  
 		End Sub
 	#tag EndMethod
 
-
-	#tag Property, Flags = &h0
-		emptyVariables() As Variant
-	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		foundRecords As RecordSet
@@ -51,15 +34,6 @@ Inherits JVBackgroundTask
 	#tag Property, Flags = &h0
 		preparedStatement As SQLitePreparedStatement
 	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return foundRecords.RecordCount
-			End Get
-		#tag EndGetter
-		recordCount As Integer
-	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
@@ -87,11 +61,6 @@ Inherits JVBackgroundTask
 			Visible=true
 			Group="Behavior"
 			InitialValue="5"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="recordCount"
-			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty

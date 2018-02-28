@@ -1,17 +1,17 @@
 #tag Module
 Protected Module JVStringExtensions
 	#tag Method, Flags = &h0
-		Function contains(extends source as String, searchPattern as string) As Boolean
+		Function contains(extends baseString as String, searchPattern as string) As Boolean
 		  
-		  return (source.InStr(searchPattern) <> 0)
+		  return (baseString.InStr(searchPattern) <> 0)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function decrypt(extends source as String) As String
+		Function decrypt(extends baseString as String) As String
 		  // Remove the very basic encrypting applied the data
 		  
-		  dim characters() as String = split(source," ")
+		  dim characters() as String = split(baseString," ")
 		  dim decryptedData as String =""
 		  
 		  for charNumber as Integer = 0 to characters.Ubound
@@ -38,10 +38,10 @@ Protected Module JVStringExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function encrypt(extends source as String) As String
+		Function encrypt(extends baseString as String) As String
 		  // Perform some very basic encrypting before storing the data
 		  
-		  dim characters() as string = split(source,"")
+		  dim characters() as string = split(baseString,"")
 		  dim encryptedData as String =""
 		  
 		  for charNumber as Integer = 0 to characters.Ubound
@@ -69,14 +69,14 @@ Protected Module JVStringExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function isEmpty(extends source as String) As Boolean
-		  return (source = "")
+		Function isEmpty(extends baseString as String) As Boolean
+		  return (baseString = "")
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function pad(extends stringValue as String, totalLength as Integer, char as String) As String
-		  dim charcount as Integer = stringValue.Len
+		Function pad(extends baseString as String, totalLength as Integer, char as String) As String
+		  dim charcount as Integer = baseString.Len
 		  dim paddingChar as String = left(char,1)
 		  dim numberOfPaddingChars  as Integer = totalLength-charcount
 		  dim paddingChars as String = ""
@@ -85,7 +85,7 @@ Protected Module JVStringExtensions
 		    paddingChars = paddingChars+paddingChar
 		  next
 		  
-		  Return paddingChars+stringValue
+		  Return paddingChars+baseString
 		  
 		End Function
 	#tag EndMethod
@@ -97,7 +97,7 @@ Protected Module JVStringExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function replace(extends source as String, searchPattern as String, replacementPattern as String, useRegex as Boolean) As String
+		Function replace(extends baseString as String, searchPattern as String, replacementPattern as String, useRegex as Boolean) As String
 		  if useRegex then
 		    
 		    dim regex as RegEx = new RegEx
@@ -105,10 +105,10 @@ Protected Module JVStringExtensions
 		    regex.ReplacementPattern = replacementPattern
 		    regex.Options.ReplaceAllMatches = True
 		    
-		    Return regex.Replace(source)
+		    Return regex.Replace(baseString)
 		    
 		  else
-		    return source.replace(searchPattern, replacementPattern)
+		    return baseString.replace(searchPattern, replacementPattern)
 		    
 		  end if
 		  

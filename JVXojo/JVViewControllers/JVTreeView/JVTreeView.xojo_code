@@ -49,10 +49,6 @@ Inherits ListBox
 		treeController As JVTreeController
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h0
-		treeViewDataSource As JVTreeDataSource
-	#tag EndProperty
-
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
