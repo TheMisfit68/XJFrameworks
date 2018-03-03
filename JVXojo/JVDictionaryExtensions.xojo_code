@@ -6,7 +6,15 @@ Protected Module JVDictionaryExtensions
 		  
 		  For each key as String in baseDict.keys
 		    dim value as Variant = baseDict.value(key)
-		    description = description + key +" : "+value.StringValue+EndOfLine
+		    
+		    Select Case value
+		    Case IsA Dictionary
+		      dim describedDictionary as Dictionary = value
+		      description = description + key +" : "+describedDictionary.description+EndOfLine
+		    Case else
+		      description = description + key +" : "+value.StringValue+EndOfLine
+		    End Select
+		    
 		  next key
 		  description = description+ "}"
 		  

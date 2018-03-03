@@ -36,6 +36,23 @@ Protected Module JVSQLiteExtensions
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function description(extends baseRecord as DatabaseRecord) As String
+		  dim description as String = "["+EndOfLine
+		  
+		  For fieldNumber As Integer = 0 To baseRecord.FieldCount-1
+		    dim fieldName as String = baseRecord.FieldName(fieldNumber)
+		    dim fieldValue as String = baseRecord.Column(fieldName)
+		    
+		    description = description + fieldName +" : "+fieldValue+EndOfLine
+		    
+		  next fieldNumber
+		  description = description+ "]"
+		  
+		  return description
+		End Function
+	#tag EndMethod
+
 
 	#tag ViewBehavior
 		#tag ViewProperty

@@ -2,18 +2,22 @@
 Protected Class JVSQLiteDatabase
 Inherits SQLiteDatabase
 	#tag Method, Flags = &h0
-		Function InsertOrUpdateRecords(baseTableName as String, requests() as DatabaseRecord, records() as DatabaseRecord) As Integer
+		Function InsertOrUpdateRecords(baseTableName as String, requests() as DatabaseRecord, records() as DatabaseRecord) As Integer()
+		  dim affectedPKs() as Integer
+		  
 		  for each record as DatabaseRecord in records
 		    
 		    dim recordsToUpdate as RecordSet = selectRecords(baseTableName, requests)
 		    
 		    if recordsToUpdate <> nil  and recordsToUpdate.RecordCount > 0 then 
-		      updateRecords(baseTableName, recordsToUpdate, record)
+		      affectedPKs = updateRecords(baseTableName, recordsToUpdate, record)
 		    else
-		      insertRecords(baseTableName, records)
+		      affectedPKs = insertRecords(baseTableName, records)
 		    end if
 		    
 		  next record
+		  
+		  return affectedPKs
 		  
 		  
 		  
@@ -21,14 +25,16 @@ Inherits SQLiteDatabase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function insertRecords(baseTableName as String, records() as DatabaseRecord) As Integer
+		Function insertRecords(baseTableName as String, records() as DatabaseRecord) As Integer()
+		  dim affectedPKs() as Integer
 		  
 		  for each record as DatabaseRecord in records
 		    
 		    dim newfields as DatabaseRecord = stripPKsFromRecord(baseTableName, record)
 		    
 		    InsertRecord(baseTableName, newfields)
-		    
+		    dim pk as Integer= lastPKFromTable(baseTableName)
+		    affectedPKs.Append(pk)
 		    
 		    // dim newFieldNames() as String
 		    // dim placeHolders() as String
@@ -59,18 +65,21 @@ Inherits SQLiteDatabase
 		    
 		  next record
 		  
+		  return affectedPKs
+		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
 		Private Function lastPKFromTable(baseTableName as String) As Integer
-		  dim lastRowID as Integer = lastRowIDFromTable(baseTableName)
+		  dim lastRowID as Variant = lastRowIDFromTable(baseTableName)
 		  dim pkFieldName as String = pkForTable(baseTableName)
 		  
 		  dim sqlString as String = "select "+pkFieldName+ " from "+baseTableName+" where rowid=?"
 		  dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)
 		  
-		  dim allVariables() as Variant = array(lastRowID as Variant)
+		  
+		  dim allVariables() as Variant = array(lastRowID)
 		  // sqlStatement.bindType(allVariables)
 		  sqlStatement.bind(allVariables)
 		  
@@ -120,9 +129,9 @@ Inherits SQLiteDatabase
 		  Dim matchFieldNames() as String
 		  dim fieldValues() as Variant
 		  
-		  For fieldNumber As Integer = 0 To matchFields.FieldCount
+		  For fieldNumber As Integer = 0 To matchFields.FieldCount-1
 		    dim fieldName as String = matchFields.FieldName(fieldNumber)
-		    dim fieldValue as String = matchFields.Column(fieldNumber)
+		    dim fieldValue as String = matchfields.Column(fieldName)
 		    
 		    matchFieldNames.append(fieldName+" = ?")
 		    fieldValues.append(fieldValue)
@@ -213,7 +222,7 @@ Inherits SQLiteDatabase
 		    dim requestsString as String
 		    for each request as DatabaseRecord in searchRequests
 		      
-		      For fieldNumber As Integer = 0 To request.FieldCount
+		      For fieldNumber As Integer = 0 To request.FieldCount-1
 		        dim fieldName as String = request.FieldName(fieldNumber)
 		        dim fieldValue as String = request.Column(fieldNumber)
 		        
@@ -254,9 +263,9 @@ Inherits SQLiteDatabase
 		  dim recordWithoutPKs as new DatabaseRecord
 		  dim primaryFieldName as String = pkForTable(baseTableName)
 		  
-		  For fieldNumber As Integer = 0 To fields.FieldCount
+		  For fieldNumber As Integer = 0 To fields.FieldCount-1
 		    dim fieldName as String = fields.FieldName(fieldNumber)
-		    dim fieldValue as String = fields.Column(fieldNumber)
+		    dim fieldValue as String = fields.Column(fieldName)
 		    
 		    if fieldName <> primaryFieldName then
 		      recordWithoutPKs.Column(fieldName) = fieldValue
@@ -271,30 +280,62 @@ Inherits SQLiteDatabase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub updateRecords(baseTableName as String, records as RecordSet, newFields as DatabaseRecord)
-		  newFields = stripPKsFromRecord(baseTableName, newFields)
+		Function updateRecords(baseTableName as String, records as RecordSet, newFields as DatabaseRecord, optional wholeSet as Boolean = False) As Integer()
+		  
+		  dim affectedPKs() as Integer
+		  dim pkFieldName as String = pkForTable(baseTableName)
 		  
 		  If records <> Nil Then
-		    records.MoveFirst
+		    
 		    records.Edit
 		    
-		    While Not records.EOF
+		    newFields = stripPKsFromRecord(baseTableName, newFields)
+		    
+		    if wholeSet then
 		      
-		      For fieldNumber As Integer = 0 To newFields.FieldCount
+		      // Replace the current recordset
+		      records.MoveFirst
+		      
+		      While Not records.EOF
+		        
+		        For fieldNumber As Integer = 0 To newFields.FieldCount-1
+		          dim fieldName as String = newFields.FieldName(fieldNumber)
+		          dim fieldValue as String = newfields.Column(fieldName)
+		          
+		          records.field(fieldName).value = fieldValue
+		          
+		        next fieldNumber
+		        
+		        records.Update
+		        dim pk as Integer = records.Field(pkFieldName).IntegerValue
+		        affectedPKs.Append(pk)
+		        
+		        records.MoveNext
+		      Wend
+		    else
+		      
+		      // Replace the current record
+		      For fieldNumber As Integer = 0 To newFields.FieldCount-1
 		        dim fieldName as String = newFields.FieldName(fieldNumber)
-		        dim fieldValue as String = newFields.Column(fieldNumber)
+		        dim fieldValue as String = newfields.Column(fieldName)
 		        
 		        records.field(fieldName).value = fieldValue
 		        
 		      next fieldNumber
 		      
 		      records.Update
-		      records.MoveNext
-		    Wend
+		      // dim pk as Integer = records.Field(pkFieldName).IntegerValue
+		      // affectedPKs.Append(pk)
+		      
+		    end if
 		    
-		    records.Close
 		  End If
-		End Sub
+		  
+		  records.Close
+		  
+		  Return affectedPKs
+		  
+		End Function
 	#tag EndMethod
 
 
@@ -317,6 +358,7 @@ Inherits SQLiteDatabase
 			        dim tableName as String
 			        dim fieldName as String
 			        dim fullyQualifiedAliasName as String
+			        dim sourceInfo as Dictionary
 			        
 			        Select Case baseTableType
 			        Case "table"
@@ -325,9 +367,12 @@ Inherits SQLiteDatabase
 			          while not fieldInfo.EOF
 			            
 			            fieldName = fieldInfo.field("ColumnName")
-			            fullyQualifiedAliasName  = baseTableName+"."+fieldName
 			            
-			            maliasSchema.Value(fullyQualifiedAliasName) = baseTableName+"."+fieldName
+			            // Assign to the result
+			            sourceInfo = new Dictionary
+			            sourceInfo.Value("table") = baseTableName
+			            sourceInfo.Value("field") = fieldName
+			            maliasSchema.value(fullyQualifiedAliasName) = sourceInfo
 			            
 			            fieldInfo.MoveNext
 			          wend
@@ -373,7 +418,10 @@ Inherits SQLiteDatabase
 			            end if
 			            
 			            // Assign to the result
-			            maliasSchema.value(fullyQualifiedAliasName) = tableName+"."+fieldName
+			            sourceInfo = new Dictionary
+			            sourceInfo.Value("table") = tableName
+			            sourceInfo.Value("field") = fieldName
+			            maliasSchema.value(fullyQualifiedAliasName) = sourceInfo
 			            
 			          next
 			          
@@ -399,11 +447,6 @@ Inherits SQLiteDatabase
 			  return maliasSchema
 			End Get
 		#tag EndGetter
-		#tag Setter
-			Set
-			  maliasSchema = value
-			End Set
-		#tag EndSetter
 		aliasSchema As Dictionary
 	#tag EndComputedProperty
 

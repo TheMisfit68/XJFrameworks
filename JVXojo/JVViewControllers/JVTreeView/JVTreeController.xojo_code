@@ -22,8 +22,17 @@ Implements JVTreeViewDelegate
 
 	#tag Method, Flags = &h21
 		Private Sub displayNode(node as NSTreeNode)
+		  
+		  dim numberOfFields as Integer
+		  
+		  if node.representedObject isa Dictionary then
+		    dim representedObject as Dictionary = node.representedObject
+		    numberOfFields = representedObject.keys.ubound+1
+		  elseif node.representedObject isa DatabaseRecord then
+		    dim representedObject as DatabaseRecord = node.representedObject
+		    numberOfFields = representedObject.FieldCount
+		  end if
 		  // Adjust the number of columns if needed
-		  dim numberOfFields as Integer = node.representedObject.keys.ubound+1
 		  treeView.ColumnCount = Max(treeView.ColumnCount, numberOfFields)
 		  
 		  
@@ -41,18 +50,32 @@ Implements JVTreeViewDelegate
 		  // Proces the individual fields
 		  for  fieldNumber as Integer = 0 to numberOfFields-1
 		    
-		    dim key as Variant = node.representedObject.key(fieldNumber)
-		    dim value as  Variant = node.representedObject.value(Key)
+		    dim fieldName as Variant
+		    dim fieldValue as  Variant
+		    if node.representedObject isa Dictionary then
+		      dim representedObject as Dictionary = node.representedObject
+		      fieldName = representedObject.key(fieldNumber)
+		      fieldValue = representedObject.value(fieldName)
+		    elseif node.representedObject isa DatabaseRecord then
+		      dim representedObject as DatabaseRecord = node.representedObject
+		      fieldName = representedObject.FieldName(fieldNumber)
+		      fieldValue = representedObject.Column(fieldName.StringValue)
+		    end if
 		    
-		    treeView.cell(newRowNumber, fieldNumber) = value
+		    treeView.cell(newRowNumber, fieldNumber) = fieldValue.StringValue
 		    
 		    // Attach each field to the cell
-		    dim field as  new Dictionary(key: value)
+		    dim field as new Dictionary(fieldName: fieldValue)
 		    treeview.cellTag(newRowNumber, fieldNumber) = field
 		    // and optionaly document each cell with the fieldName
 		    // treeView.CellHelpTag(newRowNumber, fieldNumber) = key
 		    
 		  next
+		  
+		  
+		  
+		  
+		  
 		  
 		  
 		  
@@ -79,24 +102,71 @@ Implements JVTreeViewDelegate
 
 	#tag Method, Flags = &h0
 		Sub onCellAction(sender as JVTreeview, row as Integer, column as Integer)
+		  // This is a mere test, this code should be refactored out of JVTreecontroller into the application level
+		  // NEEDS TO BE REIMPLEMENTED USING A DATABASRECORD IN THE ROWTAG THAT CONTAINS A PK
+		  
+		  // dim viewName as String = "ProjectsList"
+		  // dim currentNode as NSTreeNode = sender.RowTag(row)
+		  // dim changedField as Dictionary = sender.CellTag(row, column)
+		  // dim request as new DatabaseRecord
+		  // dim record as new DatabaseRecord
+		  // 
+		  // // Convert the dictionary of the changed field  to a DatabaseRecord
+		  // for each key as Variant in changedField.keys
+		  // dim fullyQualifiedAlias as String = viewName+"."+key
+		  // dim sourceTableAndField as Dictionary = app.dataModel.aliasSchema.value(fullyQualifiedAlias)
+		  // dim sourceTable as String = sourceTableAndField.value("table")
+		  // dim sourceField as String = sourceTableAndField.value("field")
+		  // record.Column(sourceTable+"."+sourceField) =  changedField.Value(key)
+		  // next key
+		  // 
+		  // 
+		  // // Convert all related data to a database request
+		  // while currentNode <> nil
+		  // 
+		  // dim representedRecord as Dictionary = changedNode.representedObject
+		  // if representedRecord <> nil then
+		  // for each key as Variant in representedRecord.Keys
+		  // 
+		  // if not changedField.HasKey(key) then
+		  // 
+		  // dim fullyQualifiedAlias as String = viewName+"."+key
+		  // dim sourceTableAndField as Dictionary = app.dataModel.aliasSchema.value(fullyQualifiedAlias)
+		  // dim sourceTable as String = sourceTableAndField.value("table")
+		  // dim sourceField as String = sourceTableAndField.value("field")
+		  // request.Column(sourceTable+"."+sourceField) =  representedRecord.Value(key)
+		  // 
+		  // end if 
+		  // 
+		  // next
+		  // end if
+		  // 
+		  // currentNode = currentNode.parent
+		  // wend
+		  // 
+		  // dim fullyQualifiedAlias as String = viewName+"."+changedAlias
+		  // dim sourceTableAndField as Dictionary = app.dataModel.aliasSchema.value(fullyQualifiedAlias)
+		  // dim sourceTable as String = sourceTableAndField.value("table")
+		  // dim sourceField as String = sourceTableAndField.value("field")
 		  
 		  // 
-		  // if row < treeView.listcount then
+		  // dim currentKey as Variant = changedAlias
+		  // if changedField.HasKey(currentKey) then
 		  // 
-		  // dim treenode as NSTreeNode = treeView.RowTag(row)
+		  // record.column(changedAlias) = changedField.value(changedAlias)
 		  // 
-		  // if treenode <> nil then
+		  // else
 		  // 
-		  // dim test as NSTreeNode = fieldInfo.
-		  // 
-		  // // test needs to be relocated
-		  // 
-		  // app.dataModel.selectRecords()
+		  // dim fullyQualifiedFieldName as String = sourceTable+"."+sourceField
+		  // request.column(fullyQualifiedFieldName) = 
 		  // 
 		  // end if
 		  // 
-		  // end if
-		  // 
+		  // next changedAlias
+		  
+		  
+		  
+		  
 		  
 		End Sub
 	#tag EndMethod

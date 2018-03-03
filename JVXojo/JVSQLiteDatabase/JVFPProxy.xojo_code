@@ -3,91 +3,236 @@ Protected Class JVFPProxy
 Inherits JVSQLiteDatabase
 Implements JVBackgroundTaskDelegate
 	#tag Method, Flags = &h0
-		Function addRecord(baseTableName as String, record as DatabaseRecord) As Integer
-		  return insertRecords(baseTableName, array(record))
+		Function addRecord(record as DatabaseRecord) As Integer
+		  
+		  dim affectedPKs() as Integer
+		  
+		  if currentMode = MODES.Browse then
+		    
+		    affectedPKs= insertRecords(currentLayout, array(record))
+		    
+		  end if
+		  
+		  if affectedPKs.Ubound >=0 then
+		    return affectedPKs(0)
+		  else
+		    return -1
+		  end if
+		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub addRequest(request as DatabaseRecord)
-		  requests.Append(request)
+		  
+		  if currentMode = MODES.Find then
+		    
+		    requests.Append(request)
+		    
+		  end if
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub deleteAllRecords(optional withoutDialog as Boolean = False)
-		  
-		  dim okToDelete as Integer = 1
-		  if not withoutDialog then
-		    okToDelete = MsgBox("Are you sure you want to delete all "+Str(recordCount)+" records" , 305)
-		  end if
-		  
-		  // If it is  stiil OK to delete
-		  if okToDelete = 1 then
-		    foundset.MoveFirst
+		  if currentMode = MODES.Browse then
 		    
-		    while not foundSet.EOF
-		      
-		      deleteRecord
-		      
-		      foundSet.MoveNext
-		    wend
+		    dim okToDelete as Integer = 1
+		    if not withoutDialog then
+		      okToDelete = MsgBox("Are you sure you want to delete all "+Str(recordCount)+" records" , 305)
+		    end if
 		    
-		    foundset.MoveFirst
+		    // If it is  stiil OK to delete
+		    if okToDelete = 1 then
+		      mfoundSet = nil
+		    end if
+		    
 		  end if
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub deleteRecord(optional recordNumber as Integer = -1)
-		  
-		  if recordNumber <> -1 then
+		  if currentMode = MODES.Browse then
+		    
 		    goToRecord(recordNumber)
+		    mfoundSet.DeleteRecord
+		    
 		  end if
-		  
-		  currentRecord.DeleteRecord
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub deleteRequest(optional requestNumber as Integer = -1)
 		  
-		  if requestNumber <> -1 then
-		    requests.Remove(requestNumber)
-		  else
-		    // When no number provided just remove the latest one
-		    requests.Remove(requests.Ubound)
+		  if currentMode = MODES.Find then
+		    
+		    if requestNumber >=0 then
+		      requests.Remove(requestNumber)
+		    else
+		      // When no number provided just remove the latest one
+		      requests.Remove(requests.Ubound)
+		    end if
+		    
 		  end if
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub editRecord(baseTableOrView as String , newValues as DatabaseRecord)
-		  updateRecords(baseTableOrView, foundSet, newValues )
+		Function editRecord(newValues as DatabaseRecord) As integer
+		  dim affectedPKs() as Integer
+		  
+		  if currentMode = MODES.Browse then
+		    
+		    affectedPKs = updateRecords(currentLayout, mfoundSet, newValues)
+		    
+		  end if
+		  
+		  if affectedPKs.Ubound >=0 then
+		    return affectedPKs(0)
+		  else
+		    return -1
+		  end if
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub enterMode(mode as MODES)
+		  
+		  
+		  Select Case mode
+		  Case MODES.Browse
+		    //
+		  Case MODES.Find
+		    ReDim requests (-1)
+		  Case MODES.Layout
+		    // 
+		  End Select
+		  
+		  currentMode = mode
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub executeFind(optional asynchronious as Boolean = False)
+		  if currentMode = MODES.Find then
+		    
+		    
+		    if asynchronious then
+		      
+		      mfoundSet = nil
+		      dim sqlStatement as String = sqlExpressions(currentLayout, requests).value("Statement")
+		      engine = new JVbackGroundQuery(me, sqlStatement)
+		      engine.bindVariables()
+		      engine.backgroundTaskDelegate =  me
+		      engine.run
+		      
+		    else
+		      
+		      mfoundSet = nil
+		      mfoundSet = selectRecords(currentLayout, requests)
+		      enterMode(MODES.Browse)
+		      
+		    end if
+		    
+		  end if
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub executeFindAll(optional asynchronious as Boolean = False)
+		  
+		  // Perform find without any find requests to find all recoxrds in a table
+		  enterMode(MODES.Find)
+		  executeFind(asynchronious)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function foundSet() As DatabaseRecord()
+		  // This method acts as a computed property derived from mfoundSet,
+		  // because Xojo doesn't support computed properties of type array
+		  
+		  dim databaseRecords() as  DatabaseRecord
+		  
+		  if mfoundSet <> nil then
+		    
+		    while not mfoundSet.EOF
+		      dim record as new DatabaseRecord
+		      
+		      for  fieldNumber as Integer =  0 to mfoundSet.FieldCount-1
+		        dim field as DatabaseField = mfoundSet.IdxField(fieldNumber)
+		        dim fieldName as String = field.Name
+		        dim fieldValue as Variant = field.Value
+		        record.Column(fieldName) =  fieldValue
+		      next fieldNumber
+		      
+		      databaseRecords.Append(record)
+		    wend
+		    
+		  end if 
+		  
+		  return databaseRecords
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub goToLayoutOrView(baseLayoutOrView as String)
+		  currentLayout = baseLayoutOrView
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub goToNextRecord()
-		  foundSet.MoveNext
+		  if currentMode = MODES.browse then
+		    
+		    if (recordCount > 0) and (currentRecordNumber < recordCount) then
+		      mfoundSet.MoveNext
+		      currentRecordNumber = currentRecordNumber+1
+		    end if
+		    
+		  end if 
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub goToPreviousRecord()
-		  foundSet.MovePrevious
+		  if currentMode = MODES.browse then
+		    
+		    if (recordCount > 0) and (currentRecordNumber > 2) then 
+		      mfoundSet.MovePrevious
+		      currentRecordNumber = currentRecordNumber-1
+		    end if
+		    
+		  end if 
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub goToRecord(recordNumber as Integer)
-		  foundSet.MoveFirst
-		  dim numberOfRecordsToBrowse as Integer = recordNumber-1
-		  
-		  for browseCount as Integer = 1 to numberOfRecordsToBrowse
-		    foundSet.MoveNext
-		  next browseCount
+		Sub goToRecord(optional recordNumber as Integer = -1)
+		  if currentMode = MODES.browse then
+		    
+		    if recordNumber >=0 then
+		      
+		      if (recordCount > 0) and (recordNumber <= recordCount) then
+		        
+		        // Browse the recordset in the SQL-backend 
+		        mfoundSet.MoveFirst
+		        if recordNumber >= 2 then
+		          for recordsBrowsed as Integer = 1 to recordNumber-1
+		            mfoundSet.MoveNext  // Browse extra records
+		          next
+		        end if
+		        
+		        // and the record in the FP-Frontend
+		        currentRecordNumber = recordNumber
+		      end if
+		      
+		    end if
+		    
+		  end if
 		End Sub
 	#tag EndMethod
 
@@ -95,89 +240,71 @@ Implements JVBackgroundTaskDelegate
 		Sub onTaskFinished(sender as JVBackgroundTask)
 		  // Part of the JVBackgroundTaskDelegate interface.
 		  
-		  foundSet = engine.foundRecords
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub performFind(baseTableOrView as String, optional asynchronious as Boolean = False)
-		  if asynchronious then
-		    
-		    foundSet = nil
-		    engine = new JVbackGroundQuery(me, sqlExpressions(baseTableOrView, requests).value("Statement"))
-		    engine.bindVariables()
-		    engine.backgroundTaskDelegate =  me
-		    engine.run
-		    
-		  else
-		    
-		    foundSet = selectRecords(baseTableOrView, requests)
-		    
-		  end if
+		  mfoundSet = engine.foundRecords
+		  enterMode(MODES.Browse)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub perFormFindAll(baseTableOrView as String, optional asynchronious as Boolean = False)
-		  redim requests (-1)
-		  perFormFind(baseTableOrView, asynchronious)
-		End Sub
+		Function replaceAll(baseTableOrView as String , newValues as DataBaseRecord) As Integer()
+		  
+		  dim affectedPKs() as Integer = updateRecords(currentLayout, mfoundSet, newValues, True)
+		  
+		  return affectedPKs
+		  
+		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub replaceAll(baseTableOrView as String , newValues as DataBaseRecord)
-		  
-		  
-		  foundset.MoveFirst
-		  
-		  while not foundSet.EOF
-		    
-		    editRecord(baseTableOrView, newValues)
-		    
-		    foundSet.MoveNext
-		  wend
-		  
-		  foundset.MoveFirst
-		  
-		  
-		End Sub
-	#tag EndMethod
+
+	#tag Note, Name = Class decription
+		
+		This class is a subclass of the JVSQLiteDatabase-class
+		In this way it provides a shell around SQL,
+		that allows for a workflow similar to the one used in a FP-database
+		
+		Essential are
+		the mFoundset-private propety, a recordset used for all write-operations to the SQL-background
+		the foundSet-method that acts as a computed property that provides DatabaseRecord() and 
+		is used to read and parse the SQL-data on a higher level
+	#tag EndNote
 
 
 	#tag Property, Flags = &h0
-		#tag Note
-			return foundSet
-		#tag EndNote
-		currentRecord As RecordSet
+		currentLayout As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		engine As JVbackGroundQuery
+		currentMode As MODES
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return engine.foundRecords
+			  
+			  dim allrecords() as DatabaseRecord = foundSet
+			  return allrecords(currentRecordNumber)
 			End Get
 		#tag EndGetter
-		#tag Setter
-			Set
-			  mFoundSet = value
-			End Set
-		#tag EndSetter
-		foundSet As RecordSet
+		currentRecord As DatabaseRecord
 	#tag EndComputedProperty
 
+	#tag Property, Flags = &h0
+		currentRecordNumber As Integer
+	#tag EndProperty
+
 	#tag Property, Flags = &h21
-		Private mFoundSet As RecordSet
+		Private engine As JVbackGroundQuery
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mfoundSet As RecordSet
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return engine.foundRecords.RecordCount
+			  return mfoundSet.RecordCount
 			End Get
 		#tag EndGetter
 		recordCount As Integer
@@ -188,7 +315,31 @@ Implements JVBackgroundTaskDelegate
 	#tag EndProperty
 
 
+	#tag Enum, Name = MODES, Flags = &h0
+		Browse
+		  Find
+		Layout
+	#tag EndEnum
+
+
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="currentLayout"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="currentMode"
+			Group="Behavior"
+			Type="MODES"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - Browse"
+				"1 - Find"
+				"2 - Layout"
+			#tag EndEnumValues
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DatabaseFile"
 			Visible=true

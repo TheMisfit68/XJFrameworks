@@ -28,7 +28,8 @@ Implements JVCustomStringConvertable
 		    Dim fieldNumber as Integer =1
 		    Dim startOfBranchDetected as Boolean = False
 		    Dim endOfbranchDetected as Boolean = False
-		    Dim Representedobject as new Dictionary
+		    dim columns() as Pair
+		    Dim Representedobject as new DatabaseRecord
 		    
 		    While (fieldNumber<=records.FieldCount) and not(startOfBranchDetected and endOfbranchDetected)
 		      
@@ -77,17 +78,23 @@ Implements JVCustomStringConvertable
 		        Next
 		        
 		        
-		        // And the Representedobject
-		        representedObject.value(fieldName) = fieldValue
+		        // And the DatabaseRecord to represent
+		        columns.Append(fieldName : fieldValue)
 		        
 		      end if
 		      
 		      fieldNumber =  fieldNumber+1
 		    wend
 		    
+		    // Reverse te order while adding te columns because they are always inserted at index 0
+		    for reverseColumNumber as Integer = columns.Ubound to 0 step -1
+		      dim columnName as String = columns(reverseColumNumber).left
+		      dim columnValue as String = columns(reverseColumNumber).Right
+		      representedObject.Column(columnName) = columnValue
+		    next reverseColumNumber
 		    
 		    // Add the currentNode to the nodetree
-		    if representedObject.Values.ubound >=0 then
+		    if representedObject.FieldCount > 0 then
 		      
 		      currentNode = new NSTreeNode(representedObject)
 		      currentNode.parent = currentParent
@@ -159,7 +166,7 @@ Implements JVCustomStringConvertable
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		representedObject As Dictionary
+		representedObject As Variant
 	#tag EndProperty
 
 
