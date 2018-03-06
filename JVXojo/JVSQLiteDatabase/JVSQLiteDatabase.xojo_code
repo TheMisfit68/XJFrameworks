@@ -36,26 +36,6 @@ Inherits SQLiteDatabase
 		    dim pk as Integer= lastPKFromTable(baseTableName)
 		    affectedPKs.Append(pk)
 		    
-		    // dim newFieldNames() as String
-		    // dim placeHolders() as String
-		    // dim newFieldValues() as Variant
-		    // 
-		    // for each fieldName as String in newFields.keys
-		    // dim fieldValue as Variant = newFields.value(fieldName)
-		    // newFieldNames.append(fieldName)
-		    // placeHolders.append("?")
-		    // newFieldValues.append(fieldValue)
-		    // next
-		    // dim newFieldNamesString as String= join(newFieldNames, ", ")
-		    // dim placeHolderString as String= join(placeHolders, ", ")
-		    // 
-		    // dim sqlString as String = "INSERT INTO "+baseTableName+" ("+newFieldNamesString+") VALUES ("+placeHolderString+")" 
-		    // dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)
-		    // 
-		    // // sqlStatement.bindType(newFields.Values)
-		    // sqlStatement.bind(newFieldValues)
-		    // sqlStatement.SQLExecute
-		    
 		    If Error Then
 		      #if debugbuild then
 		        system.debuglog( "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE)
@@ -80,8 +60,7 @@ Inherits SQLiteDatabase
 		  
 		  
 		  dim allVariables() as Variant = array(lastRowID)
-		  // sqlStatement.bindType(allVariables)
-		  sqlStatement.bind(allVariables)
+		  sqlStatement.bindVariables(allVariables)
 		  
 		  dim recordsFound as recordset = sqlStatement.SQLSelect
 		  
@@ -104,8 +83,7 @@ Inherits SQLiteDatabase
 		  dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)
 		  
 		  dim allVariables() as Variant = concatenate(array(baseTableName))
-		  // sqlStatement.bindType(allVariables)
-		  sqlStatement.bind(allVariables)
+		  sqlStatement.bindVariables(allVariables)
 		  
 		  dim recordsFound as recordset = sqlStatement.SQLSelect
 		  
@@ -143,8 +121,7 @@ Inherits SQLiteDatabase
 		  dim sqlString as String = "SELECT "+pkField+" FROM "+lookupTable+" WHERE "+matchFieldsString
 		  dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)
 		  
-		  // sqlStatement.bindType(matchingRecord.Values)
-		  sqlStatement.bind(fieldValues)
+		  sqlStatement.bindVariables(fieldValues)
 		  
 		  dim foundRecords as RecordSet = sqlStatement.SQLSelect
 		  
@@ -167,12 +144,12 @@ Inherits SQLiteDatabase
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Function pkForTable(baseTableName as String) As String
+	#tag Method, Flags = &h0
+		Function pkForTable(baseTableName as String) As String
 		  dim pkField As String = ""
 		  
 		  dim tablesInfo as RecordSet = FieldSchema(baseTableName)
-		  while pkField <> "" and not tablesInfo.eof
+		  while pkField = "" and not tablesInfo.eof
 		    if tablesInfo.Field("IsPrimary").BooleanValue = TRUE then
 		      pkField = tablesInfo.Field("ColumnName")
 		    end if
@@ -190,8 +167,7 @@ Inherits SQLiteDatabase
 		  dim sqlString as String = sqlExpresions.value("Statement")
 		  
 		  dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)
-		  // sqlStatement.bindType(matchFields.Values)
-		  sqlStatement.bind(sqlExpresions.value("Values"))
+		  sqlStatement.bindvariables(sqlExpresions.value("Values"))
 		  dim foundRecords as RecordSet = sqlStatement.SQLSelect
 		  
 		  If Error Then
@@ -224,7 +200,7 @@ Inherits SQLiteDatabase
 		      
 		      For fieldNumber As Integer = 0 To request.FieldCount-1
 		        dim fieldName as String = request.FieldName(fieldNumber)
-		        dim fieldValue as String = request.Column(fieldNumber)
+		        dim fieldValue as String = request.Column(fieldName)
 		        
 		        matchFieldNames.append(fieldName+" = ?")
 		        matchFieldValues.append(fieldValue)
@@ -329,9 +305,10 @@ Inherits SQLiteDatabase
 		      
 		    end if
 		    
+		    records.Close
+		    
 		  End If
 		  
-		  records.Close
 		  
 		  Return affectedPKs
 		  

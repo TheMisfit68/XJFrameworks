@@ -103,71 +103,35 @@ Implements JVTreeViewDelegate
 	#tag Method, Flags = &h0
 		Sub onCellAction(sender as JVTreeview, row as Integer, column as Integer)
 		  // This is a mere test, this code should be refactored out of JVTreecontroller into the application level
-		  // NEEDS TO BE REIMPLEMENTED USING A DATABASRECORD IN THE ROWTAG THAT CONTAINS A PK
 		  
-		  // dim viewName as String = "ProjectsList"
-		  // dim currentNode as NSTreeNode = sender.RowTag(row)
-		  // dim changedField as Dictionary = sender.CellTag(row, column)
-		  // dim request as new DatabaseRecord
-		  // dim record as new DatabaseRecord
-		  // 
-		  // // Convert the dictionary of the changed field  to a DatabaseRecord
-		  // for each key as Variant in changedField.keys
-		  // dim fullyQualifiedAlias as String = viewName+"."+key
-		  // dim sourceTableAndField as Dictionary = app.dataModel.aliasSchema.value(fullyQualifiedAlias)
-		  // dim sourceTable as String = sourceTableAndField.value("table")
-		  // dim sourceField as String = sourceTableAndField.value("field")
-		  // record.Column(sourceTable+"."+sourceField) =  changedField.Value(key)
-		  // next key
-		  // 
-		  // 
-		  // // Convert all related data to a database request
-		  // while currentNode <> nil
-		  // 
-		  // dim representedRecord as Dictionary = changedNode.representedObject
-		  // if representedRecord <> nil then
-		  // for each key as Variant in representedRecord.Keys
-		  // 
-		  // if not changedField.HasKey(key) then
-		  // 
-		  // dim fullyQualifiedAlias as String = viewName+"."+key
-		  // dim sourceTableAndField as Dictionary = app.dataModel.aliasSchema.value(fullyQualifiedAlias)
-		  // dim sourceTable as String = sourceTableAndField.value("table")
-		  // dim sourceField as String = sourceTableAndField.value("field")
-		  // request.Column(sourceTable+"."+sourceField) =  representedRecord.Value(key)
-		  // 
-		  // end if 
-		  // 
-		  // next
-		  // end if
-		  // 
-		  // currentNode = currentNode.parent
-		  // wend
-		  // 
-		  // dim fullyQualifiedAlias as String = viewName+"."+changedAlias
-		  // dim sourceTableAndField as Dictionary = app.dataModel.aliasSchema.value(fullyQualifiedAlias)
-		  // dim sourceTable as String = sourceTableAndField.value("table")
-		  // dim sourceField as String = sourceTableAndField.value("field")
+		  dim viewOrTabelName as String = "ProjectsList"
+		  dim fieldInfo as Dictionary = sender.cellTag(row, column)
+		  dim fieldName as String = fieldInfo.Key(0)
+		  dim newfieldValue as String = sender.cell(row, column)
+		  dim representedObject as NSTreenode = Sender.RowTag(row)
 		  
-		  // 
-		  // dim currentKey as Variant = changedAlias
-		  // if changedField.HasKey(currentKey) then
-		  // 
-		  // record.column(changedAlias) = changedField.value(changedAlias)
-		  // 
-		  // else
-		  // 
-		  // dim fullyQualifiedFieldName as String = sourceTable+"."+sourceField
-		  // request.column(fullyQualifiedFieldName) = 
-		  // 
-		  // end if
-		  // 
-		  // next changedAlias
+		  dim keyPaths() as integer = representedObject.indexpath
+		  dim primaryKeyValue as integer = keyPaths(sender.RowDepth(row))
+		  
+		  dim sourceInfo as Dictionary = app.dataModel.aliasSchema.value(viewOrTabelName+"."+fieldName)
+		  dim sourceTable as String = sourceInfo.Value("table")
+		  dim sourcField as String = sourceInfo.Value("field")
+		  dim pkFieldName as String = app.dataModel.pkForTable(sourceTable)
 		  
 		  
+		  dim request as new DatabaseRecord
+		  request.IntegerColumn(pkFieldName) = primaryKeyValue
 		  
+		  dim record as new DatabaseRecord
+		  record.Column(sourcField) = newfieldValue
 		  
+		  // Perform the update
+		  app.dataModel.goToLayoutOrView(sourceTable)
+		  app.dataModel.enterMode(JVFPProxy.MODES.Find)
+		  app.dataModel.addRequest(request)
+		  app.dataModel.executeFind
 		  
+		  dim test as Integer = app.dataModel.editRecord(record)
 		End Sub
 	#tag EndMethod
 

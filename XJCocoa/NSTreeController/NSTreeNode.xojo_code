@@ -10,11 +10,11 @@ Implements JVCustomStringConvertable
 		  dim activeBranchNumber as Integer = 0
 		  dim activeBranches() as NSTreeNode
 		  dim activeBranchValues() as Variant
-		  dim currentIndexPath() as Integer
+		  dim currentKeyPath() as Integer
 		  for i as Integer = 0 to branchFields.Ubound
 		    activeBranches.append(baseNode)
 		    activeBranchValues.Append(nil)
-		    currentIndexPath.append(0)
+		    currentKeyPath.append(0)
 		  next
 		  
 		  dim currentNode as  NSTreeNode
@@ -41,7 +41,7 @@ Implements JVCustomStringConvertable
 		      if itsAkeyPathField then
 		        dim keys() as String = split(fieldValue,".")
 		        for keyNumber as Integer = 0 to keys.Ubound
-		          currentIndexPath(keyNumber) = val(keys(keynumber))
+		          currentKeyPath(keyNumber) = val(keys(keynumber))
 		        next keyNumber
 		      end if
 		      
@@ -78,7 +78,7 @@ Implements JVCustomStringConvertable
 		        
 		      end if
 		      
-		      // Parse the remaining fields of the old branch
+		      // Parse the remaining fields of an old branch
 		      if oldBranchHasEnded and not newBranchStarted  and branchIsActive then
 		        columns.Append(fieldName : fieldValue)
 		      end if
@@ -87,8 +87,6 @@ Implements JVCustomStringConvertable
 		      if  oldBranchHasEnded then
 		        
 		        if (currentNode <> nil) and (columns.Ubound>=0) then
-		          
-		          currentNode.indexPath = currentIndexPath
 		          
 		          // Reverse te order while adding te columns because they are always inserted at index 0
 		          for reverseColumNumber as Integer = columns.Ubound to 0 step -1
@@ -101,6 +99,7 @@ Implements JVCustomStringConvertable
 		          
 		          currentNode.parent = currentParent
 		          currentNode.parent.children.Append(currentNode)
+		          currentNode.indexPath = currentKeyPath
 		          
 		        end if
 		        
