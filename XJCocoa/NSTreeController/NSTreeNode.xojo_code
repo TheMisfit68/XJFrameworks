@@ -7,13 +7,13 @@ Implements JVCustomStringConvertable
 		  dim  baseNode as  NSTreeNode = me
 		  baseNode.parent = nil
 		  
-		  dim currentBranches() as NSTreeNode
-		  dim currentBranchNumber as Integer = 0
-		  dim previousBranchFieldValues as new Dictionary
-		  
+		  dim activeBranchNumber as Integer = 0
+		  dim activeBranches() as NSTreeNode
+		  dim activeBranchValues() as Variant
 		  dim currentIndexPath() as Integer
 		  for i as Integer = 0 to branchFields.Ubound
-		    currentBranches.append(baseNode)
+		    activeBranches.append(baseNode)
+		    activeBranchValues.Append(nil)
 		    currentIndexPath.append(0)
 		  next
 		  
@@ -24,89 +24,116 @@ Implements JVCustomStringConvertable
 		  records.MoveFirst
 		  While Not records.EOF
 		    
-		    // Check every field to see if it is a branchfield and if it might have changed
-		    Dim fieldNumber as Integer =1
-		    Dim startOfBranchDetected as Boolean = False
-		    Dim endOfbranchDetected as Boolean = False
-		    dim columns() as Pair
-		    Dim Representedobject as new DatabaseRecord
+		    Dim oldBranchHasEnded as Boolean = False
+		    Dim newBranchStarted as Boolean = False
+		    Dim branchIsActive as Boolean = False
 		    
-		    While (fieldNumber<=records.FieldCount) and not(startOfBranchDetected and endOfbranchDetected)
+		    dim columns() as Pair
+		    
+		    // Proces every field
+		    for fieldNumber as Integer = 1 to records.FieldCount
 		      
 		      dim field as DatabaseField = records.IdxField(fieldNumber)
 		      dim fieldName as String = field.Name
 		      dim fieldValue as Variant = field.Value
 		      
+		      dim itsAkeyPathField as Boolean = fieldName.contains("keyPath")
+		      if itsAkeyPathField then
+		        dim keys() as String = split(fieldValue,".")
+		        for keyNumber as Integer = 0 to keys.Ubound
+		          currentIndexPath(keyNumber) = val(keys(keynumber))
+		        next keyNumber
+		      end if
+		      
+		      dim itsTheFirstField as Boolean = (fieldNumber = 1)
 		      dim matchingBranch as Integer= branchFields.IndexOf(fieldName)
 		      dim itsaBranchField as Boolean = matchingBranch>=0
-		      if  itsaBranchField  then
+		      dim itsTheLastField as Boolean = (fieldNumber = records.FieldCount)
+		      
+		      // Set the status of the branche
+		      if itsTheFirstField then
+		        oldBranchHasEnded = False
+		        newBranchStarted = True 
+		        branchIsActive =  False
+		      elseif itsaBranchField then
+		        oldBranchHasEnded = True
+		        newBranchStarted = True 
+		        branchIsActive =  False
+		      else
+		        oldBranchHasEnded = False
+		        newBranchStarted = False 
+		      end if
+		      if  itsTheLastField then
+		        oldBranchHasEnded = True
+		        newBranchStarted = False
+		      end if
+		      
+		      // Once a branch got started if there where changes within a branchField make the branch active
+		      if  (newBranchStarted  and not branchIsActive)  and itsaBranchField then 
 		        
-		        if not startOfBranchDetected  then 
+		        if (activeBranchValues(matchingBranch) = nil) or (fieldValue <> activeBranchValues(matchingBranch)) then
+		          branchIsActive =  True 
+		          activeBranchNumber = matchingBranch
+		        end if
+		        
+		      end if
+		      
+		      // Parse the remaining fields of the old branch
+		      if oldBranchHasEnded and not newBranchStarted  and branchIsActive then
+		        columns.Append(fieldName : fieldValue)
+		      end if
+		      
+		      // add the completed branch to the nodetree
+		      if  oldBranchHasEnded then
+		        
+		        if (currentNode <> nil) and (columns.Ubound>=0) then
 		          
-		          if (not  previousBranchFieldValues.hasKey(fieldName)) or  (previousBranchFieldValues.value(fieldName) <> fieldValue) then
-		            startOfBranchDetected =  True // Start capturing a new branch when a branchfield has changed  in value
-		            currentBranchNumber = matchingBranch
-		          end if
-		          previousBranchFieldValues.value(fieldName) = fieldValue
+		          currentNode.indexPath = currentIndexPath
 		          
-		        else
+		          // Reverse te order while adding te columns because they are always inserted at index 0
+		          for reverseColumNumber as Integer = columns.Ubound to 0 step -1
+		            dim columnName as String = columns(reverseColumNumber).left
+		            dim columnValue as String = columns(reverseColumNumber).Right
+		            dim representedObject as DatabaseRecord =currentNode.representedObject
+		            representedObject.Column(columnName) = columnValue
+		          next reverseColumNumber
+		          redim columns(-1)
 		          
-		          endOfbranchDetected = True // Always stop capturing fields when another branchfield was reached
+		          currentNode.parent = currentParent
+		          currentNode.parent.children.Append(currentNode)
 		          
 		        end if
 		        
 		      end if
 		      
-		      // Parse the data for the current branch
-		      if  startOfBranchDetected and not endOfbranchDetected then
+		      if newBranchStarted and branchIsActive then
 		        
-		        // Determine the parent
-		        if currentBranchNumber > 0 then
-		          currentParent = currentBranches(currentBranchNumber-1)
+		        // Next prepare a new Node and
+		        currentNode = new NSTreeNode(new DatabaseRecord)
+		        // determine the parent
+		        if  (activeBranchNumber > 0) then
+		          currentParent = activeBranches(activeBranchNumber-1)
 		        else
 		          currentParent = baseNode
 		        end if
 		        
-		        // The indexPath
-		        currentIndexPath(currentBranchNumber) = currentIndexPath(currentBranchNumber)+1
-		        for subBrancheNumber as Integer = currentBranchNumber+1 to currentBranches.Ubound
-		          currentIndexPath(subBrancheNumber) = 0
-		          dim subBrancheName as String = branchFields(subBrancheNumber)
-		          if previousBranchFieldValues.HasKey(subBrancheName) then
-		            previousBranchFieldValues.remove(subBrancheName)
-		          end if
-		        Next
-		        
-		        
-		        // And the DatabaseRecord to represent
-		        columns.Append(fieldName : fieldValue)
+		        // Adjust the current branches 
+		        activeBranches(activeBranchNumber) = currentNode
+		        activeBranchValues(activeBranchNumber) = fieldValue
+		        // and subbranches
+		        for subBrancheNumber as Integer= activeBranchNumber+1 to activeBranches.Ubound
+		          activeBranches(subBrancheNumber) = nil
+		          activeBranchValues(subBrancheNumber) = nil
+		        next
 		        
 		      end if
 		      
-		      fieldNumber =  fieldNumber+1
-		    wend
-		    
-		    // Reverse te order while adding te columns because they are always inserted at index 0
-		    for reverseColumNumber as Integer = columns.Ubound to 0 step -1
-		      dim columnName as String = columns(reverseColumNumber).left
-		      dim columnValue as String = columns(reverseColumNumber).Right
-		      representedObject.Column(columnName) = columnValue
-		    next reverseColumNumber
-		    
-		    // Add the currentNode to the nodetree
-		    if representedObject.FieldCount > 0 then
+		      // Parse the  fields of the new branch
+		      if (not oldBranchHasEnded or newBranchStarted)  and branchIsActive then
+		        columns.Append(fieldName : fieldValue)
+		      end if
 		      
-		      currentNode = new NSTreeNode(representedObject)
-		      currentNode.parent = currentParent
-		      currentNode.indexPath = currentIndexPath
-		      currentParent.children.Append(currentNode)
-		      
-		      // Adjust the current branches 
-		      for subBrancheNumber as Integer= currentBranchNumber to currentBranches.Ubound
-		        currentBranches(subBrancheNumber) = currentNode
-		      next
-		      
-		    end if
+		    next fieldNumber
 		    
 		    records.MoveNext
 		  Wend
