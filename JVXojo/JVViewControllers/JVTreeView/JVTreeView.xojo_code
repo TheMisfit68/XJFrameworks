@@ -63,6 +63,7 @@ Inherits ListBox
 			    // Remove any previously set delegate
 			    RemoveHandler Open, AddressOf mTreeViewDelegate.onListOpen
 			    RemoveHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
+			    RemoveHandler CollapseRow, AddressOf mTreeViewDelegate.onListCollapseRow
 			    RemoveHandler Change, AddressOf mTreeViewDelegate.onListSelectionDidChange
 			    RemoveHandler DoubleClick, AddressOf mTreeViewDelegate.onListDoubleClick
 			    
@@ -78,6 +79,7 @@ Inherits ListBox
 			    // Redirect all events to the delegate
 			    AddHandler Open, AddressOf mTreeViewDelegate.onListOpen
 			    AddHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
+			    AddHandler CollapseRow, AddressOf mTreeViewDelegate.onListCollapseRow
 			    AddHandler Change, AddressOf mTreeViewDelegate.onListSelectionDidChange
 			    AddHandler DoubleClick, AddressOf mTreeViewDelegate.onListDoubleClick
 			    

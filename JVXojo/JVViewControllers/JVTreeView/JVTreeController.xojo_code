@@ -23,57 +23,57 @@ Implements JVTreeViewDelegate
 	#tag Method, Flags = &h21
 		Private Sub displayNode(node as NSTreeNode)
 		  
-		  dim numberOfFields as Integer
-		  
-		  if node.representedObject isa Dictionary then
-		    dim representedObject as Dictionary = node.representedObject
-		    numberOfFields = representedObject.keys.ubound+1
-		  elseif node.representedObject isa DatabaseRecord then
-		    dim representedObject as DatabaseRecord = node.representedObject
-		    numberOfFields = representedObject.FieldCount
-		  end if
-		  // Adjust the number of columns if needed
-		  treeView.ColumnCount = Max(treeView.ColumnCount, numberOfFields)
-		  
-		  
-		  // Proces the record
-		  dim itsaParentNode as Boolean = not node.isLeaf
-		  if   itsaParentNode then // Add an empty Folder or an empty row
-		    treeView.AddFolder("")
-		  else
-		    treeView.AddRow()
-		  end if
-		  dim newRowNumber as Integer = treeView.LastIndex
-		  treeview.RowTag(newRowNumber) = node
-		  
-		  
-		  // Proces the individual fields
-		  for  fieldNumber as Integer = 0 to numberOfFields-1
+		  if node <> nil then
 		    
-		    dim fieldName as Variant
-		    dim fieldValue as  Variant
+		    dim numberOfFields as Integer
+		    
 		    if node.representedObject isa Dictionary then
 		      dim representedObject as Dictionary = node.representedObject
-		      fieldName = representedObject.key(fieldNumber)
-		      fieldValue = representedObject.value(fieldName)
+		      numberOfFields = representedObject.keys.ubound+1
 		    elseif node.representedObject isa DatabaseRecord then
 		      dim representedObject as DatabaseRecord = node.representedObject
-		      fieldName = representedObject.FieldName(fieldNumber)
-		      fieldValue = representedObject.Column(fieldName.StringValue)
+		      numberOfFields = representedObject.FieldCount
 		    end if
+		    // Adjust the number of columns if needed
+		    treeView.ColumnCount = Max(treeView.ColumnCount, numberOfFields)
 		    
-		    treeView.cell(newRowNumber, fieldNumber) = fieldValue.StringValue
 		    
-		    // Attach each field to the cell
-		    dim field as new Dictionary(fieldName: fieldValue)
-		    treeview.cellTag(newRowNumber, fieldNumber) = field
-		    // and optionaly document each cell with the fieldName
-		    // treeView.CellHelpTag(newRowNumber, fieldNumber) = key
+		    // Proces the record
+		    dim itsaParentNode as Boolean = not node.isLeaf
+		    if   itsaParentNode then // Add an empty Folder or an empty row
+		      treeView.AddFolder("")
+		    else
+		      treeView.AddRow()
+		    end if
+		    dim newRowNumber as Integer = treeView.LastIndex
+		    treeview.RowTag(newRowNumber) = node
 		    
-		  next
-		  
-		  
-		  
+		    
+		    // Proces the individual fields
+		    
+		    for  fieldNumber as Integer = 0 to numberOfFields-1
+		      
+		      dim fieldName as Variant
+		      dim fieldValue as  Variant
+		      if node.representedObject isa Dictionary then
+		        dim representedObject as Dictionary = node.representedObject
+		        fieldName = representedObject.key(fieldNumber)
+		        fieldValue = representedObject.value(fieldName)
+		      elseif node.representedObject isa DatabaseRecord then
+		        dim representedObject as DatabaseRecord = node.representedObject
+		        fieldName = representedObject.FieldName(fieldNumber)
+		        fieldValue = representedObject.Column(fieldName.StringValue)
+		      end if
+		      
+		      treeView.cell(newRowNumber, fieldNumber) = fieldValue.StringValue
+		      
+		      // Attach each field to the cell
+		      dim field as new Dictionary(fieldName: fieldValue)
+		      treeview.cellTag(newRowNumber, fieldNumber) = field
+		      
+		    next
+		    
+		  end  if
 		  
 		  
 		  
@@ -136,6 +136,25 @@ Implements JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub onlistcollapseRow(sender as JVTreeView, row as Integer)
+		  
+		  // Part of the JVTreeViewDelegate interface.
+		  
+		  if sender.RowIsFolder(row) then
+		    
+		    dim collapsedNode as NStreeNode = sender.RowTag(row)
+		    dim indexString as String = collapsedNode.indexString
+		    dim index as Integer = expandedRows.IndexOf(indexString)
+		    
+		    if index <= 0 then
+		      expandedRows.Remove(index)
+		    end if
+		    
+		  end if
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub onlistDoubleClick(sender as JVTreeView)
 		  
 		  dim rowNumber as Integer = treeView.ListIndex
@@ -152,13 +171,19 @@ Implements JVTreeViewDelegate
 		  
 		  if sender.RowIsFolder(row) then
 		    
-		    dim parentNode as NStreeNode = sender.RowTag(row)
-		    For each childNode as NSTreeNode in parentNode.children
+		    dim expandedNode as NStreeNode = sender.RowTag(row)
+		    For each childNode as NSTreeNode in expandedNode.children
 		      displayNode(childNode)
 		    next
 		    
+		    dim indexString as String = expandedNode.indexString
+		    dim index as Integer = expandedRows.IndexOf(indexString)
+		    
+		    if index < 0 then
+		      expandedRows.append(indexString)
+		    end if
+		    
 		  end if
-		  
 		  
 		End Sub
 	#tag EndMethod
@@ -183,6 +208,21 @@ Implements JVTreeViewDelegate
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Sub restoreExpandedRows()
+		  
+		  
+		  for row as Integer = 0 to treeView.ListCount -1
+		    dim node as NSTreeNode = treeview.RowTag(row)
+		    dim indexString as String = node.indexString
+		    dim wasExpandedBefore as Boolean = (expandedRows.IndexOf(indexString) >= 0)
+		    treeView.Expanded(row) = wasExpandedBefore
+		  next row
+		  
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub syncInterface(optional up as Boolean = False)
 		  if up then
@@ -192,8 +232,11 @@ Implements JVTreeViewDelegate
 		      treeView.DeleteAllRows
 		      dim nodesToDisplay() as NSTreeNode = arrangedObjects.children
 		      For each node as NSTreeNode in nodesToDisplay
+		        
 		        displayNode(node)
 		      next
+		      
+		      restoreExpandedRows
 		      
 		    end if
 		    
@@ -207,6 +250,10 @@ Implements JVTreeViewDelegate
 
 	#tag Property, Flags = &h0
 		arrangedObjects As NSTreeNode
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		expandedRows() As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

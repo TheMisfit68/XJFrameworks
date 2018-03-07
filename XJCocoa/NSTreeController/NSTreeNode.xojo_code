@@ -10,14 +10,13 @@ Implements JVCustomStringConvertable
 		  dim activeBranchNumber as Integer = 0
 		  dim activeBranches() as NSTreeNode
 		  dim activeBranchValues() as Variant
-		  dim currentKeyPath() as Integer
 		  for i as Integer = 0 to branchFields.Ubound
 		    activeBranches.append(baseNode)
 		    activeBranchValues.Append(nil)
-		    currentKeyPath.append(0)
 		  next
 		  
 		  dim currentNode as  NSTreeNode
+		  dim currentKeyPathString as String
 		  dim currentParent as  NSTreeNode = baseNode
 		  
 		  // For every record that was found
@@ -39,10 +38,7 @@ Implements JVCustomStringConvertable
 		      
 		      dim itsAkeyPathField as Boolean = fieldName.contains("keyPath")
 		      if itsAkeyPathField then
-		        dim keys() as String = split(fieldValue,".")
-		        for keyNumber as Integer = 0 to keys.Ubound
-		          currentKeyPath(keyNumber) = val(keys(keynumber))
-		        next keyNumber
+		        currentKeyPathString = fieldValue
 		      end if
 		      
 		      dim itsTheFirstField as Boolean = (fieldNumber = 1)
@@ -98,8 +94,21 @@ Implements JVCustomStringConvertable
 		          redim columns(-1)
 		          
 		          currentNode.parent = currentParent
+		          
+		          dim keys() as String = split(currentKeyPathString,".")
+		          dim keyForBranch as Integer
+		          for branchNumber as Integer = 0 to activeBranches.Ubound
+		            if branchNumber <= activeBranchNumber then
+		              keyForBranch = val(keys(branchNumber))
+		            else
+		              keyForBranch = 0
+		            end if
+		            currentNode.indexPath.append(keyForBranch)
+		          next branchNumber
+		          
 		          currentNode.parent.children.Append(currentNode)
-		          currentNode.indexPath = currentKeyPath
+		          
+		          system.debuglog("Creating node "+currentNode.indexString)
 		          
 		        end if
 		        
@@ -139,6 +148,7 @@ Implements JVCustomStringConvertable
 		  
 		  records.MoveFirst // Reset the cursor
 		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -177,6 +187,21 @@ Implements JVCustomStringConvertable
 	#tag Property, Flags = &h0
 		indexPath() As Integer
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  dim pathComponents() as String
+			  for each component as Integer in indexPath
+			    pathComponents.append(Str(component))
+			  next component
+			  
+			  return  join(pathComponents, ".")
+			End Get
+		#tag EndGetter
+		indexString As String
+	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter

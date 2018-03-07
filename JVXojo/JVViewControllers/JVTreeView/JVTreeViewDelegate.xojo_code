@@ -7,6 +7,12 @@ Protected Interface JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub onListCollapseRow(sender as JVTreeView, row as Integer)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub onListDoubleClick(sender as JVTreeView)
 		  
 		End Sub
