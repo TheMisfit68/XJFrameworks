@@ -300,8 +300,6 @@ Inherits SQLiteDatabase
 		      next fieldNumber
 		      
 		      records.Update
-		      // dim pk as Integer = records.Field(pkFieldName).IntegerValue
-		      // affectedPKs.Append(pk)
 		      
 		    end if
 		    

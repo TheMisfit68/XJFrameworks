@@ -14,10 +14,10 @@ Implements NSViewDelegate
 		    
 		    // Encapsulate arrays using an NSArrayController
 		    // Dim controller as NSArrayController = new NSArrayController(model)
-		    // self.representedObject = controller 
+		    // self.node = controller 
 		    
 		  else
-		    self.representedObject = model
+		    self.node = model
 		  end if
 		End Sub
 	#tag EndMethod
@@ -85,7 +85,7 @@ Implements NSViewDelegate
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
-		representedObject As Object
+		node As Object
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

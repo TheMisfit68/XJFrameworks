@@ -2,20 +2,15 @@
 Protected Class JVPathFinder
 	#tag Method, Flags = &h0
 		Sub constructor()
-		  // Return a resourceFolder based on the platform and build state
-		  #if debugBuild then
-		    #if TargetWindows then
-		      baseFolder = app.ExecutableFile.Parent.Parent
-		    #else
-		      baseFolder = app.ExecutableFile.Parent.Parent.parent.Parent
-		    #Endif
+		  
+		  // Return a resourceFolder based on the platform
+		  
+		  #if TargetWindows then
+		    baseFolder = app.ExecutableFile.Parent
 		  #else
-		    #if TargetWindows then
-		      baseFolder = app.ExecutableFile.Parent
-		    #else
-		      baseFolder = app.ExecutableFile.Parent.Parent.Parent
-		    #Endif
-		  #endif
+		    baseFolder = app.ExecutableFile.Parent.Parent.Parent
+		  #Endif
+		  
 		End Sub
 	#tag EndMethod
 

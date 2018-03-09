@@ -154,7 +154,7 @@ Inherits NSViewController
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return Shell(representedObject)
+			  return Shell(node)
 			End Get
 		#tag EndGetter
 		terminal As Shell

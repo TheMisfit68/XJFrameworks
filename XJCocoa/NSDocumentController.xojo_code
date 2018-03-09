@@ -34,7 +34,7 @@ Protected Class NSDocumentController
 		  // and use its contents
 		  if newDocument.file <> nil then
 		    
-		    newDocument.representedObject = NSKeyedUnarchiver(newDocument.file)
+		    newDocument.node = NSKeyedUnarchiver(newDocument.file)
 		    newDocument.windowController.window.title = newDocument.file.DisplayName
 		    
 		    documents.Insert 0, newdocument

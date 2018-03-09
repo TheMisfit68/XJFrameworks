@@ -68,7 +68,7 @@ Implements JVTreeViewDelegate
 		      treeView.cell(newRowNumber, fieldNumber) = fieldValue.StringValue
 		      
 		      // Attach each field to the cell
-		      dim field as new Dictionary(fieldName: fieldValue)
+		      dim field as  Pair =  fieldName: fieldValue
 		      treeview.cellTag(newRowNumber, fieldNumber) = field
 		      
 		    next
@@ -102,36 +102,19 @@ Implements JVTreeViewDelegate
 
 	#tag Method, Flags = &h0
 		Sub onCellAction(sender as JVTreeview, row as Integer, column as Integer)
-		  // This is a mere test, this code should be refactored out of JVTreecontroller into the application level
 		  
-		  dim viewOrTabelName as String = "ProjectsList"
-		  dim fieldInfo as Dictionary = sender.cellTag(row, column)
-		  dim fieldName as String = fieldInfo.Key(0)
-		  dim newfieldValue as String = sender.cell(row, column)
-		  dim representedObject as NSTreenode = Sender.RowTag(row)
+		  dim currentNode as NSTreeNode = sender.rowtag(row)
+		  dim previousField as Pair = sender.cellTag(row, column)
+		  dim previousFieldName as String = previousField.left
+		  dim previousFieldValue as Variant = previousField.right
 		  
-		  dim keyPaths() as integer = representedObject.indexpath
-		  dim primaryKeyValue as integer = keyPaths(sender.RowDepth(row))
+		  dim changedFieldName as String = previousFieldName
+		  dim changedFieldValue as Variant = sender.cell(row, column)
+		  dim  changedField as Pair =  changedFieldName : changedFieldValue
 		  
-		  dim sourceInfo as Dictionary = app.dataModel.aliasSchema.value(viewOrTabelName+"."+fieldName)
-		  dim sourceTable as String = sourceInfo.Value("table")
-		  dim sourcField as String = sourceInfo.Value("field")
-		  dim pkFieldName as String = app.dataModel.pkForTable(sourceTable)
-		  
-		  
-		  dim request as new DatabaseRecord
-		  request.IntegerColumn(pkFieldName) = primaryKeyValue
-		  
-		  dim record as new DatabaseRecord
-		  record.Column(sourcField) = newfieldValue
-		  
-		  // Perform the update
-		  app.dataModel.goToLayoutOrView(sourceTable)
-		  app.dataModel.enterMode(JVFPProxy.MODES.Find)
-		  app.dataModel.addRequest(request)
-		  app.dataModel.executeFind
-		  
-		  dim test as Integer = app.dataModel.editRecord(record)
+		  if changedFieldValue <> previousField then
+		    sender.treeViewDataSource.editNode(currentnode, changedField)
+		  end if
 		End Sub
 	#tag EndMethod
 
@@ -144,10 +127,10 @@ Implements JVTreeViewDelegate
 		    
 		    dim collapsedNode as NStreeNode = sender.RowTag(row)
 		    dim indexString as String = collapsedNode.indexString
-		    dim index as Integer = expandedRows.IndexOf(indexString)
+		    dim index as Integer = expandedNodes.IndexOf(indexString)
 		    
 		    if index <= 0 then
-		      expandedRows.Remove(index)
+		      expandedNodes.Remove(index)
 		    end if
 		    
 		  end if
@@ -177,10 +160,10 @@ Implements JVTreeViewDelegate
 		    next
 		    
 		    dim indexString as String = expandedNode.indexString
-		    dim index as Integer = expandedRows.IndexOf(indexString)
+		    dim index as Integer = expandedNodes.IndexOf(indexString)
 		    
 		    if index < 0 then
-		      expandedRows.append(indexString)
+		      expandedNodes.append(indexString)
 		    end if
 		    
 		  end if
@@ -200,22 +183,22 @@ Implements JVTreeViewDelegate
 		  // Part of the JVTreeViewDelegate interface.
 		  
 		  if sender.ListIndex >= 0 and sender.ListIndex < sender.ListCount then
-		    selectedObject = treeView.rowTag(sender.ListIndex)
+		    selectedNode = treeView.rowTag(sender.ListIndex)
 		  else
-		    selectedObject = nil
+		    selectedNode = nil
 		  end if
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub restoreExpandedRows()
+		Private Sub restoreExpandedNodes()
 		  
 		  
 		  for row as Integer = 0 to treeView.ListCount -1
 		    dim node as NSTreeNode = treeview.RowTag(row)
 		    dim indexString as String = node.indexString
-		    dim wasExpandedBefore as Boolean = (expandedRows.IndexOf(indexString) >= 0)
+		    dim wasExpandedBefore as Boolean = (expandedNodes.IndexOf(indexString) >= 0)
 		    treeView.Expanded(row) = wasExpandedBefore
 		  next row
 		  
@@ -236,7 +219,7 @@ Implements JVTreeViewDelegate
 		        displayNode(node)
 		      next
 		      
-		      restoreExpandedRows
+		      restoreexpandedNodes
 		      
 		    end if
 		    
@@ -253,11 +236,11 @@ Implements JVTreeViewDelegate
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		expandedRows() As String
+		expandedNodes() As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		selectedObject As Variant
+		selectedNode As NSTreeNode
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

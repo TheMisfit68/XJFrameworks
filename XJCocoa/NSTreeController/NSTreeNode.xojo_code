@@ -59,6 +59,7 @@ Implements JVCustomStringConvertable
 		        oldBranchHasEnded = False
 		        newBranchStarted = False 
 		      end if
+		      
 		      if  itsTheLastField then
 		        oldBranchHasEnded = True
 		        newBranchStarted = False
@@ -98,7 +99,9 @@ Implements JVCustomStringConvertable
 		          dim keys() as String = split(currentKeyPathString,".")
 		          dim keyForBranch as Integer
 		          for branchNumber as Integer = 0 to activeBranches.Ubound
-		            if branchNumber <= activeBranchNumber then
+		            if not newBranchStarted and branchNumber <= activeBranchNumber then
+		              keyForBranch = val(keys(branchNumber))
+		            elseif newBranchStarted and branchNumber < activeBranchNumber then
 		              keyForBranch = val(keys(branchNumber))
 		            else
 		              keyForBranch = 0
@@ -108,7 +111,6 @@ Implements JVCustomStringConvertable
 		          
 		          currentNode.parent.children.Append(currentNode)
 		          
-		          system.debuglog("Creating node "+currentNode.indexString)
 		          
 		        end if
 		        
@@ -153,7 +155,7 @@ Implements JVCustomStringConvertable
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub constructor(representedObject as Variant= nil)
+		Sub constructor(representedObject as Variant=nil)
 		  
 		  me.representedObject = representedObject
 		  
@@ -228,6 +230,12 @@ Implements JVCustomStringConvertable
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="indexString"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="isLeaf"

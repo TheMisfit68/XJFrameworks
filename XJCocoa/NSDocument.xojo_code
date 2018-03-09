@@ -14,7 +14,7 @@ Protected Class NSDocument
 		  
 		  file = nil
 		  
-		  representedObject = nil
+		  node = nil
 		  
 		  windowController = nil
 		  
@@ -28,7 +28,7 @@ Protected Class NSDocument
 
 	#tag Method, Flags = &h0
 		Sub loadData()
-		  representedObject = NSKeyedUnarchiver.unarchiveObject(file)
+		  node = NSKeyedUnarchiver.unarchiveObject(file)
 		  
 		End Sub
 	#tag EndMethod
@@ -41,7 +41,7 @@ Protected Class NSDocument
 		  
 		  if file <> nil then
 		    
-		    NSKeyedArchiver.archiveObject(representedObject, file)
+		    NSKeyedArchiver.archiveObject(node, file)
 		    
 		    if isSaved then
 		      windowController.window.title = file.DisplayName
@@ -59,7 +59,7 @@ Protected Class NSDocument
 		  
 		  if file <> nil then
 		    
-		    NSKeyedArchiver.archiveObject(representedObject, file)
+		    NSKeyedArchiver.archiveObject(node, file)
 		    
 		    if isSaved then
 		      windowController.window.title = file.DisplayName
@@ -110,7 +110,7 @@ Protected Class NSDocument
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		representedObject As Variant
+		node As Variant
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
