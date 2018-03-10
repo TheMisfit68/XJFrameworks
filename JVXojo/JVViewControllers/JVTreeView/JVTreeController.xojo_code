@@ -119,7 +119,7 @@ Implements JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub onlistcollapseRow(sender as JVTreeView, row as Integer)
+		Sub onlistCollapseRow(sender as JVTreeView, row as Integer)
 		  
 		  // Part of the JVTreeViewDelegate interface.
 		  

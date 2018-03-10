@@ -1,6 +1,70 @@
 #tag Class
 Protected Class JVTreeView
 Inherits ListBox
+	#tag Event
+		Function CellBackgroundPaint(g As Graphics, row As Integer, column As Integer) As Boolean
+		  me.drawCellType(g, row, column)
+		  
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Function MouseDown(x As Integer, y As Integer) As Boolean
+		  
+		  dim rowAndColumn as Pair = rowAndColumnClicked(x, y)
+		  dim row as Integer = rowAndColumn.left
+		  dim column as Integer = rowAndColumn.right
+		  
+		  activateCellType(row, column)
+		  
+		End Function
+	#tag EndEvent
+
+
+	#tag Method, Flags = &h0
+		Sub activateCellType(row as integer, column as integer)
+		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		    
+		    dim fieldInfo as Pair = me.CellTag(row, column)
+		    dim fieldName as String
+		    if fieldInfo <> nil then
+		      fieldName = FieldInfo.left
+		    end if
+		    
+		    dim currentCellType as JVCellType = treeViewDataSource.cellType(fieldName)
+		    Select Case currentCellType.type
+		      
+		    Case JVCellType.TYPES.PopUpMenu
+		      
+		      Me.ListIndex = row
+		      Me.Selected(row) = True
+		      
+		      // Create a pupmenu and pop it open
+		      dim lookupValues() as String = currentCellType.lookupValues
+		      if (lookupValues <> nil) and (lookupValues.Ubound >= 0) then
+		        dim popUpMenu as new MenuItem
+		        for each lookupValue as String in lookupValues
+		          popUpmenu.Append(New MenuItem(lookupValue))
+		        next
+		        
+		        Dim selectedMenu As MenuItem
+		        selectedMenu = popUpMenu.PopUp
+		        If selectedMenu <> Nil Then
+		          // Change te value of the Field here eventualy
+		        end if
+		        InvalidateCell(row, column)
+		      end if
+		      
+		    Case Else
+		      // Do nothing special when any regular cell is clicked
+		    End Select
+		    
+		  end if
+		  
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub constructor()
 		  // Calling the overridden superclass constructor.
@@ -10,25 +74,75 @@ Inherits ListBox
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub drawPopUpTriangle(g as Graphics, row as integer, column as Integer, optional color as Color =  &cC0C0C0)
+		Sub drawCellType(g as Graphics, row as integer, column as integer)
 		  
-		  // Draw an arrow to indicate that clicking this field will
-		  // display a menu
-		  g.ForeColor = color
-		  
-		  // Points for a triangle on the left side of the cell
-		  Dim points(6) As Integer
-		  points(1) = 2
-		  points(2) = 2
-		  points(3) = 12
-		  points(4) = 2
-		  points(5) =7
-		  points(6) = 12
-		  
-		  g.FillPolygon(points)
-		  
-		  me.CellAlignmentOffset(row, column) = 10
+		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		    
+		    dim fieldInfo as Pair = me.CellTag(row, column)
+		    dim fieldName as String
+		    if fieldInfo <> nil then
+		      fieldName = FieldInfo.left
+		    end if
+		    
+		    dim currentCellType as JVCellType = treeViewDataSource.cellType(fieldName)
+		    Select Case currentCellType.type
+		      
+		    Case JVCellType.TYPES.PopUpMenu
+		      
+		      // Draw an arrow to indicate that clicking this field will
+		      // display a menu
+		      g.ForeColor = &cC0C0C0
+		      
+		      // Points for a triangle on the left side of the cell
+		      Dim points(6) As Integer
+		      points(1) = 2
+		      points(2) = 2
+		      points(3) = 12
+		      points(4) = 2
+		      points(5) =7
+		      points(6) = 12
+		      
+		      g.FillPolygon(points)
+		      
+		      me.CellAlignmentOffset(row, column) = 10
+		      
+		    Case JVCellType.TYPES.PopupList
+		      
+		      // Not yet implemented
+		      
+		    Case JVCellType.TYPES.CheckBox
+		      
+		      CellType(row, column) = Listbox.TypeCheckbox
+		      
+		    Case JVCellType.TYPES.Radiobutton
+		      
+		      // Not yet implemented
+		      
+		    Case JVCellType.TYPES.TextField
+		      
+		      CellType(row, column) = Listbox.TypeEditableTextField
+		      
+		    Case Else
+		      
+		      CellType(row, column) = Listbox.TypeDefault
+		      
+		    End Select
+		    
+		  end if
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function rowAndColumnClicked(x as Integer, y as integer) As pair
+		  
+		  Dim row As Integer = RowFromXY(x, y)
+		  Dim column As Integer = ColumnFromXY(x, y)
+		  dim rowAndColumn as pair =  row : column
+		  
+		  return rowAndColumn
+		  
+		  
+		End Function
 	#tag EndMethod
 
 

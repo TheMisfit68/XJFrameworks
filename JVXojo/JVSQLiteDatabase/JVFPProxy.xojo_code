@@ -133,6 +133,7 @@ Implements JVBackgroundTaskDelegate
 		      mfoundSet = nil
 		      mfoundSet = selectRecords(currentLayout, requests)
 		      enterMode(MODES.Browse)
+		      goToRecord(1)
 		      
 		    end if
 		    
@@ -159,10 +160,11 @@ Implements JVBackgroundTaskDelegate
 		  
 		  if mfoundSet <> nil then
 		    
+		    mfoundSet.MoveFirst
 		    while not mfoundSet.EOF
 		      dim record as new DatabaseRecord
 		      
-		      for  fieldNumber as Integer =  0 to mfoundSet.FieldCount-1
+		      for  fieldNumber as Integer =  1 to mfoundSet.FieldCount
 		        dim field as DatabaseField = mfoundSet.IdxField(fieldNumber)
 		        dim fieldName as String = field.Name
 		        dim fieldValue as Variant = field.Value
@@ -170,6 +172,8 @@ Implements JVBackgroundTaskDelegate
 		      next fieldNumber
 		      
 		      databaseRecords.Append(record)
+		      
+		      mfoundSet.MoveNext
 		    wend
 		    
 		  end if 
@@ -242,6 +246,8 @@ Implements JVBackgroundTaskDelegate
 		  
 		  mfoundSet = engine.foundRecords
 		  enterMode(MODES.Browse)
+		  goToRecord(1)
+		  
 		  
 		End Sub
 	#tag EndMethod
@@ -283,7 +289,7 @@ Implements JVBackgroundTaskDelegate
 			Get
 			  
 			  dim allrecords() as DatabaseRecord = foundSet
-			  return allrecords(currentRecordNumber)
+			  return allrecords(currentRecordNumber-1)
 			End Get
 		#tag EndGetter
 		currentRecord As DatabaseRecord
@@ -339,6 +345,11 @@ Implements JVBackgroundTaskDelegate
 				"1 - Find"
 				"2 - Layout"
 			#tag EndEnumValues
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="currentRecordNumber"
+			Group="Behavior"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DatabaseFile"

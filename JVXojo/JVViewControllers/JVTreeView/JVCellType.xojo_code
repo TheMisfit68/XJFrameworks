@@ -1,16 +1,30 @@
-#tag Interface
-Protected Interface JVTreeViewDataSource
+#tag Class
+Protected Class JVCellType
 	#tag Method, Flags = &h0
-		Function cellType(fieldName as String) As JVCellType
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub editNode(node as NSTreeNode, fieldToChange as Pair)
-		  
+		Sub constructor(type as TYPES, optional lookupValues() as String = nil)
+		  me.type =type
+		  me.lookupValues = lookupValues
 		End Sub
 	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		lookupValues() As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		type As TYPES
+	#tag EndProperty
+
+
+	#tag Enum, Name = TYPES, Type = Integer, Flags = &h0
+		PopUpMenu
+		  PopupList
+		  CheckBox
+		  Radiobutton
+		  TextField
+		TextArea
+	#tag EndEnum
 
 
 	#tag ViewBehavior
@@ -26,6 +40,11 @@ Protected Interface JVTreeViewDataSource
 			Visible=true
 			Group="Position"
 			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="lookupValues()"
+			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -47,6 +66,11 @@ Protected Interface JVTreeViewDataSource
 			InitialValue="0"
 			Type="Integer"
 		#tag EndViewProperty
+		#tag ViewProperty
+			Name="type"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
 	#tag EndViewBehavior
-End Interface
-#tag EndInterface
+End Class
+#tag EndClass
