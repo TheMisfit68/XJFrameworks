@@ -20,8 +20,8 @@ Implements JVTreeViewDelegate
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub displayNode(node as NSTreeNode)
+	#tag Method, Flags = &h1
+		Protected Sub displayNode(node as NSTreeNode)
 		  
 		  if node <> nil then
 		    
