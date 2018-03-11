@@ -14,10 +14,10 @@ Implements NSViewDelegate
 		    
 		    // Encapsulate arrays using an NSArrayController
 		    // Dim controller as NSArrayController = new NSArrayController(model)
-		    // self.node = controller 
+		    // self.model = controller 
 		    
 		  else
-		    self.node = model
+		    self.represenTedObject = model
 		  end if
 		End Sub
 	#tag EndMethod
@@ -75,17 +75,23 @@ Implements NSViewDelegate
 		#tag Getter
 			Get
 			  
-			  dim windowController as NSWIndowController = NSWindow(me.view.trueWindow).owner
-			  if windowController.document <> nil then
-			    return windowController.document
+			  
+			  if self.view.isInstalled  then
+			    dim myParentWindow as NSWindow = NSWindow(self.view.trueWindow)
+			    dim myParentWindowController as NSWindowController = NSWindowController(myParentWindow.owner)
+			    if (myParentWindowController.document <> nil) then
+			      return myParentWindowController.document
+			    end if
 			  end if
+			  
+			  return representedObject
 			End Get
 		#tag EndGetter
 		model As Variant
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
-		node As Object
+		representedObject As Object
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

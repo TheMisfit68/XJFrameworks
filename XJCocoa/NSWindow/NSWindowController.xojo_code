@@ -12,12 +12,12 @@ Implements NSWindowDelegate
 		  if model isa NSDocument then
 		    
 		    self.document = model
-		    self.node = document.node
+		    self.representedObject = document.node
 		    
 		  else
 		    
 		    self.document = nil
-		    self.node = model
+		    self.representedObject = model
 		    
 		  end if
 		  
@@ -112,7 +112,7 @@ Implements NSWindowDelegate
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		node As Object
+		representedObject As Object
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

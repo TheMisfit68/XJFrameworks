@@ -270,7 +270,7 @@ Implements NSWindowDelegate,JVPrefsChangedNotifier
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return JVprefs(node)
+			  return JVprefs(representedObject)
 			End Get
 		#tag EndGetter
 		prefs As JVPrefs
