@@ -89,22 +89,35 @@ Inherits ListBox
 		      
 		    Case JVCellType.TYPES.PopUpMenu
 		      
+		      dim extraOffset as Integer =0
+		      if column = 0 then
+		        extraOffset  = rowDepth(row)*14
+		      end if
+		      
 		      // Draw an arrow to indicate that clicking this field will
 		      // display a menu
-		      g.ForeColor = &cC0C0C0
+		      g.ForeColor = &cDFDFDF // Ultra light gray
+		      
+		      g.PenHeight = 1
+		      g.FILLRoundRect(extraOffset+2, 1, g.Width-extraOffset-4, g.Height-2, 10, 10)
+		      
+		      // 
+		      g.ForeColor = NSColor.LightGrey
+		      g.DrawLine(extraOffset+30, 1, extraOffset+30,1+g.Height-2)
 		      
 		      // Points for a triangle on the left side of the cell
 		      Dim points(6) As Integer
-		      points(1) = 2
-		      points(2) = 2
-		      points(3) = 12
-		      points(4) = 2
-		      points(5) =7
-		      points(6) = 12
+		      points(1) = extraOffset+10
+		      points(2) = 4
+		      points(3) = extraOffset+20
+		      points(4) = 4 
+		      points(5) = extraOffset+15
+		      points(6) = 14 
 		      
 		      g.FillPolygon(points)
 		      
-		      me.CellAlignmentOffset(row, column) = 10
+		      me.CellAlignmentOffset(row, column) =30
+		      
 		      
 		    Case JVCellType.TYPES.PopupList
 		      

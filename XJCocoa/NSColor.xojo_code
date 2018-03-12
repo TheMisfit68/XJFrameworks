@@ -75,7 +75,7 @@ Protected Class NSColor
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return &c000000
+			  return &cFFFFFF
 			End Get
 		#tag EndGetter
 		Shared White As Color

@@ -78,12 +78,12 @@ Inherits SQLiteDatabase
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function lastRowIDFromTable(baseTableName as String) As Integer
+		Private Function lastRowIDFromTable(baseTableName as Variant) As Integer
 		  dim sqlString as String = "select seq from sqlite_sequence where name=?"
 		  dim sqlStatement as SQLitePreparedStatement = Prepare(sqlString)
 		  
-		  dim allVariables() as Variant = concatenate(array(baseTableName))
-		  sqlStatement.bindVariables(allVariables)
+		  dim variables() as Variant = array(baseTableName)
+		  sqlStatement.bindVariables(variables)
 		  
 		  dim recordsFound as recordset = sqlStatement.SQLSelect
 		  
