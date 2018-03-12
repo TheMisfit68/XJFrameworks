@@ -94,7 +94,7 @@ Implements JVCustomStringConvertable
 		        end if
 		        
 		        // Create the relitionships between the parent and the children
-		         if  (activeBranchNumber > 0) then
+		        if  (activeBranchNumber > 0) then
 		          currentNode.parent = activeBranches(activeBranchNumber-1)
 		        else
 		          currentNode.parent = baseNode
@@ -105,7 +105,7 @@ Implements JVCustomStringConvertable
 		        dim keys() as String = split(currentKeyPathString,".")
 		        dim keyForBranch as Integer
 		        for branchNumber as Integer = 0 to activeBranches.Ubound
-		          if  branchNumber <= activeBranchNumber then
+		          if  (branchNumber <= activeBranchNumber) and (branchNumber <= keys.Ubound) then
 		            keyForBranch = val(keys(branchNumber))
 		          else
 		            keyForBranch = 0
