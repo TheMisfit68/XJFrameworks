@@ -3,7 +3,9 @@ Protected Class JVTreeView
 Inherits ListBox
 	#tag Event
 		Function CellBackgroundPaint(g As Graphics, row As Integer, column As Integer) As Boolean
-		  me.drawCellType(g, row, column)
+		  
+		   me.drawCellType(g, row, column)
+		  
 		  
 		End Function
 	#tag EndEvent
@@ -88,6 +90,8 @@ Inherits ListBox
 		    Select Case currentCellType.type
 		      
 		    Case JVCellType.TYPES.PopUpMenu
+		      
+		      
 		      
 		      dim extraOffset as Integer =0
 		      if column = 0 then

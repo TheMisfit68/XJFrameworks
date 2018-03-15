@@ -176,6 +176,8 @@ Implements JVBackgroundTaskDelegate
 		      mfoundSet.MoveNext
 		    wend
 		    
+		    mfoundSet.MoveFirst
+		    
 		  end if 
 		  
 		  return databaseRecords
@@ -271,7 +273,7 @@ Implements JVBackgroundTaskDelegate
 		
 		Essential are
 		the mFoundset-private propety, a recordset used for all write-operations to the SQL-background
-		the foundSet-method that acts as a computed property that provides DatabaseRecord() and 
+		the foundSet-method that acts as a computed property that provides a DatabaseRecord() and 
 		is used to read and parse the SQL-data on a higher level
 	#tag EndNote
 
@@ -310,7 +312,13 @@ Implements JVBackgroundTaskDelegate
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mfoundSet.RecordCount
+			  
+			  if  (mfoundSet.RecordCount > 0)  and not (mfoundSet.EOF) then
+			    return mfoundSet.RecordCount
+			  else
+			    return 0
+			  end if
+			  
 			End Get
 		#tag EndGetter
 		recordCount As Integer

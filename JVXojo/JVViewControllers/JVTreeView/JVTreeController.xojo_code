@@ -231,6 +231,15 @@ Implements JVTreeViewDelegate
 	#tag EndMethod
 
 
+	#tag Note, Name = Class Description
+		
+		JVTreeController is class that handles a JVTreeView (a.k.a a hiërchical listbox) on behalf of a viewcontroller.
+		
+		The controller needs a NSTreeNode as its datasource wich gets attached to the property 'arrangedObjects'
+		The constructors for NSTreeNode create a hiërarchical node-tree from a flat source (e.g. a recordset)
+	#tag EndNote
+
+
 	#tag Property, Flags = &h0
 		arrangedObjects As NSTreeNode
 	#tag EndProperty
