@@ -129,7 +129,7 @@ Implements JVTreeViewDelegate
 		    dim indexString as String = collapsedNode.indexString
 		    dim index as Integer = expandedNodes.IndexOf(indexString)
 		    
-		    if index <= 0 then
+		    if index >= 0 then
 		      expandedNodes.Remove(index)
 		    end if
 		    

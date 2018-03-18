@@ -4,7 +4,7 @@ Inherits ListBox
 	#tag Event
 		Function CellBackgroundPaint(g As Graphics, row As Integer, column As Integer) As Boolean
 		  
-		   me.drawCellType(g, row, column)
+		  me.drawCellType(g, row, column)
 		  
 		  
 		End Function

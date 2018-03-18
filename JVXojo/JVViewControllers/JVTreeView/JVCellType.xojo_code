@@ -43,11 +43,6 @@ Protected Class JVCellType
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="lookupValues()"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
@@ -69,7 +64,16 @@ Protected Class JVCellType
 		#tag ViewProperty
 			Name="type"
 			Group="Behavior"
-			Type="Integer"
+			Type="TYPES"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - PopUpMenu"
+				"1 - PopupList"
+				"2 - CheckBox"
+				"3 - Radiobutton"
+				"4 - TextField"
+				"5 - TextArea"
+			#tag EndEnumValues
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

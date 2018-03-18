@@ -356,7 +356,7 @@ Inherits SQLiteDatabase
 			          
 			          // Filter out the relevant part
 			          dim sqlString  as String = tablesInfo.field("sql")
-			          sqlString = ReplaceLineEndings(sqlString,"")
+			          sqlString = ReplaceLineEndings(sqlString," ")
 			          sqlString = sqlString.Replace("^.*SELECT\s+(.*)\s+FROM.*$","$1",True)
 			          sqlString = sqlString.Replace("\s*,\s*",ENDOFLINE, True)
 			          dim fieldAssignments() as String =  Split(sqlString, ENDOFLINE)

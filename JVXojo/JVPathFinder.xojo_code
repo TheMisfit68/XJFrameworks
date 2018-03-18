@@ -6,9 +6,21 @@ Protected Class JVPathFinder
 		  // Return a resourceFolder based on the platform
 		  
 		  #if TargetWindows then
-		    baseFolder = app.ExecutableFile.Parent
+		    
+		    #if DebugBuild then
+		      baseFolder = app.ExecutableFile.Parent
+		    #else
+		      baseFolder = app.ExecutableFile.Parent
+		    #Endif
+		    
 		  #else
-		    baseFolder = app.ExecutableFile.Parent.Parent.Parent
+		    
+		    #if DebugBuild then
+		      baseFolder = app.ExecutableFile.Parent.Parent.Parent.Parent
+		    #else
+		      baseFolder = app.ExecutableFile.Parent.Parent.Parent
+		    #Endif
+		    
 		  #Endif
 		  
 		End Sub
