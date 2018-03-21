@@ -1,9 +1,20 @@
 #tag Module
 Protected Module JVStringExtensions
 	#tag Method, Flags = &h0
-		Function contains(extends baseString as String, searchPattern as string) As Boolean
-		  
-		  return (baseString.InStr(searchPattern) <> 0)
+		Function contains(extends baseString as String, searchPattern as string, optional useRegex as Boolean = False) As Boolean
+		  if useRegex then
+		    
+		    dim regex as RegEx = new RegEx
+		    regex.SearchPattern = searchPattern 
+		    dim matches as RegExMatch = regex.Search(baseString )
+		    
+		    return  (matches <> nil) and (matches.SubExpressionCount > 0)
+		    
+		  else
+		    
+		    return (baseString.InStr(searchPattern) <> 0)
+		    
+		  end if
 		End Function
 	#tag EndMethod
 

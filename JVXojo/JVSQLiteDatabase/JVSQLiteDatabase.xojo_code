@@ -257,7 +257,7 @@ Inherits SQLiteDatabase
 
 	#tag Method, Flags = &h0
 		Function updateRecords(baseTableName as String, records as RecordSet, newFields as DatabaseRecord, optional wholeSet as Boolean = False) As Integer()
-		  
+		  dim pk as Integer 
 		  dim affectedPKs() as Integer
 		  dim pkFieldName as String = pkForTable(baseTableName)
 		  
@@ -283,7 +283,7 @@ Inherits SQLiteDatabase
 		        next fieldNumber
 		        
 		        records.Update
-		        dim pk as Integer = records.Field(pkFieldName).IntegerValue
+		        pk = records.Field(pkFieldName).IntegerValue
 		        affectedPKs.Append(pk)
 		        
 		        records.MoveNext
@@ -300,6 +300,8 @@ Inherits SQLiteDatabase
 		      next fieldNumber
 		      
 		      records.Update
+		      pk = records.Field(pkFieldName).IntegerValue
+		      affectedPKs.Append(pk)
 		      
 		    end if
 		    
@@ -327,8 +329,9 @@ Inherits SQLiteDatabase
 			    if tablesInfo <> nil then
 			      while not tablesInfo.EOF
 			        
-			        dim baseTableName as String = tablesInfo.field("tbl_name")
+			        dim viewName as String= tablesInfo.field("tbl_name")
 			        dim baseTableType as String = tablesInfo.field("type")
+			        dim baseTableName as String
 			        
 			        dim tableName as String
 			        dim fieldName as String
@@ -337,15 +340,18 @@ Inherits SQLiteDatabase
 			        
 			        Select Case baseTableType
 			        Case "table"
+			          baseTableName = viewName
+			          tableName =  baseTableName
 			          
 			          dim fieldInfo  as RecordSet = fieldSchema(baseTableName)
 			          while not fieldInfo.EOF
 			            
 			            fieldName = fieldInfo.field("ColumnName")
+			            fullyQualifiedAliasName  = tableName+"."+fieldName
 			            
 			            // Assign to the result
 			            sourceInfo = new Dictionary
-			            sourceInfo.Value("table") = baseTableName
+			            sourceInfo.Value("table") = tableName
 			            sourceInfo.Value("field") = fieldName
 			            maliasSchema.value(fullyQualifiedAliasName) = sourceInfo
 			            
@@ -357,19 +363,22 @@ Inherits SQLiteDatabase
 			          // Filter out the relevant part
 			          dim sqlString  as String = tablesInfo.field("sql")
 			          sqlString = ReplaceLineEndings(sqlString," ")
-			          sqlString = sqlString.Replace("^.*SELECT\s+(.*)\s+FROM.*$","$1",True)
-			          sqlString = sqlString.Replace("\s*,\s*",ENDOFLINE, True)
-			          dim fieldAssignments() as String =  Split(sqlString, ENDOFLINE)
+			          dim fieldAssignmentString as String = sqlString.Replace(StatementPattern,"$1",True)
+			          baseTableName = sqlString.Replace(StatementPattern,"$2",True)
 			          
-			          // Split into tablename, fieldname and alias
+			          fieldAssignmentString = fieldAssignmentString.Replace("\s*,\s*",ENDOFLINE, True)
+			          dim fieldAssignments() as String =  Split(fieldAssignmentString, ENDOFLINE)
+			          
+			          // Split into viewName, fieldname and alias
 			          for each fieldAssignment as String in fieldAssignments
 			            
+			            dim fieldAssignmentPatteren as String = "(.*)\s(?:AS\s)?(.*)?"
 			            dim fieldPart as String
-			            dim aliasPart as String
-			            if fieldAssignment.contains(" ") then
+			            dim aliasPart as String 
+			            if fieldAssignment.contains("(.*)\s(?:AS\s)?(.*)?", True) then
 			              
-			              fieldPart = fieldAssignment.replace("(.*)\s(?:AS\s)?(.*)?","$1", True)
-			              aliasPart= fieldAssignment.replace("(.*)\s(?:AS\s)?(.*)?","$2", True)
+			              fieldPart = fieldAssignment.replace(fieldAssignmentPatteren,"$1", True)
+			              aliasPart= fieldAssignment.replace(fieldAssignmentPatteren,"$2", True)
 			              
 			            else
 			              
@@ -387,9 +396,9 @@ Inherits SQLiteDatabase
 			            end if
 			            
 			            if aliasPart.contains(".") then
-			              fullyQualifiedAliasName  = baseTableName+"."+aliasPart.NthField( ".", 2)
+			              fullyQualifiedAliasName  = viewName+"."+aliasPart.NthField( ".", 2)
 			            else
-			              fullyQualifiedAliasName  = baseTableName+"."+aliasPart
+			              fullyQualifiedAliasName  = viewName+"."+aliasPart
 			            end if
 			            
 			            // Assign to the result
@@ -428,6 +437,15 @@ Inherits SQLiteDatabase
 	#tag Property, Flags = &h21
 		Private maliasSchema As Dictionary
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return  "^.*SELECT\s+(.*?)\s+FROM\s+([^ ]+).*$"
+			End Get
+		#tag EndGetter
+		Shared StatementPattern As String
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior

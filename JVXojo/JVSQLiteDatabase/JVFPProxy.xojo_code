@@ -313,7 +313,7 @@ Implements JVBackgroundTaskDelegate
 		#tag Getter
 			Get
 			  
-			  if  (mfoundSet.RecordCount > 0)  and not (mfoundSet.EOF) then
+			  if  (mfoundSet <> nil)  and (mfoundSet.RecordCount > 0)  and not (mfoundSet.EOF) then
 			    return mfoundSet.RecordCount
 			  else
 			    return 0
