@@ -112,7 +112,7 @@ Implements JVTreeViewDelegate
 		  dim changedFieldValue as Variant = sender.cell(row, column)
 		  dim  changedField as Pair =  changedFieldName : changedFieldValue
 		  
-		  if changedFieldValue <> previousField then
+		  if changedFieldValue <> previousFieldValue then
 		    sender.treeViewDataSource.editNode(currentnode, changedField)
 		  end if
 		End Sub

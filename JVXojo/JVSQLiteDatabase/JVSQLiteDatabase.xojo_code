@@ -325,34 +325,29 @@ Inherits SQLiteDatabase
 			    
 			    maliasSchema = new Dictionary
 			    
-			    dim tablesInfo as Recordset = SQLSelect("SELECT * FROM sqlite_master")
+			    dim tablesInfo as Recordset = SQLSelect("SELECT * FROM sqlite_master ORDER BY type")
 			    if tablesInfo <> nil then
 			      while not tablesInfo.EOF
 			        
 			        dim viewName as String= tablesInfo.field("tbl_name")
-			        dim baseTableType as String = tablesInfo.field("type")
-			        dim baseTableName as String
+			        dim viewType as String = tablesInfo.field("type")
 			        
-			        dim tableName as String
-			        dim fieldName as String
 			        dim fullyQualifiedAliasName as String
-			        dim sourceInfo as Dictionary
+			        dim baseTableName as String
+			        dim fieldName as String
 			        
-			        Select Case baseTableType
+			        Select Case viewType
 			        Case "table"
 			          baseTableName = viewName
-			          tableName =  baseTableName
 			          
 			          dim fieldInfo  as RecordSet = fieldSchema(baseTableName)
 			          while not fieldInfo.EOF
 			            
 			            fieldName = fieldInfo.field("ColumnName")
-			            fullyQualifiedAliasName  = tableName+"."+fieldName
 			            
 			            // Assign to the result
-			            sourceInfo = new Dictionary
-			            sourceInfo.Value("table") = tableName
-			            sourceInfo.Value("field") = fieldName
+			            dim sourceInfo as new Dictionary("table" : baseTableName, "field" : fieldName)
+			            fullyQualifiedAliasName = baseTableName+"."+fieldName
 			            maliasSchema.value(fullyQualifiedAliasName) = sourceInfo
 			            
 			            fieldInfo.MoveNext
@@ -363,48 +358,46 @@ Inherits SQLiteDatabase
 			          // Filter out the relevant part
 			          dim sqlString  as String = tablesInfo.field("sql")
 			          sqlString = ReplaceLineEndings(sqlString," ")
-			          dim fieldAssignmentString as String = sqlString.Replace(StatementPattern,"$1",True)
-			          baseTableName = sqlString.Replace(StatementPattern,"$2",True)
+			          dim fieldsWithAliasesString as String = sqlString.Replace(SQLstatementPattern,"$1",True)
+			          // baseTableName = sqlString.Replace(SQLstatementPattern,"$2",True)
 			          
-			          fieldAssignmentString = fieldAssignmentString.Replace("\s*,\s*",ENDOFLINE, True)
-			          dim fieldAssignments() as String =  Split(fieldAssignmentString, ENDOFLINE)
+			          fieldsWithAliasesString = fieldsWithAliasesString.Replace("\s*,\s*",ENDOFLINE, True)
+			          dim fieldsWithAliases() as String =  Split(fieldsWithAliasesString, ENDOFLINE)
 			          
 			          // Split into viewName, fieldname and alias
-			          for each fieldAssignment as String in fieldAssignments
+			          for each fieldsWithAlias as String in fieldsWithAliases
 			            
-			            dim fieldAssignmentPatteren as String = "(.*)\s(?:AS\s)?(.*)?"
-			            dim fieldPart as String
-			            dim aliasPart as String 
-			            if fieldAssignment.contains("(.*)\s(?:AS\s)?(.*)?", True) then
-			              
-			              fieldPart = fieldAssignment.replace(fieldAssignmentPatteren,"$1", True)
-			              aliasPart= fieldAssignment.replace(fieldAssignmentPatteren,"$2", True)
-			              
+			            dim fieldsWithAliasPattern as String = "(.*)\s(?:AS\s)?(.*)?"
+			            fieldName = fieldsWithAlias.replace(fieldsWithAliasPattern,"$1", True)
+			            
+			            dim aliasName as String
+			            if fieldsWithAlias.contains(fieldsWithAliasPattern, true) then
+			              aliasName = fieldsWithAlias.replace(fieldsWithAliasPattern,"$2", True)
 			            else
-			              
-			              fieldPart = fieldAssignment
-			              aliasPart = fieldAssignment
-			              
+			              aliasName = fieldName.NthField( ".", fieldName.CountFields("."))
 			            end if
 			            
-			            if fieldPart.contains(".") then
-			              tableName = fieldPart.NthField( ".", 1)
-			              fieldName = fieldPart.NthField( ".", 2)
+			            // Only store the result if the fieldName includes the tableName
+			            if fieldName.contains(".") then
+			              
+			              baseTableName = fieldName.NthField( ".", 1)
+			              fieldName = fieldName.NthField( ".", fieldName.CountFields("."))
+			              
 			            else
-			              tableName = baseTableName
-			              fieldName = fieldPart
-			            end if
-			            
-			            if aliasPart.contains(".") then
-			              fullyQualifiedAliasName  = viewName+"."+aliasPart.NthField( ".", 2)
-			            else
-			              fullyQualifiedAliasName  = viewName+"."+aliasPart
+			              
+			              // otherwise try to find the matching table from the exisitng entries
+			              for each existingEntry as Dictionary  in maliasSchema.values
+			                
+			                if existingEntry.value("field") = fieldName then
+			                  baseTableName = existingEntry.value("table")
+			                end if
+			              next existingEntry
+			              
 			            end if
 			            
 			            // Assign to the result
-			            sourceInfo = new Dictionary
-			            sourceInfo.Value("table") = tableName
-			            sourceInfo.Value("field") = fieldName
+			            dim sourceInfo as new Dictionary("table" : baseTableName, "field" : fieldName)
+			            fullyQualifiedAliasName  = viewName+"."+aliasName
 			            maliasSchema.value(fullyQualifiedAliasName) = sourceInfo
 			            
 			          next
@@ -414,7 +407,6 @@ Inherits SQLiteDatabase
 			        Else
 			          
 			        End Select
-			        
 			        
 			        
 			        tablesInfo.MoveNext
@@ -444,7 +436,7 @@ Inherits SQLiteDatabase
 			  return  "^.*SELECT\s+(.*?)\s+FROM\s+([^ ]+).*$"
 			End Get
 		#tag EndGetter
-		Shared StatementPattern As String
+		Shared SQLstatementPattern As String
 	#tag EndComputedProperty
 
 
