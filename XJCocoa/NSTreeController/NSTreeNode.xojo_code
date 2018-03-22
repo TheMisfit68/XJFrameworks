@@ -111,6 +111,8 @@ Implements JVCustomStringConvertable
 		            keyForBranch = 0
 		          end if
 		          currentNode.indexPath.append(keyForBranch)
+		          
+		          System.DebugLog("IndexString: "+currentNode.indexString)
 		        next branchNumber
 		        
 		        
@@ -160,6 +162,23 @@ Implements JVCustomStringConvertable
 	#tag Property, Flags = &h0
 		children() As NSTreeNode
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  dim lastFilledIndex as Integer = 0
+			  for each index as Integer in indexPath
+			    if index <> 0 then
+			      lastFilledIndex = index
+			    end if
+			  next index
+			  
+			  Return lastFilledIndex
+			End Get
+		#tag EndGetter
+		finalIndex As Integer
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
 		indexPath() As Integer

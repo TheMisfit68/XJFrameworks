@@ -17,9 +17,11 @@ Inherits JVBackgroundTask
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(database as sqliteDatabase , statementString as String)
+		Sub Constructor(database as JVSQLiteDatabase , statementString as String)
 		  super.constructor
 		  
+		  me.database = database
+		  me.sqlString = statementString
 		  me.preparedStatement = database.Prepare(statementString)
 		  
 		  
@@ -28,11 +30,19 @@ Inherits JVBackgroundTask
 
 
 	#tag Property, Flags = &h0
+		database As JVSQLiteDatabase
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		foundRecords As RecordSet
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		preparedStatement As SQLitePreparedStatement
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		sqlString As String
 	#tag EndProperty
 
 

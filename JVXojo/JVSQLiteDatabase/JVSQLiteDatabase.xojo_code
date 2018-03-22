@@ -2,7 +2,7 @@
 Protected Class JVSQLiteDatabase
 Inherits SQLiteDatabase
 	#tag Method, Flags = &h0
-		Function InsertOrUpdateRecords(baseTableName as String, requests() as DatabaseRecord, records() as DatabaseRecord) As Integer()
+		Function InsertOrUpdateRecords(baseTableName as String, requests() as JVDataBaseRequest, records() as DatabaseRecord) As Integer()
 		  dim affectedPKs() as Integer
 		  
 		  for each record as DatabaseRecord in records
@@ -161,7 +161,7 @@ Inherits SQLiteDatabase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function selectRecords(baseTableName as String, requests() as DatabaseRecord) As Recordset
+		Function selectRecords(baseTableName as String, requests() as JVDatabaseRequest) As Recordset
 		  
 		  dim sqlExpresions  as Dictionary =  sqlExpressions(baseTableName, requests)
 		  dim sqlString as String = sqlExpresions.value("Statement")
@@ -185,7 +185,7 @@ Inherits SQLiteDatabase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function sqlExpressions(baseTableName as String, searchRequests() as DatabaseRecord) As Dictionary
+		Function sqlExpressions(baseTableName as String, searchRequests() as JVDatabaseRequest) As Dictionary
 		  dim sqlExpressions as new Dictionary
 		  
 		  dim matchFieldNames() as String
@@ -196,7 +196,7 @@ Inherits SQLiteDatabase
 		    
 		    dim requests() as String
 		    dim requestsString as String
-		    for each request as DatabaseRecord in searchRequests
+		    for each request as JVDatabaseRequest in searchRequests
 		      
 		      For fieldNumber As Integer = 0 To request.FieldCount-1
 		        dim fieldName as String = request.FieldName(fieldNumber)
@@ -433,7 +433,7 @@ Inherits SQLiteDatabase
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return  "^.*SELECT\s+(.*?)\s+FROM\s+([^ ]+).*$"
+			  return  "^.*SELECT\s+(.*?)\s+FROM\s+'?([^ ]+)'?.*$"
 			End Get
 		#tag EndGetter
 		Shared SQLstatementPattern As String

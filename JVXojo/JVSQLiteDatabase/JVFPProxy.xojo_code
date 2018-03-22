@@ -23,7 +23,7 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub addRequest(request as DatabaseRecord)
+		Sub addRequest(request as JVDatabaseRequest)
 		  
 		  if currentMode = MODES.Find then
 		    
@@ -325,7 +325,7 @@ Implements JVBackgroundTaskDelegate
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
-		requests() As DatabaseRecord
+		requests() As JVDatabaseRequest
 	#tag EndProperty
 
 
