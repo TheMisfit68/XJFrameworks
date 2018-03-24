@@ -37,7 +37,7 @@ Implements JVCustomStringConvertable
 		      // Changes within a branchField make the branch active
 		      if  itsaBranchField and not branchIsActive  then 
 		        
-		        if (activeBranchValues(matchingBranch) = nil) or (fieldValue <> activeBranchValues(matchingBranch)) then
+		        if (fieldValue <> activeBranchValues(matchingBranch)) then
 		          branchIsActive =  True 
 		          activeBranchNumber = matchingBranch
 		          activeBranchValues(activeBranchNumber) = fieldValue
@@ -64,7 +64,9 @@ Implements JVCustomStringConvertable
 		        else
 		          dim nextField as DatabaseField = records.IdxField(fieldNumber+1)
 		          dim nextFieldName as String = nextField.Name
-		          lastFieldOfCurrentBranch = (branchFields.IndexOf(nextFieldName)>=0)
+		          dim nextFieldValue as Variant = nextField.value
+		          dim nextFieldIsBranchField as Boolean = (branchFields.IndexOf(nextFieldName)>=0)
+		          lastFieldOfCurrentBranch = nextFieldIsBranchField
 		        end if
 		      end if
 		      
@@ -95,8 +97,13 @@ Implements JVCustomStringConvertable
 		        
 		        // Create the relitionships between the parent and the children
 		        if  (activeBranchNumber > 0) then
-		          currentNode.parent = activeBranches(activeBranchNumber-1)
-		        else
+		          dim parentBranch as Integer = activeBranchNumber-1
+		          while currentNode.parent= nil and parentBranch >= 0
+		            currentNode.parent = activeBranches(parentBranch)
+		            parentBranch= parentBranch-1
+		          wend
+		        end if
+		        if currenTnode.parent  = nil then
 		          currentNode.parent = baseNode
 		        end if
 		        currentNode.parent.children.Append(currentNode)
@@ -218,6 +225,11 @@ Implements JVCustomStringConvertable
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="finalIndex"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
