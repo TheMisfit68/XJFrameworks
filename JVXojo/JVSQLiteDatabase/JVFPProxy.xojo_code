@@ -255,7 +255,7 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function replaceAll(baseTableOrView as String , newValues as DataBaseRecord) As Integer()
+		Function replaceAll(newValues as DataBaseRecord) As Integer()
 		  
 		  dim affectedPKs() as Integer = updateRecords(currentLayout, mfoundSet, newValues, True)
 		  

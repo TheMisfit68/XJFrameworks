@@ -188,15 +188,16 @@ Inherits SQLiteDatabase
 		Function sqlExpressions(baseTableName as String, searchRequests() as JVDatabaseRequest) As Dictionary
 		  dim sqlExpressions as new Dictionary
 		  
-		  dim matchFieldNames() as String
 		  dim sqlString as String
 		  dim matchFieldValues() as Variant
 		  
 		  if searchRequests.ubound >=0 then
 		    
-		    dim requests() as String
-		    dim requestsString as String
+		    dim individualRequests() as String
 		    for each request as JVDatabaseRequest in searchRequests
+		      
+		      dim requestString as String
+		      dim matchFieldNames() as String
 		      
 		      For fieldNumber As Integer = 0 To request.FieldCount-1
 		        dim fieldName as String = request.FieldName(fieldNumber)
@@ -205,18 +206,18 @@ Inherits SQLiteDatabase
 		        matchFieldNames.append(fieldName+" = ?")
 		        matchFieldValues.append(fieldValue)
 		      next fieldNumber
-		      requestsString = join(matchFieldNames, " AND ")
+		      requestString = join(matchFieldNames, " AND ")
 		      
-		      requests.Append(requestsString)
+		      individualRequests.Append(requestString)
 		    next request
 		    
-		    requestsString = join(requests, ") OR (")
-		    if requests.ubound > 0 then
-		      requestsString = "("+requestsString+")"
+		    dim conditionString as String = join(individualRequests, ") OR (")
+		    if individualRequests.ubound > 0 then
+		      conditionString = "("+conditionString+")"
 		    end if
 		    
 		    // Form the SQL-Select- statement
-		    sqlString = "SELECT * FROM "+baseTableName+" WHERE "+requestsString
+		    sqlString = "SELECT * FROM "+baseTableName+" WHERE "+conditionString
 		    
 		  else
 		    
@@ -263,7 +264,6 @@ Inherits SQLiteDatabase
 		  
 		  If records <> Nil Then
 		    
-		    records.Edit
 		    
 		    newFields = stripPKsFromRecord(baseTableName, newFields)
 		    
@@ -274,6 +274,7 @@ Inherits SQLiteDatabase
 		      
 		      While Not records.EOF
 		        
+		        records.Edit
 		        For fieldNumber As Integer = 0 To newFields.FieldCount-1
 		          dim fieldName as String = newFields.FieldName(fieldNumber)
 		          dim fieldValue as String = newfields.Column(fieldName)
@@ -281,14 +282,17 @@ Inherits SQLiteDatabase
 		          records.field(fieldName).value = fieldValue
 		          
 		        next fieldNumber
-		        
 		        records.Update
+		        
 		        pk = records.Field(pkFieldName).IntegerValue
 		        affectedPKs.Append(pk)
 		        
 		        records.MoveNext
 		      Wend
+		      
 		    else
+		      
+		      records.Edit
 		      
 		      // Replace the current record
 		      For fieldNumber As Integer = 0 To newFields.FieldCount-1

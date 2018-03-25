@@ -184,6 +184,7 @@ Implements JVTreeViewDelegate
 		  
 		  if sender.ListIndex >= 0 and sender.ListIndex < sender.ListCount then
 		    selectedNode = treeView.rowTag(sender.ListIndex)
+		    system.DebugLog("Node selected with indexpath "+selectedNode.indexString)
 		  else
 		    selectedNode = nil
 		  end if
@@ -204,6 +205,16 @@ Implements JVTreeViewDelegate
 		  
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function selectedIndex(level as Integer) As Integer
+		  if selectedNode <> nil then
+		    return selectedNode.indexPath(level)
+		  else
+		    return -1
+		  end if
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -236,12 +247,18 @@ Implements JVTreeViewDelegate
 		JVTreeController is class that handles a JVTreeView (a.k.a a hiërchical listbox) on behalf of a viewcontroller.
 		
 		The controller needs a NSTreeNode as its datasource wich gets attached to the property 'arrangedObjects'
-		The constructors for NSTreeNode create a hiërarchical node-tree from a flat source (e.g. a recordset)
+		
+		This class is a superclass for the JVDatabaseTreeController
+		
 	#tag EndNote
 
 
 	#tag Property, Flags = &h0
 		arrangedObjects As NSTreeNode
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		destinationRow As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

@@ -95,7 +95,7 @@ Implements JVCustomStringConvertable
 		          redim columns(-1)
 		        end if
 		        
-		        // Create the relitionships between the parent and the children
+		        // Create the relationships between the parent and the children
 		        if  (activeBranchNumber > 0) then
 		          dim parentBranch as Integer = activeBranchNumber-1
 		          while currentNode.parent= nil and parentBranch >= 0
@@ -119,7 +119,6 @@ Implements JVCustomStringConvertable
 		          end if
 		          currentNode.indexPath.append(keyForBranch)
 		          
-		          System.DebugLog("IndexString: "+currentNode.indexString)
 		        next branchNumber
 		        
 		        

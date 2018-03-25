@@ -70,14 +70,25 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub reloadData(SQLStatement as String)
+		Sub reloadData(optional SQLStatement as String = "")
 		  dim previousDataBase as JVSQLiteDatabase = backGroundQuery.database
-		  backGroundQuery = new JVbackGroundQuery(previousDataBase, SQLStatement )
+		  if SQLStatement <> "" then
+		    backGroundQuery = new JVbackGroundQuery(previousDataBase, SQLStatement )
+		  end if
 		  backGroundQuery.backgroundTaskDelegate = me
 		  backGroundQuery.run
 		  
+		  syncInterface(True)
 		End Sub
 	#tag EndMethod
+
+
+	#tag Note, Name = Class Description
+		
+		JVDatabaseTreeController is class that handles a JVTreeView (a.k.a a hiërchical listbox) on behalf of a viewcontroller.
+		its datasource is an SQL(ite) dbase
+		
+	#tag EndNote
 
 
 	#tag Property, Flags = &h0
