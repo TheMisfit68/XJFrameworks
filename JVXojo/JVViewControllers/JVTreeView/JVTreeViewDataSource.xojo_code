@@ -12,6 +12,12 @@ Protected Interface JVTreeViewDataSource
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function isItemExpandable(node as NSTreeNode) As Boolean
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag ViewBehavior
 		#tag ViewProperty

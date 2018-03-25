@@ -39,8 +39,8 @@ Implements JVTreeViewDelegate
 		    
 		    
 		    // Proces the record
-		    dim itsaParentNode as Boolean = not node.isLeaf
-		    if   itsaParentNode then // Add an empty Folder or an empty row
+		    dim itsAnExpandableNode as Boolean =(treeView.treeViewDataSource.isItemExpandable(node))
+		    if   itsAnExpandableNode then // Add an empty Folder or an empty row
 		      treeView.AddFolder("")
 		    else
 		      treeView.AddRow()
@@ -86,9 +86,10 @@ Implements JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function isItemExpandable(item as Variant) As Boolean
+		Function isItemExpandable(node as NSTreeNode) As Boolean
 		  // Part of the JVTreeViewDataSource interface.
 		  
+		  return (not node.isLeaf) 
 		End Function
 	#tag EndMethod
 
@@ -188,7 +189,7 @@ Implements JVTreeViewDelegate
 		  else
 		    selectedNode = nil
 		  end if
-		  
+		  /
 		End Sub
 	#tag EndMethod
 
@@ -275,6 +276,11 @@ Implements JVTreeViewDelegate
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="destinationRow"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
