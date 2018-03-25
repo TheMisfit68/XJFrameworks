@@ -189,7 +189,6 @@ Implements JVTreeViewDelegate
 		  else
 		    selectedNode = nil
 		  end if
-		  /
 		End Sub
 	#tag EndMethod
 
