@@ -277,13 +277,9 @@ Inherits SQLiteDatabase
 		        records.Edit
 		        For fieldNumber As Integer = 0 To newFields.FieldCount-1
 		          dim fieldName as String = newFields.FieldName(fieldNumber)
-		          dim fieldValue as Variant = newfields.Column(fieldName)
+		          dim fieldValue as Variant = newfields.nilableColumn(fieldName)
 		          
-		          if right(fieldName, 2) = "ID" and (fieldValue.StringValue = "") then // compensate for the fact that a DatabaseRecord doesn't support nil-values
-		            records.field(fieldName).value = nil
-		          else
-		            records.field(fieldName).value = fieldValue
-		          end if
+		          records.field(fieldName).value = fieldValue
 		          
 		        next fieldNumber
 		        records.Update

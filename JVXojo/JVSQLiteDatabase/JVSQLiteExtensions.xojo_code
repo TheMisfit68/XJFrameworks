@@ -53,6 +53,32 @@ Protected Module JVSQLiteExtensions
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function nilableColumn(extends baseRecord as DatabaseRecord, columnName as String) As Variant
+		  
+		  dim textualValue as Variant =  baseRecord.Column(columnName)
+		  
+		  if textualValue.StringValue = "" then
+		    return nil
+		  end if
+		  
+		  return textualValue
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub nilableColumn(extends baseRecord as DatabaseRecord, columnName as String, assigns optionalValue as Variant)
+		  
+		  if optionalValue.Type = Variant.TypeNil  then
+		    baseRecord.column(columnName) = optionalValue
+		  else
+		    baseRecord.IntegerColumn(columnName) = optionalValue
+		  end if
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag ViewBehavior
 		#tag ViewProperty

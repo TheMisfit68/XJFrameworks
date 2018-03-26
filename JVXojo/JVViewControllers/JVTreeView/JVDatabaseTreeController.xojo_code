@@ -17,11 +17,50 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub deleteNode(node as NSTreeNode)
+		  // Part of the JVTreeViewDataSource interface.
+		  
+		  #if DebugBuild then
+		    system.DebugLog("Delete record with keypath "+node.indexString)
+		  #Endif
+		  
+		  dim database as JVFPProxy = JVFPProxy(backGroundQuery.dataBase)
+		  dim sqlString as String = backGroundQuery.sqlString
+		  dim viewOrTabelName as String =  sqlString.Replace(JVFPProxy.SQLstatementPattern, "$2", True)
+		  
+		  dim recordValues as DatabaseRecord = node.representedObject
+		  dim fieldName as String = recordValues.FieldName(0)
+		  dim newfieldValue as String = recordValues.Column(fieldName)
+		  
+		  dim primaryKeyValue as Integer = node.finalIndex
+		  
+		  dim sourceInfo as Dictionary = app.dataModel.aliasSchema.value(viewOrTabelName+"."+fieldName)
+		  dim sourceTable as String = sourceInfo.Value("table")
+		  dim sourceField as String = sourceInfo.Value("field")
+		  dim pkFieldName as String = app.dataModel.pkForTable(sourceTable)
+		  
+		  dim request as new JVDatabaseRequest
+		  request.IntegerColumn(pkFieldName) = primaryKeyValue
+		  
+		  // Delete
+		  dataBase.goToLayoutOrView(sourceTable)
+		  dataBase.enterMode(JVFPProxy.MODES.Find)
+		  dataBase.addRequest(request)
+		  dataBase.executeFind
+		  
+		  dataBase.deleteAllRecords
+		  
+		  reloadData
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub editNode(node as NSTreeNode, fieldToChange as Pair)
 		  // Part of the JVTreeViewDataSource interface.
 		  
 		  #if DebugBuild then
-		    system.DebugLog("Changing record with keypad "+node.indexString)
+		    system.DebugLog("Changing record with keypath "+node.indexString)
 		  #Endif
 		  
 		  dim database as JVFPProxy = JVFPProxy(backGroundQuery.dataBase)
@@ -43,12 +82,12 @@ Implements JVBackgroundTaskDelegate
 		  dim record as new DatabaseRecord
 		  record.Column(sourceField) = newfieldValue
 		  
-		  // Perform the update
 		  dataBase.goToLayoutOrView(sourceTable)
 		  dataBase.enterMode(JVFPProxy.MODES.Find)
 		  dataBase.addRequest(request)
 		  dataBase.executeFind
 		  
+		  // Perform the update
 		  call dataBase.editRecord(record)
 		  
 		End Sub
@@ -62,10 +101,10 @@ Implements JVBackgroundTaskDelegate
 		  if (records <> nil)  and (records.RecordCount > 0) then
 		    
 		    arrangedObjects = new NSTreeNode(records, branchfields)
-		    syncInterface(True)
 		    
 		  end if
 		  
+		  syncInterface(True)
 		End Sub
 	#tag EndMethod
 
@@ -78,7 +117,6 @@ Implements JVBackgroundTaskDelegate
 		  backGroundQuery.backgroundTaskDelegate = me
 		  backGroundQuery.run
 		  
-		  syncInterface(True)
 		End Sub
 	#tag EndMethod
 
@@ -101,6 +139,11 @@ Implements JVBackgroundTaskDelegate
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="destinationRow"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true

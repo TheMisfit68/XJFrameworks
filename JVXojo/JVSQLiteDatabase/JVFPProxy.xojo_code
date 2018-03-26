@@ -38,13 +38,17 @@ Implements JVBackgroundTaskDelegate
 		  if currentMode = MODES.Browse then
 		    
 		    dim okToDelete as Integer = 1
-		    if not withoutDialog then
+		    if (recordCount > 1) and not withoutDialog then
 		      okToDelete = MsgBox("Are you sure you want to delete all "+Str(recordCount)+" records" , 305)
 		    end if
 		    
-		    // If it is  stiil OK to delete
+		    // If it is  still OK to delete
 		    if okToDelete = 1 then
-		      mfoundSet = nil
+		      
+		      for recordNumber as Integer = 0 to recordCount-1
+		        deleteRecord(recordNumber)
+		      next recordNumber
+		      
 		    end if
 		    
 		  end if

@@ -7,6 +7,12 @@ Protected Interface JVTreeViewDataSource
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub deleteNode(node as NSTreeNode)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub editNode(node as NSTreeNode, fieldToChange as Pair)
 		  
 		End Sub
