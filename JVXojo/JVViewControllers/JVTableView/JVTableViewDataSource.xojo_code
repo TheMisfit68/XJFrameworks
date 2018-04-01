@@ -1,22 +1,15 @@
 #tag Interface
-Protected Interface JVTreeViewDataSource
-Implements JVTableViewDataSource
+Protected Interface JVTableViewDataSource
 	#tag Method, Flags = &h0
-		Sub deleteNode(node as NSTreeNode)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub editNode(node as NSTreeNode, fieldToChange as Pair)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function isItemExpandable(node as NSTreeNode) As Boolean
+		Function cellType(fieldName as String) As JVCustomCell
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub editField(row as Integer, column as Integer, field as Pair)
+		  
+		End Sub
 	#tag EndMethod
 
 

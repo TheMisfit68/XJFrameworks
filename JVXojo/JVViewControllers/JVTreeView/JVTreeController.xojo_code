@@ -1,9 +1,10 @@
 #tag Class
 Protected Class JVTreeController
-Implements JVTreeViewDelegate
+Inherits JVTableController
+Implements JVTreeViewDelegate,  JVTreeViewDataSource
 	#tag Method, Flags = &h0
-		Function child(index As Integer, item as Variant) As Variant
-		  // Part of the JVTreeViewDataSource interface.
+		Function cellType(fieldName as String) As JVCustomCell
+		  // Part of the JVTableViewDataSource interface.
 		  
 		  
 		End Function
@@ -11,12 +12,24 @@ Implements JVTreeViewDelegate
 
 	#tag Method, Flags = &h0
 		Sub constructor(treeView as JVTreeView, arrangedObjects as NSTreeNode)
-		  me.treeView = treeView
+		  // Calling the overridden superclass constructor.
+		  Super.Constructor(treeview)
 		  
-		  treeView.owner = me
-		  treeView.treeViewDelegate = me
+		  me.treeView.tableViewDelegate = me
+		  me.treeView.treeViewDelegate = me
+		  
+		  me.treeView.tableViewDataSource = me
+		  me.treeView.treeviewDataSource = me
 		  
 		  me.arrangedObjects = arrangedObjects
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub deleteNode(node as NSTreeNode)
+		  // Part of the JVTreeViewDataSource interface.
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -65,6 +78,8 @@ Implements JVTreeViewDelegate
 		        fieldValue = representedObject.Column(fieldName.StringValue)
 		      end if
 		      
+		      dim cellToDisplay as JVCustomCell = treeView.treeViewDataSource.cellType(fieldName) 
+		      // cellToDisplay.draw(treeView, nil, row, column)
 		      treeView.cell(newRowNumber, fieldNumber) = fieldValue.StringValue
 		      
 		      // Attach each field to the cell
@@ -86,37 +101,27 @@ Implements JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub editField(row as Integer, column as Integer, field as Pair)
+		  
+		  dim node as NStreenode = treeview.rowTag(row)
+		  treeView.treeViewDataSource.editNode(node, field)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub editNode(node as NSTreeNode, fieldToChange as Pair)
+		  // Part of the JVTreeViewDataSource interface.
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function isItemExpandable(node as NSTreeNode) As Boolean
 		  // Part of the JVTreeViewDataSource interface.
 		  
 		  return (not node.isLeaf) 
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function numberOfChildren(item as Variant) As Integer
-		  // Part of the JVTreeViewDataSource interface.
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub onCellAction(sender as JVTreeview, row as Integer, column as Integer)
-		  
-		  dim currentNode as NSTreeNode = sender.rowtag(row)
-		  dim previousField as Pair = sender.cellTag(row, column)
-		  dim previousFieldName as String = previousField.left
-		  dim previousFieldValue as Variant = previousField.right
-		  
-		  dim changedFieldName as String = previousFieldName
-		  dim changedFieldValue as Variant = sender.cell(row, column)
-		  dim  changedField as Pair =  changedFieldName : changedFieldValue
-		  
-		  if changedFieldValue <> previousFieldValue then
-		    sender.treeViewDataSource.editNode(currentnode, changedField)
-		  end if
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -173,15 +178,8 @@ Implements JVTreeViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub onListOpen(sender as JVTreeView)
-		  
-		  syncInterface(True)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub onListSelectionDidChange(sender as JVTreeView)
-		  // Part of the JVTreeViewDelegate interface.
+		Sub onListSelectionDidChange(sender as JVTableView)
+		  // Part of the JVTableViewDelegate interface.
 		  
 		  if sender.ListIndex >= 0 and sender.ListIndex < sender.ListCount then
 		    selectedNode = treeView.rowTag(sender.ListIndex)
@@ -258,6 +256,10 @@ Implements JVTreeViewDelegate
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		branchfields() As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		destinationRow As Integer
 	#tag EndProperty
 
@@ -269,9 +271,14 @@ Implements JVTreeViewDelegate
 		selectedNode As NSTreeNode
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return JVTreeView(tableView)
+			End Get
+		#tag EndGetter
 		treeView As JVTreeView
-	#tag EndProperty
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior

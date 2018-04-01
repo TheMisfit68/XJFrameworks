@@ -74,6 +74,12 @@ Inherits JVBackgroundTask
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="sqlString"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="StackSize"
 			Visible=true
 			Group="Behavior"

@@ -19,9 +19,9 @@ Protected Class NSSortDescriptor
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="constructor"
+			Name="ascending"
 			Group="Behavior"
-			Type="Integer"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -41,6 +41,11 @@ Protected Class NSSortDescriptor
 			Name="Name"
 			Visible=true
 			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="sortKey"
+			Group="Behavior"
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty

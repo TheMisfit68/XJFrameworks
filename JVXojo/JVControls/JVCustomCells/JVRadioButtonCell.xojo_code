@@ -1,23 +1,26 @@
-#tag Interface
-Protected Interface JVTreeViewDataSource
-Implements JVTableViewDataSource
+#tag Class
+Protected Class JVRadioButtonCell
+Implements JVCustomCell
 	#tag Method, Flags = &h0
-		Sub deleteNode(node as NSTreeNode)
+		Sub activate(listBox as ListBox, row as integer, column as Integer)
+		  // Part of the JVCustomCell interface.
 		  
+		  // Not yet implemented !!!
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub editNode(node as NSTreeNode, fieldToChange as Pair)
+		Sub draw(listBox as ListBox , g as graphics, row as integer, column as integer)
+		  // Part of the JVCustomCell interface.
 		  
+		  // Not yet implemented !!!
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function isItemExpandable(node as NSTreeNode) As Boolean
-		  
-		End Function
-	#tag EndMethod
+
+	#tag Property, Flags = &h0
+		stringValue As String
+	#tag EndProperty
 
 
 	#tag ViewBehavior
@@ -55,5 +58,5 @@ Implements JVTableViewDataSource
 			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Interface
-#tag EndInterface
+End Class
+#tag EndClass

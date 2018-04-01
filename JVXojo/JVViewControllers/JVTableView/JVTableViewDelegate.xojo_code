@@ -1,22 +1,27 @@
 #tag Interface
-Protected Interface JVTreeViewDataSource
-Implements JVTableViewDataSource
+Protected Interface JVTableViewDelegate
 	#tag Method, Flags = &h0
-		Sub deleteNode(node as NSTreeNode)
+		Sub onCellAction(sender as JVTableView, row as Integer, column as Integer)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub editNode(node as NSTreeNode, fieldToChange as Pair)
+		Sub onCellTagAction(sender as JVTableView, row as Integer, column as Integer)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function isItemExpandable(node as NSTreeNode) As Boolean
+		Sub onListOpen(sender as JVTableView)
 		  
-		End Function
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub onListSelectionDidChange(sender as JVTableView)
+		  
+		End Sub
 	#tag EndMethod
 
 

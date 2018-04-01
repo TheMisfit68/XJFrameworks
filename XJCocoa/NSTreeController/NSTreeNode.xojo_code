@@ -165,6 +165,18 @@ Implements JVCustomStringConvertable
 	#tag EndMethod
 
 
+	#tag Note, Name = Class description
+		
+		An NSTreeNode provides an hiërarchical tree of objects that each contain 
+		an representedObject and an indexpath to describe their place in the tree
+		
+		NSTreeNode are used as the model layer for JVTreeViews and  to build hiërarchical menu's
+		
+		NSTreeNode can be constructed from a recordset for convinience
+		
+	#tag EndNote
+
+
 	#tag Property, Flags = &h0
 		children() As NSTreeNode
 	#tag EndProperty

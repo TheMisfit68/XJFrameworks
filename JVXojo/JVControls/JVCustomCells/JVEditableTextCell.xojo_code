@@ -1,30 +1,29 @@
 #tag Class
-Protected Class JVCellType
+Protected Class JVEditableTextCell
+Implements JVCustomCell
 	#tag Method, Flags = &h0
-		Sub constructor(type as TYPES, optional lookupValues() as String = nil)
-		  me.type =type
-		  me.lookupValues = lookupValues
+		Sub activate(listBox as ListBox, row as integer, column as Integer)
+		  
+		  if listbox.CellType(row, column) <> listbox.TypeEditableTextField then
+		    listbox.CellType(row, column) = listbox.TypeEditableTextField
+		  end if
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub draw(listBox as ListBox , g as graphics, row as integer, column as integer)
+		  
+		  // While  drawing the field don't make it editable just yet, just draw a default cell
+		  listbox.CellType(row, column) = Listbox.TypeDefault
+		  
 		End Sub
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		lookupValues() As String
+		stringValue As String
 	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		type As TYPES
-	#tag EndProperty
-
-
-	#tag Enum, Name = TYPES, Type = Integer, Flags = &h0
-		PopUpMenu
-		  PopupList
-		  CheckBox
-		  Radiobutton
-		  TextField
-		TextArea
-	#tag EndEnum
 
 
 	#tag ViewBehavior
@@ -60,20 +59,6 @@ Protected Class JVCellType
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="type"
-			Group="Behavior"
-			Type="TYPES"
-			EditorType="Enum"
-			#tag EnumValues
-				"0 - PopUpMenu"
-				"1 - PopupList"
-				"2 - CheckBox"
-				"3 - Radiobutton"
-				"4 - TextField"
-				"5 - TextArea"
-			#tag EndEnumValues
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -1,61 +1,131 @@
 #tag Class
-Protected Class JVTreeView
-Inherits JVTableView
-	#tag Method, Flags = &h0
-		Sub constructor()
-		  // Calling the overridden superclass constructor.
-		  Super.Constructor
-		  hierarchical=TRUE
+Protected Class JVTableView
+Inherits Listbox
+	#tag Event
+		Function CellBackgroundPaint(g As Graphics, row As Integer, column As Integer) As Boolean
+		  
+		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		    
+		    dim fieldInfo as Pair = me.CellTag(row, column)
+		    dim fieldName as String
+		    if fieldInfo <> nil then
+		      fieldName = FieldInfo.left
+		    end if
+		    
+		    dim currentCellType as JVCustomCell = tableViewDataSource.cellType(fieldName)
+		    currentCellType.draw(me, g, row, Column)
+		    
+		  end if
+		  
+		  
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Sub CellLostFocus(row as Integer, column as Integer)
+		  if CellType(row, column) = listbox.TypeEditableTextField then
+		    CellType(row, column) = listbox.TypeDefault
+		  end if
 		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Function MouseDown(x As Integer, y As Integer) As Boolean
+		  dim rowAndColumn as Pair = rowAndColumnClicked(x, y)
+		  dim row as Integer = rowAndColumn.left
+		  dim column as Integer = rowAndColumn.right
+		  
+		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		    
+		    // When a cell is a folder leave some inactive space left and on the disclosure triangles
+		    if RowIsFolder(row) and (column = 0)and ( x < (rowdepth(row)*15)) then
+		      ClearFocus
+		    else
+		      
+		      dim fieldInfo as Pair = me.CellTag(row, column)
+		      dim fieldName as String
+		      if fieldInfo <> nil then
+		        fieldName = FieldInfo.left
+		      end if
+		      
+		      dim currentCellType as JVCustomCell = tableViewDataSource.cellType(fieldName)
+		      currentCellType.activate(me, row, Column)
+		      
+		      if currentCellType isa JVPopUpMenuCell  then
+		        
+		        // Call a custom method to notify the change to the delegate
+		        // Should in time be replaced with a real eventdefinition and an event that gets raised on JVTreeview
+		        tableViewDelegate.onCellTagAction(me, row, column)
+		        
+		      else 
+		        
+		        // Depend on standard events (that get delageted to the JVTreeController/JVTreeViewDelegate)
+		        
+		      end if
+		      
+		    end if
+		    
+		  end if
+		  
+		  
+		End Function
+	#tag EndEvent
+
+
+	#tag Method, Flags = &h1
+		Protected Function rowAndColumnClicked(x as Integer, y as integer) As pair
+		  
+		  Dim row As Integer = RowFromXY(x, y)
+		  Dim column As Integer = ColumnFromXY(x, y)
+		  dim rowAndColumn as pair =  row : column
+		  
+		  return rowAndColumn
+		  
+		  
+		End Function
 	#tag EndMethod
 
 
-	#tag Property, Flags = &h0
-		mTreeViewDelegate As JVTreeViewDelegate
+	#tag Note, Name = ToDo
+		
+		define onCellTagAction (which part of JVTableViewDelagate) as a real event
+	#tag EndNote
+
+
+	#tag Property, Flags = &h1
+		Protected mTableViewDelegate As JVTableViewDelegate
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		owner As JVTreeController
-	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return JVTreeController(owner)
-			End Get
-		#tag EndGetter
-		treeController As JVTreeController
-	#tag EndComputedProperty
-
-	#tag Property, Flags = &h0
-		treeviewDataSource As JVTreeViewDataSource
+		tableViewDataSource As JVTableViewDataSource
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mTreeViewDelegate
+			  return mTableViewDelegate
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
 			  
-			  if mTreeViewDelegate <> nil then
+			  if mTableViewDelegate <> nil then
 			    
-			    RemoveHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
-			    RemoveHandler CollapseRow, AddressOf mTreeViewDelegate.onListCollapseRow
-			    RemoveHandler DoubleClick, AddressOf mTreeViewDelegate.onListDoubleClick
-			    
+			    // Remove any previously set delegate
+			    RemoveHandler Open, AddressOf mTableViewDelegate.onListOpen
+			    RemoveHandler Change, AddressOf mTableViewDelegate.onListSelectionDidChange
+			    RemoveHandler CellAction, AddressOf mTableViewDelegate.onCellAction
 			  end if
 			  
 			  // Set the delegate
-			  mTreeViewDelegate= value
+			  mTableViewDelegate = value
 			  
-			  if mTreeViewDelegate <> nil then
+			  if mTableViewDelegate <> nil then
 			    
-			    AddHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
-			    AddHandler CollapseRow, AddressOf mTreeViewDelegate.onListCollapseRow
-			    AddHandler DoubleClick, AddressOf mTreeViewDelegate.onListDoubleClick
+			    // Redirect all events to the delegate
+			    AddHandler Open, AddressOf mTableViewDelegate.onListOpen
+			    AddHandler Change, AddressOf mTableViewDelegate.onListSelectionDidChange
+			    AddHandler CellAction, AddressOf mTableViewDelegate.onCellAction
 			    
 			  end if
 			  
@@ -66,7 +136,7 @@ Inherits JVTableView
 			  
 			End Set
 		#tag EndSetter
-		treeViewDelegate As JVTreeViewDelegate
+		tableViewDelegate As JVTableViewDelegate
 	#tag EndComputedProperty
 
 

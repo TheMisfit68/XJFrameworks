@@ -133,10 +133,6 @@ Implements JVBackgroundTaskDelegate
 		backGroundQuery As JVbackGroundQuery
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		branchfields() As String
-	#tag EndProperty
-
 
 	#tag ViewBehavior
 		#tag ViewProperty

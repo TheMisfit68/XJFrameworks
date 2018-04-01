@@ -156,7 +156,7 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function foundSet() As DatabaseRecord()
+		Function foundset() As DatabaseRecord()
 		  // This method acts as a computed property derived from mfoundSet,
 		  // because Xojo doesn't support computed properties of type array
 		  
@@ -309,8 +309,8 @@ Implements JVBackgroundTaskDelegate
 		Private engine As JVbackGroundQuery
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private mfoundSet As RecordSet
+	#tag Property, Flags = &h0
+		mfoundSet As RecordSet
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0

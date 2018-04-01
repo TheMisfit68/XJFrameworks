@@ -3,7 +3,7 @@ Protected Class NSColor
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return &cFFFFFF
+			  return &c000000
 			End Get
 		#tag EndGetter
 		Shared Black As Color

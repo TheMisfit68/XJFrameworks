@@ -19,6 +19,63 @@ Inherits menuItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub constructor(node as NSTreeNode)
+		  dim  thisMenuItem as JVMenuItem = me
+		  
+		  if node <> nil then
+		    
+		    
+		    if node.representedObject isa Dictionary then
+		      dim representedObject as Dictionary = node.representedObject
+		    elseif node.representedObject isa DatabaseRecord then
+		      dim representedObject as DatabaseRecord = node.representedObject
+		    end if
+		    
+		    // Proces the individual fields
+		    dim fieldName as Variant
+		    dim fieldValue as  Variant
+		    if node.representedObject isa Dictionary then
+		      dim representedObject as Dictionary = node.representedObject
+		      fieldName = representedObject.key(0)
+		      fieldValue = representedObject.value(fieldName)
+		    elseif node.representedObject isa DatabaseRecord then
+		      dim representedObject as DatabaseRecord = node.representedObject
+		      fieldName = representedObject.FieldName(0)
+		      fieldValue = representedObject.Column(fieldName.StringValue)
+		    end if
+		    
+		    thisMenuItem.Text = fieldValue.StringValue
+		    
+		    // Attach each field to the cell
+		    dim field as  Pair =  fieldName: node.finalIndex
+		    thisMenuItem.tag = field
+		    
+		    for each childNode as NSTreeNode in node.children
+		      
+		      thisMenuItem.Append(new JVMenuItem(ChildNode))
+		      
+		    next childNode
+		    
+		  end if
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub constructor(items() as String)
+		  dim  thisMenuItem as JVMenuItem = me
+		  
+		  for each textItem as String in items
+		    
+		    thisMenuItem.Append(new MenuItem(textItem))
+		    
+		  next textItem
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub insert()
 		  parentMenu.insert(index, me)
 		End Sub

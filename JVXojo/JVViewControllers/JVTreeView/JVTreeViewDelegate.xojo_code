@@ -1,11 +1,6 @@
 #tag Interface
 Protected Interface JVTreeViewDelegate
-	#tag Method, Flags = &h0
-		Sub onCellAction(sender as JVTreeview, row as Integer, column as Integer)
-		  
-		End Sub
-	#tag EndMethod
-
+Implements JVTableViewDelegate
 	#tag Method, Flags = &h0
 		Sub onListCollapseRow(sender as JVTreeView, row as Integer)
 		  
@@ -20,18 +15,6 @@ Protected Interface JVTreeViewDelegate
 
 	#tag Method, Flags = &h0
 		Sub onListExpandRow(sender as JVTreeView, row as Integer)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub onListOpen(sender as JVTreeView)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub onListSelectionDidChange(sender as JVTreeView)
 		  
 		End Sub
 	#tag EndMethod
