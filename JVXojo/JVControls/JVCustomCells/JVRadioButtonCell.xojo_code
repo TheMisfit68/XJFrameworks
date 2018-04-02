@@ -18,11 +18,6 @@ Implements JVCustomCell
 	#tag EndMethod
 
 
-	#tag Property, Flags = &h0
-		stringValue As String
-	#tag EndProperty
-
-
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Index"
@@ -42,6 +37,11 @@ Implements JVCustomCell
 			Name="Name"
 			Visible=true
 			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="stringValue"
+			Group="Behavior"
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty

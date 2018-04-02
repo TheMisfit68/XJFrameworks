@@ -2,10 +2,82 @@
 Protected Class NSTreeNode
 Implements JVCustomStringConvertable
 	#tag Method, Flags = &h0
+		Sub addChild(child as NStreeNode)
+		  child.parent = me
+		  me.children.Append(child)
+		  
+		  child.indexPath = indexPath
+		  child.indexPath.Append(children.ubound+1)
+		  
+		  return child
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub constructor(records as Recordset, optional capturedField as String = "")
+		  // Create a basenode to be used as a container for the actual nodes
+		  dim  baseNode as  NSTreeNode = me
+		  baseNode.parent = nil
+		  dim currentNode as  NSTreeNode
+		  
+		  // For every record that was found create a child to the basenode
+		  records.MoveFirst
+		  While Not records.EOF
+		    
+		    currentNode = new NSTreeNode(new DatabaseRecord)
+		    dim columns() as Pair
+		    
+		    // Create the relationships between the parent and the children
+		    currentNode.parent = baseNode
+		    basenode.children.append(currentNode)
+		    
+		    // Add every field
+		    for fieldNumber as Integer = 1 to records.FieldCount
+		      
+		      dim currentField as DatabaseField = records.IdxField(fieldNumber)
+		      dim fieldName as String = currentField.Name
+		      dim fieldValue as Variant = currentField.Value
+		      
+		      // When you come across an indexpath store it for later use
+		      dim itsAkeyPathField as Boolean = fieldName.contains("keyPath")
+		      if itsAkeyPathField then
+		        dim keys() as String = split(fieldValue,".")
+		        dim keyForBranch as Integer = val(keys(0))
+		        currentNode.indexPath.append(keyForBranch)
+		      elseif (fieldName = capturedField) or (capturedField = "") then
+		        columns.Append(fieldName : fieldValue)
+		      end if
+		      
+		    next fieldNumber
+		    
+		    // Add the represented databaseRecord
+		    if (columns.Ubound>=0) then
+		      // Reverse te order while adding te columns because they are always inserted at index 0
+		      for reverseColumNumber as Integer = columns.Ubound to 0 step -1
+		        dim columnName as String = columns(reverseColumNumber).left
+		        dim columnValue as String = columns(reverseColumNumber).Right
+		        dim representedObject as DatabaseRecord =currentNode.representedObject
+		        representedObject.Column(columnName) = columnValue
+		      next reverseColumNumber
+		      redim columns(-1)
+		    end if
+		    
+		    records.MoveNext
+		  wend
+		  
+		  records.MoveFirst // Reset the cursor
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub constructor(records as Recordset, branchFields() as String)
 		  // Create a basenode to be used as a container for the actual nodes
 		  dim  baseNode as  NSTreeNode = me
 		  baseNode.parent = nil
+		  baseNode.indexPath.Append(1)
 		  
 		  dim activeBranchNumber as Integer = 0
 		  dim activeBranches() as NSTreeNode
@@ -32,7 +104,7 @@ Implements JVCustomStringConvertable
 		      dim fieldName as String = currentField.Name
 		      dim fieldValue as Variant = currentField.Value
 		      dim matchingBranch as Integer= branchFields.IndexOf(fieldName)
-		      dim itsaBranchField as Boolean = matchingBranch >=0
+		      dim itsaBranchField as Boolean = (matchingBranch >=0)
 		      
 		      // Changes within a branchField make the branch active
 		      if  itsaBranchField and not branchIsActive  then 
@@ -117,7 +189,7 @@ Implements JVCustomStringConvertable
 		          else
 		            keyForBranch = 0
 		          end if
-		          currentNode.indexPath.append(keyForBranch)
+		          currentNode.keyPath.append(keyForBranch)
 		          
 		        next branchNumber
 		        
@@ -144,6 +216,8 @@ Implements JVCustomStringConvertable
 		  
 		  dim emptyArray() as NSTreeNode
 		  me.children = emptyArray
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -168,7 +242,9 @@ Implements JVCustomStringConvertable
 	#tag Note, Name = Class description
 		
 		An NSTreeNode provides an hiërarchical tree of objects that each contain 
-		an representedObject and an indexpath to describe their place in the tree
+		an representedObject 
+		an indexpath to describe their place in the tree
+		and a keypath to represent their place in the backend dbase
 		
 		NSTreeNode are used as the model layer for JVTreeViews and  to build hiërarchical menu's
 		
@@ -214,7 +290,7 @@ Implements JVCustomStringConvertable
 			  return  join(pathComponents, ".")
 			End Get
 		#tag EndGetter
-		indexString As String
+		indexPathString As String
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -224,6 +300,25 @@ Implements JVCustomStringConvertable
 			End Get
 		#tag EndGetter
 		isLeaf As Boolean
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h0
+		keyPath() As Integer
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  dim pathComponents() as String
+			  for each component as Integer in keyPath
+			    pathComponents.append(Str(component))
+			  next component
+			  
+			  return  join(pathComponents, ".")
+			End Get
+		#tag EndGetter
+		keypathString As String
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
@@ -249,7 +344,7 @@ Implements JVCustomStringConvertable
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="indexString"
+			Name="indexPathString"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"

@@ -44,11 +44,13 @@ Inherits menuItem
 		      fieldValue = representedObject.Column(fieldName.StringValue)
 		    end if
 		    
+		    // Build the menu based from the values in the nodetree
 		    thisMenuItem.Text = fieldValue.StringValue
+		    // Store the index as its tag
+		    thisMenuItem.tag = node.finalIndex
 		    
-		    // Attach each field to the cell
-		    dim field as  Pair =  fieldName: node.finalIndex
-		    thisMenuItem.tag = field
+		    // Remember the link between both for future use
+		    mStoredIndices.Value(thisMenuItem.tag)= thisMenuItem.Text
 		    
 		    for each childNode as NSTreeNode in node.children
 		      
@@ -66,10 +68,21 @@ Inherits menuItem
 		Sub constructor(items() as String)
 		  dim  thisMenuItem as JVMenuItem = me
 		  
+		  dim index as Integer = 0
 		  for each textItem as String in items
 		    
-		    thisMenuItem.Append(new MenuItem(textItem))
+		    dim childItem as new MenuItem
+		    // Build the menu based from the values in the nodetree
+		    childItem.Text = textItem
+		    // Store the index as its tag
+		    childItem.tag = index
 		    
+		    // Remember the link between both for future use
+		    mStoredIndices.Value(childItem.tag)= childItem.Text
+		    
+		    thisMenuItem.Append(childItem)
+		    
+		    index = index+1
 		  next textItem
 		  
 		End Sub
@@ -81,9 +94,19 @@ Inherits menuItem
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function itemForIndexPath(indexPath() as Integer) As String
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		index As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mStoredIndices As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

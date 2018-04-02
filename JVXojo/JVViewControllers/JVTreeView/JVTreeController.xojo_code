@@ -1,7 +1,7 @@
 #tag Class
 Protected Class JVTreeController
 Inherits JVTableController
-Implements JVTreeViewDelegate,  JVTreeViewDataSource
+Implements JVTreeViewDelegate,JVTreeViewDataSource
 	#tag Method, Flags = &h0
 		Function cellType(fieldName as String) As JVCustomCell
 		  // Part of the JVTableViewDataSource interface.
@@ -132,7 +132,7 @@ Implements JVTreeViewDelegate,  JVTreeViewDataSource
 		  if sender.RowIsFolder(row) then
 		    
 		    dim collapsedNode as NStreeNode = sender.RowTag(row)
-		    dim indexString as String = collapsedNode.indexString
+		    dim indexString as String = collapsedNode.keypathString
 		    dim index as Integer = expandedNodes.IndexOf(indexString)
 		    
 		    if index >= 0 then
@@ -165,7 +165,7 @@ Implements JVTreeViewDelegate,  JVTreeViewDataSource
 		      displayNode(childNode)
 		    next
 		    
-		    dim indexString as String = expandedNode.indexString
+		    dim indexString as String = expandedNode.keypathString
 		    dim index as Integer = expandedNodes.IndexOf(indexString)
 		    
 		    if index < 0 then
@@ -183,7 +183,7 @@ Implements JVTreeViewDelegate,  JVTreeViewDataSource
 		  
 		  if sender.ListIndex >= 0 and sender.ListIndex < sender.ListCount then
 		    selectedNode = treeView.rowTag(sender.ListIndex)
-		    system.DebugLog("Node selected with indexpath "+selectedNode.indexString)
+		    system.DebugLog("Node selected with keyPath "+selectedNode.keypathString)
 		  else
 		    selectedNode = nil
 		  end if
@@ -196,7 +196,7 @@ Implements JVTreeViewDelegate,  JVTreeViewDataSource
 		  
 		  for row as Integer = 0 to treeView.ListCount -1
 		    dim node as NSTreeNode = treeview.RowTag(row)
-		    dim indexString as String = node.indexString
+		    dim indexString as String = node.keypathString
 		    dim wasExpandedBefore as Boolean = (expandedNodes.IndexOf(indexString) >= 0)
 		    treeView.Expanded(row) = wasExpandedBefore
 		  next row

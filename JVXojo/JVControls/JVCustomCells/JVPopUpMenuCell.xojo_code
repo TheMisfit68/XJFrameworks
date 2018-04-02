@@ -15,8 +15,9 @@ Implements JVCustomCell
 		  dim selectedMenu as menuItem = PopUp
 		  if selectedMenu <> nil then
 		    
-		    dim menuTag as Pair = selectedMenu.Tag
-		    dim newCellValue as Variant = menuTag.Right
+		    dim cellFormatter as NSFormatter = selectedMenu.Tag
+		    dim newCellValue as Integer = cellFormatter.objectValue
+		    
 		    listbox.celltag(row, column) = existingCellName : newCellValue
 		    
 		  end if
@@ -55,6 +56,8 @@ Implements JVCustomCell
 		  g.FillPolygon(points)
 		  
 		  dim fieldInfo as Pair = listbox.celltag(row, column)
+		  dim pk as Integer = fieldInfo.Right
+		  
 		  
 		  g.ForeColor = NSColor.Black
 		  // g.DrawString(stringValue, 35, g.height-4)
@@ -63,15 +66,6 @@ Implements JVCustomCell
 		  
 		End Sub
 	#tag EndMethod
-
-
-	#tag Property, Flags = &h0
-		selectedText As String
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		selectedValue As Variant
-	#tag EndProperty
 
 
 	#tag ViewBehavior

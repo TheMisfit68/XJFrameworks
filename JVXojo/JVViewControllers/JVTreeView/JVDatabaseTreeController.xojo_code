@@ -21,7 +21,7 @@ Implements JVBackgroundTaskDelegate
 		  // Part of the JVTreeViewDataSource interface.
 		  
 		  #if DebugBuild then
-		    system.DebugLog("Delete record with keypath "+node.indexString)
+		    system.DebugLog("Delete record with keypath "+node.keypathString)
 		  #Endif
 		  
 		  dim database as JVFPProxy = JVFPProxy(backGroundQuery.dataBase)
@@ -60,7 +60,7 @@ Implements JVBackgroundTaskDelegate
 		  // Part of the JVTreeViewDataSource interface.
 		  
 		  #if DebugBuild then
-		    system.DebugLog("Changing record with keypath "+node.indexString)
+		    system.DebugLog("Changing record with keypath "+node.keypathString)
 		  #Endif
 		  
 		  dim database as JVFPProxy = JVFPProxy(backGroundQuery.dataBase)

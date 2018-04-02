@@ -1,5 +1,22 @@
 #tag Class
 Protected Class NSFormatter
+	#tag Method, Flags = &h0
+		Sub constructor(objectValue as Variant, stringValue as String)
+		  me.objectValue = objectValue
+		  me.stringValue = stringValue
+		End Sub
+	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		objectValue As Variant
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		stringValue As String
+	#tag EndProperty
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Index"
