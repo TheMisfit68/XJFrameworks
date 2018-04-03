@@ -2,7 +2,7 @@
 Protected Class JVEditableTextCell
 Implements JVCustomCell
 	#tag Method, Flags = &h0
-		Sub activate(listBox as ListBox, row as integer, column as Integer)
+		Sub activate(listBox as JVtableView, row as integer, column as Integer)
 		  
 		  if listbox.CellType(row, column) <> listbox.TypeEditableTextField then
 		    listbox.CellType(row, column) = listbox.TypeEditableTextField
@@ -12,10 +12,15 @@ Implements JVCustomCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub draw(listBox as ListBox , g as graphics, row as integer, column as integer)
+		Sub draw(listBox as JVtableView , g as graphics, row as integer, column as integer)
 		  
 		  // While  drawing the field don't make it editable just yet, just draw a default cell
 		  listbox.CellType(row, column) = Listbox.TypeDefault
+		  dim backValue as Pair = listbox.cellTag(row, column)
+		  if backValue <> nil then
+		    dim frontValue as String = backValue.right.StringValue
+		    listbox.Cell(row, column) = frontValue
+		  end if
 		  
 		End Sub
 	#tag EndMethod
@@ -40,11 +45,6 @@ Implements JVCustomCell
 			Name="Name"
 			Visible=true
 			Group="ID"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="stringValue"
-			Group="Behavior"
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty

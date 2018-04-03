@@ -3,7 +3,7 @@ Protected Class JVPopUpMenuCell
 Inherits JVMenuItem
 Implements JVCustomCell
 	#tag Method, Flags = &h0
-		Sub activate(listBox as ListBox, row as integer, column as Integer)
+		Sub activate(listBox as JVtableView, row as integer, column as Integer)
 		  // Part of the JVCustomCell interface.
 		  
 		  listbox.ListIndex = row
@@ -12,26 +12,32 @@ Implements JVCustomCell
 		  dim existingCellName as String = celltag.left
 		  
 		  // Process the contained popup
-		  dim selectedMenu as menuItem = PopUp
+		  dim selectedMenu as JVMenuItem = JVMenuItem(PopUp)
 		  if selectedMenu <> nil then
 		    
-		    dim cellFormatter as NSFormatter = selectedMenu.Tag
-		    dim newCellValue as Integer = cellFormatter.objectValue
+		    dim newValue as Variant =  selectedMenu.values.left
+		    listbox.celltag(row, column) = existingCellName : newValue
 		    
-		    listbox.celltag(row, column) = existingCellName : newCellValue
+		    listbox.tableViewDelegate.onCellTagAction(listBox, row, column)
 		    
 		  end if
+		  
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub draw(listBox as ListBox , g as graphics, row as integer, column as integer)
+		Sub draw(listBox as JVtableView, g as graphics, row as integer, column as integer)
 		  // Part of the JVCustomCell interface.
 		  
-		  dim extraOffset as Integer =0
-		  if column = 0 then
-		    extraOffset  = listbox.rowDepth(row)*14
+		  // In an hiërarchical cell leave some extra space for the disclosure triangle
+		  dim extraOffset as Integer = 0
+		  if (listbox.Hierarchical) and (column = 0)  then
+		    if listbox.RowIsFolder(row) then
+		      extraOffset  = (listbox.rowDepth(row)+1)*15
+		    else
+		      extraOffset  = listbox.rowDepth(row)*15
+		    end if
 		  end if
 		  
 		  // Draw an arrow to indicate that clicking this field will
@@ -55,14 +61,13 @@ Implements JVCustomCell
 		  
 		  g.FillPolygon(points)
 		  
+		  
 		  dim fieldInfo as Pair = listbox.celltag(row, column)
-		  dim pk as Integer = fieldInfo.Right
+		  dim value as Integer = fieldInfo.Right
+		  dim text as String = textForValue(value)
 		  
-		  
-		  g.ForeColor = NSColor.Black
-		  // g.DrawString(stringValue, 35, g.height-4)
-		  
-		  
+		  g.ForeColor = NSColor.DarkGrey
+		  g.DrawString(text, extraOffset+35, g.height-4)
 		  
 		End Sub
 	#tag EndMethod

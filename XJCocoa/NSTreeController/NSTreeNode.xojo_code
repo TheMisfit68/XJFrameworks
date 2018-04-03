@@ -2,7 +2,7 @@
 Protected Class NSTreeNode
 Implements JVCustomStringConvertable
 	#tag Method, Flags = &h0
-		Sub addChild(child as NStreeNode)
+		Function addChild(child as NStreeNode) As NSTreeNode
 		  child.parent = me
 		  me.children.Append(child)
 		  
@@ -11,26 +11,27 @@ Implements JVCustomStringConvertable
 		  
 		  return child
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub constructor(records as Recordset, optional capturedField as String = "")
+		Sub constructor(records as Recordset)
 		  // Create a basenode to be used as a container for the actual nodes
 		  dim  baseNode as  NSTreeNode = me
 		  baseNode.parent = nil
-		  dim currentNode as  NSTreeNode
 		  
-		  // For every record that was found create a child to the basenode
+		  dim currentNode as  NSTreeNode
+		  dim currentkeyPathString as String
+		  
+		  // For every record that was found
 		  records.MoveFirst
 		  While Not records.EOF
 		    
-		    currentNode = new NSTreeNode(new DatabaseRecord)
 		    dim columns() as Pair
 		    
-		    // Create the relationships between the parent and the children
-		    currentNode.parent = baseNode
-		    basenode.children.append(currentNode)
+		    // Create a new child for the base node
+		    dim newNode as new NSTreeNode(new DatabaseRecord)
+		    currentNode =  baseNode.addChild(newNode)
 		    
 		    // Add every field
 		    for fieldNumber as Integer = 1 to records.FieldCount
@@ -39,19 +40,15 @@ Implements JVCustomStringConvertable
 		      dim fieldName as String = currentField.Name
 		      dim fieldValue as Variant = currentField.Value
 		      
-		      // When you come across an indexpath store it for later use
-		      dim itsAkeyPathField as Boolean = fieldName.contains("keyPath")
-		      if itsAkeyPathField then
-		        dim keys() as String = split(fieldValue,".")
-		        dim keyForBranch as Integer = val(keys(0))
-		        currentNode.indexPath.append(keyForBranch)
-		      elseif (fieldName = capturedField) or (capturedField = "") then
-		        columns.Append(fieldName : fieldValue)
+		      if fieldName.contains("keyPath") then
+		        currentkeyPathString = fieldValue // When you come across an indexpath store it for later use
+		      else
+		        columns.Append(fieldName : fieldValue) // Store the data of an field to capture
 		      end if
 		      
 		    next fieldNumber
 		    
-		    // Add the represented databaseRecord
+		    // Add any captured columns to the new node
 		    if (columns.Ubound>=0) then
 		      // Reverse te order while adding te columns because they are always inserted at index 0
 		      for reverseColumNumber as Integer = columns.Ubound to 0 step -1
@@ -61,6 +58,13 @@ Implements JVCustomStringConvertable
 		        representedObject.Column(columnName) = columnValue
 		      next reverseColumNumber
 		      redim columns(-1)
+		    end if
+		    
+		    // And add the keypath if it was found
+		    if currentkeyPathString <> "" then
+		      dim keys() as String = split(currentkeyPathString,".")
+		      dim keyForBranch as Integer = val(keys(0))
+		      currentNode.indexPath.append(keyForBranch)
 		    end if
 		    
 		    records.MoveNext
@@ -77,18 +81,18 @@ Implements JVCustomStringConvertable
 		  // Create a basenode to be used as a container for the actual nodes
 		  dim  baseNode as  NSTreeNode = me
 		  baseNode.parent = nil
-		  baseNode.indexPath.Append(1)
 		  
 		  dim activeBranchNumber as Integer = 0
 		  dim activeBranches() as NSTreeNode
 		  dim activeBranchValues() as Variant
 		  for i as Integer = 0 to branchFields.Ubound
+		    keyPath.append(0)
 		    activeBranches.append(baseNode)
 		    activeBranchValues.Append(nil)
 		  next
 		  
 		  dim currentNode as  NSTreeNode
-		  dim currentKeyPathString as String
+		  dim currentkeyPathString as String
 		  
 		  // For every record that was found
 		  records.MoveFirst
@@ -104,7 +108,7 @@ Implements JVCustomStringConvertable
 		      dim fieldName as String = currentField.Name
 		      dim fieldValue as Variant = currentField.Value
 		      dim matchingBranch as Integer= branchFields.IndexOf(fieldName)
-		      dim itsaBranchField as Boolean = (matchingBranch >=0)
+		      dim itsaBranchField as Boolean = matchingBranch >=0
 		      
 		      // Changes within a branchField make the branch active
 		      if  itsaBranchField and not branchIsActive  then 
@@ -117,15 +121,10 @@ Implements JVCustomStringConvertable
 		        
 		      end if
 		      
-		      // Parse the  fields of the new branch
-		      if branchIsActive then
-		        columns.Append(fieldName : fieldValue)
-		      end if
-		      
-		      // When you come across an indexpath store it for later use
-		      dim itsAkeyPathField as Boolean = fieldName.contains("keyPath")
-		      if itsAkeyPathField then
-		        currentKeyPathString = fieldValue
+		      if fieldName.contains("keyPath") then
+		        currentkeyPathString = fieldValue     // When you come across an indexpath store it for later use
+		      elseif branchIsActive then
+		        columns.Append(fieldName : fieldValue)  // Store the data of an active branch
 		      end if
 		      
 		      // Look ahead to the next field to predict the end of a branch
@@ -145,17 +144,22 @@ Implements JVCustomStringConvertable
 		      // At the end of each branch store the data in a new TreeNode
 		      if lastFieldOfCurrentBranch then
 		        
-		        currentNode = new NSTreeNode(new DatabaseRecord)
+		        // Create a new child for the current parent
+		        dim newNode as new NSTreeNode(new DatabaseRecord)
+		        dim currentParent as NSTreeNode = nil
+		        if  (activeBranchNumber > 0) then
+		          dim parentBranchNumber as Integer = activeBranchNumber-1
+		          while (currentParent = nil) and (parentBranchNumber >= 0)
+		            currentParent = activeBranches(parentBranchNumber)
+		            parentBranchNumber= parentBranchNumber-1
+		          wend
+		        end if
+		        if currentParent  = nil then
+		          currentParent = baseNode
+		        end if
+		        currentNode =  currentParent.addChild(newNode)
 		        
-		        // Adjust the current branches 
-		        activeBranches(activeBranchNumber) = currentNode
-		        // and subbranches
-		        for subBrancheNumber as Integer= activeBranchNumber+1 to activeBranches.Ubound
-		          activeBranches(subBrancheNumber) = nil
-		          activeBranchValues(subBrancheNumber) = nil
-		        next
-		        
-		        // Add the represented databaseRecord
+		        // Add any captured columns to the new node
 		        if (columns.Ubound>=0) then
 		          // Reverse te order while adding te columns because they are always inserted at index 0
 		          for reverseColumNumber as Integer = columns.Ubound to 0 step -1
@@ -167,32 +171,28 @@ Implements JVCustomStringConvertable
 		          redim columns(-1)
 		        end if
 		        
-		        // Create the relationships between the parent and the children
-		        if  (activeBranchNumber > 0) then
-		          dim parentBranch as Integer = activeBranchNumber-1
-		          while currentNode.parent= nil and parentBranch >= 0
-		            currentNode.parent = activeBranches(parentBranch)
-		            parentBranch= parentBranch-1
-		          wend
+		        // And add the keypath if it was found
+		        if currentkeyPathString <> "" then
+		          dim keys() as String = split(currentkeyPathString,".")
+		          dim keyForBranch as Integer
+		          for branchNumber as Integer = 0 to activeBranches.Ubound
+		            if  (branchNumber <= activeBranchNumber) and (branchNumber <= keys.Ubound) then
+		              keyForBranch = val(keys(branchNumber))
+		            else
+		              keyForBranch = 0
+		            end if
+		            currentNode.keyPath.append(keyForBranch)
+		          next branchNumber
 		        end if
-		        if currenTnode.parent  = nil then
-		          currentNode.parent = baseNode
-		        end if
-		        currentNode.parent.children.Append(currentNode)
 		        
-		        //  And add the keypath
-		        dim keys() as String = split(currentKeyPathString,".")
-		        dim keyForBranch as Integer
-		        for branchNumber as Integer = 0 to activeBranches.Ubound
-		          if  (branchNumber <= activeBranchNumber) and (branchNumber <= keys.Ubound) then
-		            keyForBranch = val(keys(branchNumber))
-		          else
-		            keyForBranch = 0
-		          end if
-		          currentNode.keyPath.append(keyForBranch)
-		          
-		        next branchNumber
 		        
+		        // Adjust the current branches to the current node
+		        activeBranches(activeBranchNumber) = currentNode
+		        // and subbranches
+		        for subBrancheNumber as Integer= activeBranchNumber+1 to activeBranches.Ubound
+		          activeBranches(subBrancheNumber) = nil
+		          activeBranchValues(subBrancheNumber) = nil
+		        next
 		        
 		        branchIsActive = False
 		      end if
@@ -204,8 +204,6 @@ Implements JVCustomStringConvertable
 		  Wend
 		  
 		  records.MoveFirst // Reset the cursor
-		  
-		  
 		End Sub
 	#tag EndMethod
 
@@ -238,6 +236,32 @@ Implements JVCustomStringConvertable
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function itemAtIndexPath(indexPath() as Integer) As NSTreeNode
+		  
+		  if indexPath.ubound >= 1 then
+		    
+		    dim currentIndex as Integer = indexPath(0)-1
+		    indexpath.Remove(0)
+		    return children(currentIndex).itemAtIndexPath(indexpath)
+		    
+		  elseif indexPath.ubound = 0 then
+		    
+		    // end recursion
+		    dim currentIndex as Integer = indexPath(0)-1
+		    return me.children(currentIndex) 
+		    
+		  else 
+		    
+		    return nil
+		    
+		  end if
+		  
+		  
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Note, Name = Class description
 		
@@ -261,17 +285,17 @@ Implements JVCustomStringConvertable
 		#tag Getter
 			Get
 			  
-			  dim lastFilledIndex as Integer = 0
-			  for each index as Integer in indexPath
-			    if index <> 0 then
-			      lastFilledIndex = index
+			  dim lastFilledKey as Integer = 0
+			  for each key as Integer in keypath
+			    if key <> 0 then
+			      lastFilledKey = key
 			    end if
-			  next index
+			  next key
 			  
-			  Return lastFilledIndex
+			  Return lastFilledKey
 			End Get
 		#tag EndGetter
-		finalIndex As Integer
+		finalKey As Integer
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
@@ -318,7 +342,7 @@ Implements JVCustomStringConvertable
 			  return  join(pathComponents, ".")
 			End Get
 		#tag EndGetter
-		keypathString As String
+		keyPathString As String
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
@@ -332,7 +356,7 @@ Implements JVCustomStringConvertable
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="finalIndex"
+			Name="finalKey"
 			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
@@ -353,6 +377,12 @@ Implements JVCustomStringConvertable
 			Name="isLeaf"
 			Group="Behavior"
 			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="keypathString"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"

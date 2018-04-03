@@ -21,7 +21,7 @@ Implements JVBackgroundTaskDelegate
 		  // Part of the JVTreeViewDataSource interface.
 		  
 		  #if DebugBuild then
-		    system.DebugLog("Delete record with keypath "+node.keypathString)
+		    system.DebugLog("Delete record with keypath "+node.keyPathString)
 		  #Endif
 		  
 		  dim database as JVFPProxy = JVFPProxy(backGroundQuery.dataBase)
@@ -32,7 +32,7 @@ Implements JVBackgroundTaskDelegate
 		  dim fieldName as String = recordValues.FieldName(0)
 		  dim newfieldValue as String = recordValues.Column(fieldName)
 		  
-		  dim primaryKeyValue as Integer = node.finalIndex
+		  dim primaryKeyValue as Integer = node.finalKey
 		  
 		  dim sourceInfo as Dictionary = app.dataModel.aliasSchema.value(viewOrTabelName+"."+fieldName)
 		  dim sourceTable as String = sourceInfo.Value("table")
@@ -60,7 +60,7 @@ Implements JVBackgroundTaskDelegate
 		  // Part of the JVTreeViewDataSource interface.
 		  
 		  #if DebugBuild then
-		    system.DebugLog("Changing record with keypath "+node.keypathString)
+		    system.DebugLog("Changing record with keypath "+node.keyPathString)
 		  #Endif
 		  
 		  dim database as JVFPProxy = JVFPProxy(backGroundQuery.dataBase)
@@ -69,7 +69,7 @@ Implements JVBackgroundTaskDelegate
 		  dim fieldName as String = fieldToChange.Left
 		  dim newfieldValue as String = fieldToChange.Right
 		  
-		  dim primaryKeyValue as Integer = node.finalIndex
+		  dim primaryKeyValue as Integer = node.finalKey
 		  
 		  dim sourceInfo as Dictionary = app.dataModel.aliasSchema.value(viewOrTabelName+"."+fieldName)
 		  dim sourceTable as String = sourceInfo.Value("table")

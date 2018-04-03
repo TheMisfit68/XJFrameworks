@@ -54,6 +54,22 @@ Protected Module JVSQLiteExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function hasColumn(extends baseRecord as DatabaseRecord , columnName as String) As Boolean
+		  
+		  dim fieldFound as Boolean = False
+		  
+		  dim fieldNumber as Integer = 0
+		  While not fieldFound and (fieldNumber < baseRecord.FieldCount)
+		    dim fieldName as String = baseRecord.FieldName(fieldNumber)
+		    fieldFound = (fieldName = columnName)
+		    fieldNumber= fieldNumber+1
+		  wend
+		  
+		  return fieldFound
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function nilableColumn(extends baseRecord as DatabaseRecord, columnName as String) As Variant
 		  
 		  dim textualValue as Variant =  baseRecord.Column(columnName)

@@ -78,13 +78,12 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		        fieldValue = representedObject.Column(fieldName.StringValue)
 		      end if
 		      
-		      dim cellToDisplay as JVCustomCell = treeView.treeViewDataSource.cellType(fieldName) 
-		      // cellToDisplay.draw(treeView, nil, row, column)
-		      treeView.cell(newRowNumber, fieldNumber) = fieldValue.StringValue
+		      // Prepare the field in the backend
+		      dim tagValue as Pair = fieldName: fieldValue
+		      treeView.celltag(newRowNumber, fieldNumber) = tagValue
 		      
-		      // Attach each field to the cell
-		      dim field as  Pair =  fieldName: fieldValue
-		      treeview.cellTag(newRowNumber, fieldNumber) = field
+		      // Make the cell redraw itself
+		      treeView.InvalidateCell(newRowNumber, fieldNumber)
 		      
 		    next
 		    
@@ -132,7 +131,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  if sender.RowIsFolder(row) then
 		    
 		    dim collapsedNode as NStreeNode = sender.RowTag(row)
-		    dim indexString as String = collapsedNode.keypathString
+		    dim indexString as String = collapsedNode.keyPathString
 		    dim index as Integer = expandedNodes.IndexOf(indexString)
 		    
 		    if index >= 0 then
@@ -146,10 +145,10 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 	#tag Method, Flags = &h0
 		Sub onlistDoubleClick(sender as JVTreeView)
 		  
-		  dim rowNumber as Integer = treeView.ListIndex
+		  dim rowNumber as Integer = sender.ListIndex
 		  
-		  if treeview.RowIsFolder(rowNumber) then
-		    treeView.Expanded(rowNumber) = not treeView.Expanded(rowNumber) // Toggle the expansion state
+		  if sender.RowIsFolder(rowNumber) then
+		    sender.Expanded(rowNumber) = not sender.Expanded(rowNumber) // Toggle the expansion state
 		  end if
 		End Sub
 	#tag EndMethod
@@ -165,7 +164,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		      displayNode(childNode)
 		    next
 		    
-		    dim indexString as String = expandedNode.keypathString
+		    dim indexString as String = expandedNode.keyPathString
 		    dim index as Integer = expandedNodes.IndexOf(indexString)
 		    
 		    if index < 0 then
@@ -183,7 +182,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  
 		  if sender.ListIndex >= 0 and sender.ListIndex < sender.ListCount then
 		    selectedNode = treeView.rowTag(sender.ListIndex)
-		    system.DebugLog("Node selected with keyPath "+selectedNode.keypathString)
+		    system.DebugLog("Node selected with keyPath "+selectedNode.keyPathString)
 		  else
 		    selectedNode = nil
 		  end if
@@ -196,7 +195,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  
 		  for row as Integer = 0 to treeView.ListCount -1
 		    dim node as NSTreeNode = treeview.RowTag(row)
-		    dim indexString as String = node.keypathString
+		    dim indexString as String = node.keyPathString
 		    dim wasExpandedBefore as Boolean = (expandedNodes.IndexOf(indexString) >= 0)
 		    treeView.Expanded(row) = wasExpandedBefore
 		  next row
@@ -209,6 +208,16 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		Function selectedIndex(level as Integer) As Integer
 		  if selectedNode <> nil then
 		    return selectedNode.indexPath(level)
+		  else
+		    return -1
+		  end if
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function selectedKey(level as Integer) As Integer
+		  if selectedNode <> nil then
+		    return selectedNode.keyPath(level)
 		  else
 		    return -1
 		  end if

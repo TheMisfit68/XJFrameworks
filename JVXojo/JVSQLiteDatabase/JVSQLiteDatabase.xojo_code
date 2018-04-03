@@ -363,7 +363,7 @@ Inherits SQLiteDatabase
 			          dim sqlString  as String = tablesInfo.field("sql")
 			          sqlString = ReplaceLineEndings(sqlString," ")
 			          dim fieldsWithAliasesString as String = sqlString.Replace(SQLstatementPattern,"$1",True)
-			          // baseTableName = sqlString.Replace(SQLstatementPattern,"$2",True)
+			          baseTableName = sqlString.Replace(SQLstatementPattern,"$2",True)
 			          
 			          fieldsWithAliasesString = fieldsWithAliasesString.Replace("\s*,\s*",ENDOFLINE, True)
 			          dim fieldsWithAliases() as String =  Split(fieldsWithAliasesString, ENDOFLINE)

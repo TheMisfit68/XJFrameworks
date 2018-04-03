@@ -37,9 +37,15 @@ Inherits Listbox
 		  
 		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		    
-		    // When a cell is a folder leave some inactive space left and on the disclosure triangles
-		    if RowIsFolder(row) and (column = 0)and ( x < (rowdepth(row)*15)) then
+		    // In an hiërarchical cell leave some extra space for the disclosure triangle
+		    if Hierarchical and (column = 0)  and RowIsFolder(row) and (x < (rowdepth(row)+1)*15) then
+		      
 		      ClearFocus
+		      
+		    elseif Hierarchical and (column = 0)  and not RowIsFolder(row) and (x < (rowdepth(row))*15) then
+		      
+		      ClearFocus
+		      
 		    else
 		      
 		      dim fieldInfo as Pair = me.CellTag(row, column)

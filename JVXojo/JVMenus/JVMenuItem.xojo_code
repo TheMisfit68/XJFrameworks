@@ -19,42 +19,66 @@ Inherits menuItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub constructor(node as NSTreeNode)
+		Sub constructor(node as NSTreeNode, valueColumn as String, textColumn as String)
 		  dim  thisMenuItem as JVMenuItem = me
+		  indexedTextValues = new Dictionary
+		  dim currentValue as Variant = nil
 		  
 		  if node <> nil then
 		    
-		    
-		    if node.representedObject isa Dictionary then
-		      dim representedObject as Dictionary = node.representedObject
-		    elseif node.representedObject isa DatabaseRecord then
-		      dim representedObject as DatabaseRecord = node.representedObject
-		    end if
-		    
 		    // Proces the individual fields
-		    dim fieldName as Variant
-		    dim fieldValue as  Variant
 		    if node.representedObject isa Dictionary then
 		      dim representedObject as Dictionary = node.representedObject
-		      fieldName = representedObject.key(0)
-		      fieldValue = representedObject.value(fieldName)
+		      
+		      if valueColumn.contains("keyPath") then
+		        thisMenuItem.tag = node.finalKey
+		      elseif representedObject.HasKey(valueColumn) then
+		        thisMenuItem.tag = representedObject.value(valueColumn)
+		      else
+		        dim key as String = representedObject.key(0)
+		        thisMenuItem.tag = representedObject.value(key)
+		      end if
+		      
+		      if representedObject.HasKey(textColumn) then
+		        thisMenuItem.Text = representedObject.value(textColumn)
+		      else
+		        dim key as String = representedObject.key(0)
+		        thisMenuItem.Text = representedObject.value(key)
+		      end if
+		      
 		    elseif node.representedObject isa DatabaseRecord then
 		      dim representedObject as DatabaseRecord = node.representedObject
-		      fieldName = representedObject.FieldName(0)
-		      fieldValue = representedObject.Column(fieldName.StringValue)
+		      
+		      if valueColumn.contains("keyPath") then
+		        thisMenuItem.tag = node.finalKey
+		      elseif representedObject.hasColumn(valueColumn) then
+		        thisMenuItem.tag = representedObject.Column(valueColumn)
+		      else
+		        dim columName as String = representedObject.FieldName(0)
+		        thisMenuItem.tag = representedObject.Column(columName)
+		      end if
+		      
+		      if representedObject.hasColumn(textColumn) then
+		        thisMenuItem.Text = representedObject.Column(textColumn)
+		      else
+		        dim columName as String = representedObject.FieldName(0)
+		        thisMenuItem.Text = representedObject.Column(columName)
+		      end if
+		      
 		    end if
 		    
-		    // Build the menu based from the values in the nodetree
-		    thisMenuItem.Text = fieldValue.StringValue
-		    // Store the index as its tag
-		    thisMenuItem.tag = node.finalIndex
-		    
-		    // Remember the link between both for future use
-		    mStoredIndices.Value(thisMenuItem.tag)= thisMenuItem.Text
+		    // Store them togeter for future reference
+		    indexedTextValues.Value(thisMenuItem.tag) = thisMenuItem.Text
 		    
 		    for each childNode as NSTreeNode in node.children
 		      
-		      thisMenuItem.Append(new JVMenuItem(ChildNode))
+		      dim childMenu as new JVMenuItem(ChildNode, valueColumn, textColumn)
+		      Append(childMenu)
+		      
+		      // Copy the indexedTextValues from the lower level menu's to the current level
+		      for each key as Variant in childMenu.indexedTextValues.Keys
+		        indexedTextValues.Value(key) = childMenu.indexedTextValues.value(key)
+		      next key
 		      
 		    next childNode
 		    
@@ -74,11 +98,11 @@ Inherits menuItem
 		    dim childItem as new MenuItem
 		    // Build the menu based from the values in the nodetree
 		    childItem.Text = textItem
-		    // Store the index as its tag
+		    // Store the indexpath(string) with it
 		    childItem.tag = index
 		    
-		    // Remember the link between both for future use
-		    mStoredIndices.Value(childItem.tag)= childItem.Text
+		    // Store them togeter for future reference
+		    indexedTextValues.Value(childItem.tag) = childItem.Text
 		    
 		    thisMenuItem.Append(childItem)
 		    
@@ -94,9 +118,30 @@ Inherits menuItem
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function itemForIndexPath(indexPath() as Integer) As String
+	#tag Method, Flags = &h1
+		Protected Function textForValue(value as Variant) As String
 		  
+		  if (value <> nil) then
+		    
+		    if  indexedTextValues.HasKey(value) then
+		      
+		      return indexedTextValues.value(value).StringValue
+		      
+		    elseif  indexedTextValues.HasKey(value.IntegerValue) then
+		      
+		      return indexedTextValues.value(value.IntegerValue).StringValue
+		      
+		    elseif  indexedTextValues.HasKey(value.StringValue) then
+		      
+		      return indexedTextValues.value(value.StringValue).StringValue
+		      
+		    else
+		      
+		      return "Undefined value !"
+		      
+		    end if
+		    
+		  end if
 		End Function
 	#tag EndMethod
 
@@ -106,7 +151,7 @@ Inherits menuItem
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mStoredIndices As Dictionary
+		Private indexedTextValues As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -116,6 +161,25 @@ Inherits menuItem
 	#tag Property, Flags = &h0
 		parentMenu As MenuItem
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  dim value as Variant
+			  if me <> nil then
+			    value = tag
+			  else
+			    value = nil
+			  end if
+			  
+			  dim textualRepresentation as String = textForValue(value)
+			  return  value : textualRepresentation
+			  
+			End Get
+		#tag EndGetter
+		values As Pair
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior

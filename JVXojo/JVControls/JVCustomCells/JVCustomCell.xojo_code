@@ -1,13 +1,13 @@
 #tag Interface
 Protected Interface JVCustomCell
 	#tag Method, Flags = &h0
-		Sub activate(listBox as ListBox, row as integer, column as Integer)
+		Sub activate(listBox as JVtableView, row as integer, column as Integer)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub draw(listBox as ListBox , g as graphics, row as integer, column as integer)
+		Sub draw(listBox as JVtableView , g as graphics, row as integer, column as integer)
 		  
 		End Sub
 	#tag EndMethod
