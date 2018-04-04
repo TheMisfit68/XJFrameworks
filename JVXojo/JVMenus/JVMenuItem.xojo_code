@@ -21,7 +21,7 @@ Inherits menuItem
 	#tag Method, Flags = &h0
 		Sub constructor(node as NSTreeNode, valueColumn as String, textColumn as String)
 		  dim  thisMenuItem as JVMenuItem = me
-		  indexedTextValues = new Dictionary
+		  textualRepresentations = new Dictionary
 		  dim currentValue as Variant = nil
 		  
 		  if node <> nil then
@@ -68,16 +68,16 @@ Inherits menuItem
 		    end if
 		    
 		    // Store them togeter for future reference
-		    indexedTextValues.Value(thisMenuItem.tag) = thisMenuItem.Text
+		    textualRepresentations.Value(thisMenuItem.tag) = thisMenuItem.Text
 		    
 		    for each childNode as NSTreeNode in node.children
 		      
 		      dim childMenu as new JVMenuItem(ChildNode, valueColumn, textColumn)
 		      Append(childMenu)
 		      
-		      // Copy the indexedTextValues from the lower level menu's to the current level
-		      for each key as Variant in childMenu.indexedTextValues.Keys
-		        indexedTextValues.Value(key) = childMenu.indexedTextValues.value(key)
+		      // Copy the textualRepresentations from the lower level menu's to the current level
+		      for each key as Variant in childMenu.textualRepresentations.Keys
+		        textualRepresentations.Value(key) = childMenu.textualRepresentations.value(key)
 		      next key
 		      
 		    next childNode
@@ -102,7 +102,7 @@ Inherits menuItem
 		    childItem.tag = index
 		    
 		    // Store them togeter for future reference
-		    indexedTextValues.Value(childItem.tag) = childItem.Text
+		    textualRepresentations.Value(childItem.tag) = childItem.Text
 		    
 		    thisMenuItem.Append(childItem)
 		    
@@ -119,21 +119,21 @@ Inherits menuItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function textForValue(value as Variant) As String
+		Protected Function textRepresentation(value as Variant) As String
 		  
 		  if (value <> nil) then
 		    
-		    if  indexedTextValues.HasKey(value) then
+		    if  textualRepresentations.HasKey(value) then
 		      
-		      return indexedTextValues.value(value).StringValue
+		      return textualRepresentations.value(value).StringValue
 		      
-		    elseif  indexedTextValues.HasKey(value.IntegerValue) then
+		    elseif  textualRepresentations.HasKey(value.IntegerValue) then
 		      
-		      return indexedTextValues.value(value.IntegerValue).StringValue
+		      return textualRepresentations.value(value.IntegerValue).StringValue
 		      
-		    elseif  indexedTextValues.HasKey(value.StringValue) then
+		    elseif  textualRepresentations.HasKey(value.StringValue) then
 		      
-		      return indexedTextValues.value(value.StringValue).StringValue
+		      return textualRepresentations.value(value.StringValue).StringValue
 		      
 		    else
 		      
@@ -150,16 +150,16 @@ Inherits menuItem
 		index As Integer
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private indexedTextValues As Dictionary
-	#tag EndProperty
-
 	#tag Property, Flags = &h0
 		owner As Object
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		parentMenu As MenuItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private textualRepresentations As Dictionary
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -173,7 +173,7 @@ Inherits menuItem
 			    value = nil
 			  end if
 			  
-			  dim textualRepresentation as String = textForValue(value)
+			  dim textualRepresentation as String = textRepresentation(value)
 			  return  value : textualRepresentation
 			  
 			End Get

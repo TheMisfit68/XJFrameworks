@@ -64,7 +64,7 @@ Implements JVCustomCell
 		  
 		  dim fieldInfo as Pair = listbox.celltag(row, column)
 		  dim value as Integer = fieldInfo.Right
-		  dim text as String = textForValue(value)
+		  dim text as String = textRepresentation(value)
 		  
 		  g.ForeColor = NSColor.DarkGrey
 		  g.DrawString(text, extraOffset+35, g.height-4)
