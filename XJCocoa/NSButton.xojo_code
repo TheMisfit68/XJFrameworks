@@ -3,6 +3,7 @@ Protected Class NSButton
 Inherits pushButton
 	#tag Event
 		Sub Action()
+		  
 		  action.invoke(me)
 		End Sub
 	#tag EndEvent

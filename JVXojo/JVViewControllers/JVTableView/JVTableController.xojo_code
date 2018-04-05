@@ -1,6 +1,6 @@
 #tag Class
 Protected Class JVTableController
-Implements JVTableViewDataSource, JVTableViewDelegate
+Implements JVTableViewDataSource,JVTableViewDelegate
 	#tag Method, Flags = &h0
 		Function cellType(fieldName as String) As JVCustomCell
 		  // Part of the JVTableViewDataSource interface.

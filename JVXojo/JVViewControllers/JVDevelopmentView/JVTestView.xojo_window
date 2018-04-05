@@ -13,10 +13,10 @@ Begin ContainerControl JVTestView
    HelpTag         =   ""
    InitialParent   =   ""
    Left            =   0
-   LockBottom      =   False
-   LockLeft        =   False
+   LockBottom      =   True
+   LockLeft        =   True
    LockRight       =   False
-   LockTop         =   False
+   LockTop         =   True
    TabIndex        =   0
    TabPanelIndex   =   0
    TabStop         =   True

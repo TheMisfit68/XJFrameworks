@@ -39,6 +39,12 @@ Protected Class NSFormatter
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="stringValue"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"

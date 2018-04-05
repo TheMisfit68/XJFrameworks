@@ -40,11 +40,11 @@ Inherits Listbox
 		    // In an hiërarchical cell leave some extra space for the disclosure triangle
 		    if Hierarchical and (column = 0)  and RowIsFolder(row) and (x < (rowdepth(row)+1)*15) then
 		      
-		      ClearFocus
+		      return False
 		      
 		    elseif Hierarchical and (column = 0)  and not RowIsFolder(row) and (x < (rowdepth(row))*15) then
 		      
-		      ClearFocus
+		      return False
 		      
 		    else
 		      
@@ -72,6 +72,9 @@ Inherits Listbox
 		    end if
 		    
 		  end if
+		  
+		  return False
+		  
 		  
 		  
 		End Function
