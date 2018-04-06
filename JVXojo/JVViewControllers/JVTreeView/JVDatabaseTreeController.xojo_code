@@ -24,6 +24,7 @@ Implements JVBackgroundTaskDelegate
 		    system.DebugLog("Delete record with keypath "+node.keyPathString)
 		  #Endif
 		  
+		  // Find the right sourcetable, sourceField and name of the PK-field
 		  dim database as JVFPProxy = JVFPProxy(backGroundQuery.dataBase)
 		  dim sqlString as String = backGroundQuery.sqlString
 		  dim viewOrTabelName as String =  sqlString.Replace(JVFPProxy.SQLstatementPattern, "$2", True)
@@ -32,22 +33,21 @@ Implements JVBackgroundTaskDelegate
 		  dim fieldName as String = recordValues.FieldName(0)
 		  dim newfieldValue as String = recordValues.Column(fieldName)
 		  
-		  dim primaryKeyValue as Integer = node.finalKey
-		  
 		  dim sourceInfo as Dictionary = app.dataModel.aliasSchema.value(viewOrTabelName+"."+fieldName)
 		  dim sourceTable as String = sourceInfo.Value("table")
 		  dim sourceField as String = sourceInfo.Value("field")
 		  dim pkFieldName as String = app.dataModel.pkForTable(sourceTable)
 		  
-		  dim request as new JVDatabaseRequest
-		  request.IntegerColumn(pkFieldName) = primaryKeyValue
-		  
-		  // Delete
+		  // Find the record with the right PK in the right sourcetable
 		  dataBase.goToLayoutOrView(sourceTable)
 		  dataBase.enterMode(JVFPProxy.MODES.Find)
+		  dim request as new JVDatabaseRequest
+		  dim primaryKeyValue as Integer = node.finalKey
+		  request.IntegerColumn(pkFieldName) = primaryKeyValue
 		  dataBase.addRequest(request)
 		  dataBase.executeFind
 		  
+		  // And delete it
 		  dataBase.deleteAllRecords
 		  
 		  reloadData
@@ -63,33 +63,48 @@ Implements JVBackgroundTaskDelegate
 		    system.DebugLog("Changing record with keypath "+node.keyPathString)
 		  #Endif
 		  
+		  // Find the right sourcetable, sourceField and name of the PK-field
 		  dim database as JVFPProxy = JVFPProxy(backGroundQuery.dataBase)
 		  dim sqlString as String = backGroundQuery.sqlString
 		  dim viewOrTabelName as String =  sqlString.Replace(JVFPProxy.SQLstatementPattern, "$2", True)
 		  dim fieldName as String = fieldToChange.Left
 		  dim newfieldValue as String = fieldToChange.Right
 		  
-		  dim primaryKeyValue as Integer = node.finalKey
-		  
 		  dim sourceInfo as Dictionary = app.dataModel.aliasSchema.value(viewOrTabelName+"."+fieldName)
 		  dim sourceTable as String = sourceInfo.Value("table")
 		  dim sourceField as String = sourceInfo.Value("field")
 		  dim pkFieldName as String = app.dataModel.pkForTable(sourceTable)
 		  
-		  dim request as new JVDatabaseRequest
-		  request.IntegerColumn(pkFieldName) = primaryKeyValue
-		  
-		  dim record as new DatabaseRecord
-		  record.Column(sourceField) = newfieldValue
-		  
+		  // Find the record with the right PK in the right sourcetable
 		  dataBase.goToLayoutOrView(sourceTable)
 		  dataBase.enterMode(JVFPProxy.MODES.Find)
+		  dim request as new JVDatabaseRequest
+		  dim primaryKeyValue as Integer = node.finalKey
+		  request.IntegerColumn(pkFieldName) = primaryKeyValue
 		  dataBase.addRequest(request)
 		  dataBase.executeFind
 		  
-		  // Perform the update
+		  // And perform the update
+		  dim record as new DatabaseRecord
+		  record.Column(sourceField) = newfieldValue
 		  call dataBase.editRecord(record)
 		  
+		  reloadData
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub onListSelectionDidChange(sender as JVTableView)
+		  // Part of the JVTableViewDelegate interface.
+		  
+		  dim row as integer = sender.ListIndex
+		  if (row >= 0) and (row < sender.ListCount) then
+		    selectedNode = treeView.rowTag(row)
+		    system.DebugLog("Node selected with path "+pathForRow(row))
+		  else
+		    selectedNode = nil
+		  end if
 		End Sub
 	#tag EndMethod
 
@@ -105,19 +120,45 @@ Implements JVBackgroundTaskDelegate
 		  end if
 		  
 		  syncInterface(True)
+		  
+		  treeView.ListIndex = originalSelection
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function pathForRow(row as Integer) As String
+		  
+		  if (row >= 0) and (row < treeView.ListCount) then
+		    dim node as NSTreeNode = treeView.rowTag(row)
+		    return node.keyPathString
+		  else
+		    return ""
+		  end if
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub reloadData(optional SQLStatement as String = "")
-		  dim previousDataBase as JVSQLiteDatabase = backGroundQuery.database
+		  
+		  originalSelection = treeView.ListIndex
 		  if SQLStatement <> "" then
+		    dim previousDataBase as JVSQLiteDatabase = backGroundQuery.database
 		    backGroundQuery = new JVbackGroundQuery(previousDataBase, SQLStatement )
 		  end if
 		  backGroundQuery.backgroundTaskDelegate = me
 		  backGroundQuery.run
 		  
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function selectedKey(level as Integer) As Integer
+		  if (selectedNode <> nil)  and (level<= selectedNode.keyPath.ubound) then
+		    return selectedNode.keyPath(level)
+		  else
+		    return -1
+		  end if
+		End Function
 	#tag EndMethod
 
 
@@ -131,6 +172,10 @@ Implements JVBackgroundTaskDelegate
 
 	#tag Property, Flags = &h0
 		backGroundQuery As JVbackGroundQuery
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		originalSelection As Integer
 	#tag EndProperty
 
 

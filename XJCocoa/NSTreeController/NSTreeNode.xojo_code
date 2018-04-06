@@ -3,10 +3,16 @@ Protected Class NSTreeNode
 Implements JVCustomStringConvertable
 	#tag Method, Flags = &h0
 		Function addChild(child as NStreeNode) As NSTreeNode
+		  //Set the childs properties based on the parent
 		  child.parent = me
+		  for each component as Integer in indexPath
+		    child.indexPath.Append(component)
+		  next component
+		  
+		  // Add the child to the parent
 		  me.children.Append(child)
 		  
-		  child.indexPath = indexPath
+		  // and move the indexpath down to the next level
 		  child.indexPath.Append(children.ubound+1)
 		  
 		  return child
@@ -41,7 +47,7 @@ Implements JVCustomStringConvertable
 		      dim fieldValue as Variant = currentField.Value
 		      
 		      if fieldName.contains("keyPath") then
-		        currentkeyPathString = fieldValue // When you come across an indexpath store it for later use
+		        currentkeyPathString = fieldValue // When you come across an keypath store it for later use
 		      else
 		        columns.Append(fieldName : fieldValue) // Store the data of an field to capture
 		      end if
@@ -64,7 +70,7 @@ Implements JVCustomStringConvertable
 		    if currentkeyPathString <> "" then
 		      dim keys() as String = split(currentkeyPathString,".")
 		      dim keyForBranch as Integer = val(keys(0))
-		      currentNode.indexPath.append(keyForBranch)
+		      currentNode.keyPath.append(keyForBranch)
 		    end if
 		    
 		    records.MoveNext
@@ -114,7 +120,7 @@ Implements JVCustomStringConvertable
 		      if  itsaBranchField and not branchIsActive  then 
 		        
 		        if (fieldValue <> activeBranchValues(matchingBranch)) then
-		          branchIsActive =  True 
+		          branchIsActive =  True
 		          activeBranchNumber = matchingBranch
 		          activeBranchValues(activeBranchNumber) = fieldValue
 		        end if
@@ -122,7 +128,7 @@ Implements JVCustomStringConvertable
 		      end if
 		      
 		      if fieldName.contains("keyPath") then
-		        currentkeyPathString = fieldValue     // When you come across an indexpath store it for later use
+		        currentkeyPathString = fieldValue     // When you come across an keypath store it for later use
 		      elseif branchIsActive then
 		        columns.Append(fieldName : fieldValue)  // Store the data of an active branch
 		      end if
@@ -147,8 +153,8 @@ Implements JVCustomStringConvertable
 		        // Create a new child for the current parent
 		        dim newNode as new NSTreeNode(new DatabaseRecord)
 		        dim currentParent as NSTreeNode = nil
+		        dim parentBranchNumber as Integer = activeBranchNumber-1
 		        if  (activeBranchNumber > 0) then
-		          dim parentBranchNumber as Integer = activeBranchNumber-1
 		          while (currentParent = nil) and (parentBranchNumber >= 0)
 		            currentParent = activeBranches(parentBranchNumber)
 		            parentBranchNumber= parentBranchNumber-1

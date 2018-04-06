@@ -119,6 +119,7 @@ Protected Module JVStringExtensions
 		    Return regex.Replace(baseString)
 		    
 		  else
+		    
 		    return baseString.replace(searchPattern, replacementPattern)
 		    
 		  end if

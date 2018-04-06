@@ -38,7 +38,7 @@ Implements JVTableViewDataSource,JVTableViewDelegate
 		  dim  frontendField as Pair =  frontendFieldName : frontendFieldValue
 		  
 		  if frontendFieldValue <> backendFieldValue then
-		    tableView.tableViewDataSource.editField(row, column, backendField)
+		    tableView.tableViewDataSource.editField(row, column, frontendField)
 		  end if
 		End Sub
 	#tag EndMethod

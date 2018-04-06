@@ -33,15 +33,15 @@ Inherits SQLiteDatabase
 		    dim newfields as DatabaseRecord = stripPKsFromRecord(baseTableName, record)
 		    
 		    InsertRecord(baseTableName, newfields)
-		    dim pk as Integer= lastPKFromTable(baseTableName)
-		    affectedPKs.Append(pk)
-		    
 		    If Error Then
 		      #if debugbuild then
 		        system.debuglog( "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE)
 		      #endif
 		      
 		    End If
+		    
+		    dim pk as Integer= lastPKFromTable(baseTableName)
+		    affectedPKs.Append(pk)
 		    
 		  next record
 		  

@@ -127,15 +127,17 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		Sub onlistCollapseRow(sender as JVTreeView, row as Integer)
 		  
 		  // Part of the JVTreeViewDelegate interface.
-		  
-		  if sender.RowIsFolder(row) then
+		  if (row >= 0) and (row < sender.ListCount) then
 		    
-		    dim collapsedNode as NStreeNode = sender.RowTag(row)
-		    dim indexString as String = collapsedNode.keyPathString
-		    dim index as Integer = expandedNodes.IndexOf(indexString)
-		    
-		    if index >= 0 then
-		      expandedNodes.Remove(index)
+		    if sender.RowIsFolder(row) then
+		      
+		      dim pathString as String = pathForRow(row)
+		      dim index as Integer = expandedNodes.IndexOf(pathString)
+		      
+		      if index >= 0 then
+		        expandedNodes.Remove(index)
+		      end if
+		      
 		    end if
 		    
 		  end if
@@ -145,10 +147,13 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 	#tag Method, Flags = &h0
 		Sub onlistDoubleClick(sender as JVTreeView)
 		  
-		  dim rowNumber as Integer = sender.ListIndex
-		  
-		  if sender.RowIsFolder(rowNumber) then
-		    sender.Expanded(rowNumber) = not sender.Expanded(rowNumber) // Toggle the expansion state
+		  dim row as Integer = sender.ListIndex
+		  if (row >= 0) and (row < sender.ListCount) then
+		    
+		    if sender.RowIsFolder(row) then
+		      sender.Expanded(row) = not sender.Expanded(row) // Toggle the expansion state
+		    end if
+		    
 		  end if
 		End Sub
 	#tag EndMethod
@@ -156,23 +161,25 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 	#tag Method, Flags = &h0
 		Sub onListExpandRow(sender as JVTreeView, row as Integer)
 		  // Part of the JVTreeViewDelegate interface.
-		  
-		  if sender.RowIsFolder(row) then
+		  if (row >= 0) and (row < sender.ListCount) then
 		    
-		    dim expandedNode as NStreeNode = sender.RowTag(row)
-		    For each childNode as NSTreeNode in expandedNode.children
-		      displayNode(childNode)
-		    next
-		    
-		    dim indexString as String = expandedNode.keyPathString
-		    dim index as Integer = expandedNodes.IndexOf(indexString)
-		    
-		    if index < 0 then
-		      expandedNodes.append(indexString)
+		    if sender.RowIsFolder(row) then
+		      
+		      dim expandedNode as NStreeNode = sender.RowTag(row)
+		      For each childNode as NSTreeNode in expandedNode.children
+		        displayNode(childNode)
+		      next
+		      
+		      dim pathString as String = pathForRow(row)
+		      dim index as Integer = expandedNodes.IndexOf(pathString)
+		      
+		      if index < 0 then
+		        expandedNodes.append(pathString)
+		      end if
+		      
 		    end if
 		    
 		  end if
-		  
 		End Sub
 	#tag EndMethod
 
@@ -180,9 +187,10 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		Sub onListSelectionDidChange(sender as JVTableView)
 		  // Part of the JVTableViewDelegate interface.
 		  
-		  if sender.ListIndex >= 0 and sender.ListIndex < sender.ListCount then
-		    selectedNode = treeView.rowTag(sender.ListIndex)
-		    system.DebugLog("Node selected with keyPath "+selectedNode.keyPathString)
+		  dim row as integer = sender.ListIndex
+		  if (row >= 0) and (row < sender.ListCount) then
+		    selectedNode = treeView.rowTag(row)
+		    system.DebugLog("Node selected with path "+pathForRow(row))
 		  else
 		    selectedNode = nil
 		  end if
@@ -190,13 +198,23 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Function pathForRow(row as Integer) As String
+		  
+		  if (row >= 0) and (row < treeView.ListCount) then
+		    dim node as NSTreeNode = treeView.rowTag(row)
+		    return node.indexPathString
+		  else
+		    return ""
+		  end if
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Sub restoreExpandedNodes()
 		  
-		  
 		  for row as Integer = 0 to treeView.ListCount -1
-		    dim node as NSTreeNode = treeview.RowTag(row)
-		    dim indexString as String = node.keyPathString
-		    dim wasExpandedBefore as Boolean = (expandedNodes.IndexOf(indexString) >= 0)
+		    dim pathString as String = pathForRow(row)
+		    dim wasExpandedBefore as Boolean = (expandedNodes.IndexOf(pathString) >= 0)
 		    treeView.Expanded(row) = wasExpandedBefore
 		  next row
 		  
@@ -206,18 +224,8 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 
 	#tag Method, Flags = &h0
 		Function selectedIndex(level as Integer) As Integer
-		  if selectedNode <> nil then
+		  if (selectedNode <> nil)  and (level<= selectedNode.indexPath.ubound) then
 		    return selectedNode.indexPath(level)
-		  else
-		    return -1
-		  end if
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function selectedKey(level as Integer) As Integer
-		  if selectedNode <> nil then
-		    return selectedNode.keyPath(level)
 		  else
 		    return -1
 		  end if
