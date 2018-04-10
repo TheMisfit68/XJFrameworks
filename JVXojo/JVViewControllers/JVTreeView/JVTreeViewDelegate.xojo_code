@@ -19,6 +19,12 @@ Implements JVTableViewDelegate
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub onListMouseMove(sender as JVTreeView, x as Integer, y as Integer)
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = Protocol description
 		Defines the protocol all JVTreeView-delegates must conform to

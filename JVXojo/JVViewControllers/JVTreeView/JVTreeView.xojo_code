@@ -42,6 +42,7 @@ Inherits JVTableView
 			  
 			  if mTreeViewDelegate <> nil then
 			    
+			    RemoveHandler MouseMove, AddressOf mTreeViewDelegate.onListMouseMove
 			    RemoveHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
 			    RemoveHandler CollapseRow, AddressOf mTreeViewDelegate.onListCollapseRow
 			    RemoveHandler DoubleClick, AddressOf mTreeViewDelegate.onListDoubleClick
@@ -53,6 +54,7 @@ Inherits JVTableView
 			  
 			  if mTreeViewDelegate <> nil then
 			    
+			    AddHandler MouseMove, AddressOf mTreeViewDelegate.onListMouseMove
 			    AddHandler ExpandRow, AddressOf mTreeViewDelegate.onListExpandRow
 			    AddHandler CollapseRow, AddressOf mTreeViewDelegate.onListCollapseRow
 			    AddHandler DoubleClick, AddressOf mTreeViewDelegate.onListDoubleClick

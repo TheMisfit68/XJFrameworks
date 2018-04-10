@@ -184,6 +184,32 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub onlistmouseMove(sender as JVTreeView, x as Integer, y as Integer)
+		  
+		  dim rowAndColumn as Pair = sender.rowAndColumnClicked(x, y)
+		  dim row as Integer = rowAndColumn.left
+		  dim column as Integer = rowAndColumn.right
+		  
+		  if (row >= 0) and (row < sender.ListCount) and (column >= 0) and (column < sender.ColumnCount) then
+		    
+		    dim nameAndValue as Pair = sender.celltag(row, column)
+		    if nameAndValue <> nil then
+		      
+		      dim tooltipText as String = nameAndValue.left
+		      ToolTip.Show(tooltipText, System.MouseX, System.MouseY +20)
+		      
+		    end if
+		    
+		  end if
+		  
+		  
+		  
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub onListSelectionDidChange(sender as JVTableView)
 		  // Part of the JVTableViewDelegate interface.
 		  

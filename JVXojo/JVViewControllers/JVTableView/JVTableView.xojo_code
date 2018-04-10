@@ -81,8 +81,8 @@ Inherits Listbox
 	#tag EndEvent
 
 
-	#tag Method, Flags = &h1
-		Protected Function rowAndColumnClicked(x as Integer, y as integer) As pair
+	#tag Method, Flags = &h0
+		Function rowAndColumnClicked(x as Integer, y as integer) As pair
 		  
 		  Dim row As Integer = RowFromXY(x, y)
 		  Dim column As Integer = ColumnFromXY(x, y)
