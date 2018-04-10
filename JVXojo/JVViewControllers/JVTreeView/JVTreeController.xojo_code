@@ -200,6 +200,10 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		      
 		    end if
 		    
+		  else
+		    
+		    Tooltip.hide
+		    
 		  end if
 		  
 		  
