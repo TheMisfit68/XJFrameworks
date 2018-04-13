@@ -65,7 +65,7 @@ Implements NSViewDelegate
 		Sub syncInterface(optional up as Boolean = False)
 		  Dim e As RuntimeException = New RuntimeException
 		  e.ErrorNumber = -1
-		  e.Message = "[NSViewController]]You must overide the syncInterface-method for the "+ me.className+"-class"
+		  e.Message = "[NSViewController] You must override the syncInterface-method for the "+ me.className+"-class"
 		  Raise e
 		End Sub
 	#tag EndMethod

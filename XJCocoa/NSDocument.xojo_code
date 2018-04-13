@@ -98,7 +98,7 @@ Protected Class NSDocument
 			Get
 			  Dim e As RuntimeException = New RuntimeException
 			  e.ErrorNumber = -1
-			  e.Message = "You must overide the fileType-property for te NSDocument-class"
+			  e.Message = "[NSDocument] You must override the fileType-property"
 			  Raise e
 			End Get
 		#tag EndGetter

@@ -101,7 +101,7 @@ Implements NSWindowDelegate
 		Sub syncInterface(optional up as Boolean = False)
 		  Dim e As RuntimeException = New RuntimeException
 		  e.ErrorNumber = -1
-		  e.Message = "You must overide the syncInterface-method for te NSWindowController-class"
+		  e.Message = "[NSWindowController] You must override the syncInterface-method"
 		  Raise e
 		End Sub
 	#tag EndMethod
