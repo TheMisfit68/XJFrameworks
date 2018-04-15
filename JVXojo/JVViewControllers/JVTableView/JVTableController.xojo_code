@@ -35,6 +35,11 @@ Implements JVTableViewDataSource,JVTableViewDelegate
 		  
 		  dim frontendFieldName as String = backendFieldName
 		  dim frontendFieldValue as Variant = sender.cell(row, column)
+		  if sender.CellType(row, column) = Listbox.TypeCheckbox then
+		    dim rawValue as Integer = Integer(sender.CellState(row, column))
+		    frontendFieldValue = rawValue
+		  end if
+		  
 		  dim  frontendField as Pair =  frontendFieldName : frontendFieldValue
 		  
 		  if frontendFieldValue <> backendFieldValue then

@@ -206,6 +206,11 @@ Implements JVBackgroundTaskDelegate
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="originalSelection"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"

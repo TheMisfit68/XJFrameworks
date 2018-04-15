@@ -196,7 +196,11 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    if nameAndValue <> nil then
 		      
 		      dim tooltipText as String = nameAndValue.left
-		      ToolTip.Show(tooltipText, System.MouseX, System.MouseY +20)
+		      ToolTip.Show(tooltipText, System.MouseX, System.MouseY+20, False)
+		      
+		    else
+		      
+		      Tooltip.hide
 		      
 		    end if
 		    
@@ -283,6 +287,12 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    
 		    
 		  end if
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Untitled()
+		  
 		End Sub
 	#tag EndMethod
 

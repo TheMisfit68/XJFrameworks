@@ -3,10 +3,7 @@ Protected Class JVCheckBoxCell
 Implements JVCustomCell
 	#tag Method, Flags = &h0
 		Sub activate(listBox as JVtableView, row as integer, column as Integer)
-		  // Part of the JVCustomCell interface.
-		  
-		  
-		  
+		  // Do nothing special, let Xojo handle the standard checkbox
 		End Sub
 	#tag EndMethod
 
@@ -15,6 +12,11 @@ Implements JVCustomCell
 		  // Part of the JVCustomCell interface.
 		  
 		  ListBox.CellType(row, column) = Listbox.TypeCheckbox
+		  
+		  dim fieldInfo as Pair = listbox.celltag(row, column)
+		  dim value as CheckBox.CheckedStates = fieldInfo.Right
+		  
+		  ListBox.CellState(row, column) = value
 		End Sub
 	#tag EndMethod
 

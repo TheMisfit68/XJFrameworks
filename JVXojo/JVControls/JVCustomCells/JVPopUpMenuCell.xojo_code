@@ -18,8 +18,6 @@ Implements JVCustomCell
 		    dim newValue as Variant =  selectedMenu.values.left
 		    listbox.celltag(row, column) = existingCellName : newValue
 		    
-		    listbox.tableViewDelegate.onCellTagAction(listBox, row, column)
-		    
 		  end if
 		  
 		  
