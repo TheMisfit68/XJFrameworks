@@ -101,7 +101,7 @@ Inherits SQLiteDatabase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function lookupID(lookupTable as String, matchFields as DatabaseRecord) As Integer
+		Function lookupID(lookupTable as String, matchFields as JVDatabaseRequest) As Integer
 		  
 		  
 		  Dim matchFieldNames() as String
