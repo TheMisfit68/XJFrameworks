@@ -1,0 +1,40 @@
+#tag MultiImage
+Image Info
+	#tag ImageRepresentation
+		SaveInfo = APHRcwECAQAAAAF4AAAAAAF4AAIAAAxNYWNpbnRvc2ggSEQAAAAAAAAAAAAAAAAAAAAAAAAAQkQAAf////8ISW5mby5wbmcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wAAAAAAAAAAAAAAAP////8AAAogY3UAAAAAAAAAAAAAAAAAC1N0YXR1c0ljb25zAAACAEQvOlVzZXJzOmphbnZlcnJlcHQ6RGVza3RvcDpVbml0eUV4dHJlbWU6QXJ0d29yazpTdGF0dXNJY29uczpJbmZvLnBuZwAOABIACABJAG4AZgBvAC4AcABuAGcADwAaAAwATQBhAGMAaQBuAHQAbwBzAGgAIABIAEQAEgBCVXNlcnMvamFudmVycmVwdC9EZXNrdG9wL1VuaXR5RXh0cmVtZS9BcnR3b3JrL1N0YXR1c0ljb25zL0luZm8ucG5nABMAAS8AABUAAgAR//8AAAAAAAAAAA==
+		FullPath = /Users/janverrept/Desktop/UnityExtreme/Artwork/StatusIcons/Info.png
+		PartialPath = ..\..\..\..\..\..\..\Desktop\UnityExtreme\Artwork\StatusIcons\Info.png
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 72
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 144
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 216
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+End Image
+#tag EndMultiImage
