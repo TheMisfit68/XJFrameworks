@@ -162,7 +162,7 @@ Implements JVBackgroundTaskDelegate
 		  
 		  dim databaseRecords() as  DatabaseRecord
 		  
-		  if mfoundSet <> nil then
+		  if (mfoundSet <> nil) and (mfoundSet.RecordCount > 0) then
 		    
 		    mfoundSet.MoveFirst
 		    while not mfoundSet.EOF
@@ -186,6 +186,15 @@ Implements JVBackgroundTaskDelegate
 		  
 		  return databaseRecords
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub foundset(assigns records as recordset)
+		  
+		  // This method allows a regular SQLite.Recordset to be used by JVFPProxy for easier processing
+		  mfoundSet = records
+		  
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

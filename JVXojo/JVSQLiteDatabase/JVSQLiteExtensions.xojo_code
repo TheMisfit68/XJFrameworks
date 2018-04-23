@@ -1,11 +1,11 @@
 #tag Module
 Protected Module JVSQLiteExtensions
 	#tag Method, Flags = &h21
-		Private Sub bindType(extends statement as SQLitePreparedStatement, fieldValues() as Variant)
+		Private Sub bindType(extends statement as SQLitePreparedStatement, variables() as Variant)
 		  dim fieldNumber as Integer = 0
-		  for  each fieldValue as Variant in fieldValues
+		  for  each variable as Variant in variables
 		    
-		    select case fieldValue.type
+		    select case variable.type
 		    case Variant.TypeBoolean
 		      statement.BindType(fieldNumber, SQLitePreparedStatement.SQLITE_BOOLEAN)
 		    case Variant.TypeDouble
@@ -23,7 +23,7 @@ Protected Module JVSQLiteExtensions
 		    end select
 		    
 		    fieldNumber = fieldNumber+1
-		  next
+		  next variable
 		End Sub
 	#tag EndMethod
 

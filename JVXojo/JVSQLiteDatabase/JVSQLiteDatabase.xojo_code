@@ -109,7 +109,7 @@ Inherits SQLiteDatabase
 		  
 		  For fieldNumber As Integer = 0 To matchFields.FieldCount-1
 		    dim fieldName as String = matchFields.FieldName(fieldNumber)
-		    dim fieldValue as String = matchfields.Column(fieldName)
+		    dim fieldValue as Variant = matchfields.Column(fieldName)
 		    
 		    matchFieldNames.append(fieldName+" = ?")
 		    fieldValues.append(fieldValue)

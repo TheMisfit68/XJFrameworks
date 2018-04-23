@@ -95,6 +95,8 @@ Protected Class JVPathFinder
 		            exit for
 		          elseif  instr(currentItem.name,folderName)<>0  then
 		            partialMatch = currentItem
+		          else
+		            subDirectoriesToSearch.Append(currentItem)
 		          end if
 		          
 		        end if
