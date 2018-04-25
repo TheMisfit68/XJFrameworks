@@ -170,6 +170,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		        displayNode(childNode)
 		      next
 		      
+		      // Remember this row as being expanded
 		      dim pathString as String = pathForRow(row)
 		      dim index as Integer = expandedNodes.IndexOf(pathString)
 		      
@@ -196,17 +197,17 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    if nameAndValue <> nil then
 		      
 		      dim tooltipText as String = nameAndValue.left
-		      ToolTip.Show(tooltipText, System.MouseX, System.MouseY+20, False)
+		      // ToolTip.Show(tooltipText, System.MouseX, System.MouseY+20, False)
 		      
 		    else
 		      
-		      Tooltip.hide
+		      // Tooltip.hide
 		      
 		    end if
 		    
 		  else
 		    
-		    Tooltip.hide
+		    // Tooltip.hide
 		    
 		  end if
 		  
