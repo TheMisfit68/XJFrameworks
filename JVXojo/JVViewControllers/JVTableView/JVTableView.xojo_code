@@ -124,6 +124,7 @@ Inherits Listbox
 			    RemoveHandler Open, AddressOf mTableViewDelegate.onListOpen
 			    RemoveHandler Change, AddressOf mTableViewDelegate.onListSelectionDidChange
 			    RemoveHandler CellAction, AddressOf mTableViewDelegate.onCellAction
+			    
 			  end if
 			  
 			  // Set the delegate

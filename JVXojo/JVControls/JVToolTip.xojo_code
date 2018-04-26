@@ -1,32 +1,48 @@
 #tag Class
-Protected Class JVCustomPushButton
-Inherits Canvas
-	#tag Event
-		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
-		  g.DrawPicture(me.picture, 0, 0, g.width, g.height, 0,0, me.picture.Width, me.picture.height)
+Protected Class JVToolTip
+Inherits Label
+	#tag Method, Flags = &h0
+		Sub hide()
 		  
 		End Sub
-	#tag EndEvent
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub show(tip as String, x as Integer, y as Integer)
+		  left = x
+		  top = y
+		  Width = 50
+		  Height = 50
+		  
+		  text = tip
+		  
+		  Visible = true
+		  
+		End Sub
+	#tag EndMethod
 
 
-	#tag Property, Flags = &h0
-		picture As Picture
+	#tag Property, Flags = &h21
+		Private Shared msharedToolTip As JVToolTip
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  if msharedToolTip = nil then
+			    msharedToolTip = new JVToolTip
+			  end if
+			  
+			  return msharedToolTip
+			  
+			End Get
+		#tag EndGetter
+		Shared sharedToolTip As JVToolTip
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="AcceptFocus"
-			Visible=true
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="AcceptTabs"
-			Visible=true
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoDeactivate"
 			Visible=true
@@ -35,30 +51,29 @@ Inherits Canvas
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Backdrop"
+			Name="Bold"
 			Visible=true
-			Group="Appearance"
-			Type="Picture"
-			EditorType="Picture"
+			Group="Font"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DoubleBuffer"
+			Name="DataField"
 			Visible=true
-			Group="Behavior"
-			InitialValue="False"
-			Type="Boolean"
+			Group="Database Binding"
+			Type="String"
+			EditorType="DataField"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="DataSource"
+			Visible=true
+			Group="Database Binding"
+			Type="String"
+			EditorType="DataSource"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Enabled"
 			Visible=true
 			Group="Appearance"
-			InitialValue="True"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="EraseBackground"
-			Visible=true
-			Group="Behavior"
 			InitialValue="True"
 			Type="Boolean"
 		#tag EndViewProperty
@@ -86,6 +101,12 @@ Inherits Canvas
 		#tag ViewProperty
 			Name="InitialParent"
 			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Italic"
+			Visible=true
+			Group="Font"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -118,6 +139,12 @@ Inherits Canvas
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Multiline"
+			Visible=true
+			Group="Appearance"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
@@ -125,9 +152,11 @@ Inherits Canvas
 			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="picture"
-			Group="Behavior"
-			Type="Picture"
+			Name="Selectable"
+			Visible=true
+			Group="Appearance"
+			InitialValue="False"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
@@ -150,11 +179,61 @@ Inherits Canvas
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="TabStop"
+			Name="Text"
 			Visible=true
-			Group="Position"
-			InitialValue="True"
-			Type="Boolean"
+			Group="Appearance"
+			InitialValue="Untitled"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TextAlign"
+			Visible=true
+			Group="Appearance"
+			InitialValue="0"
+			Type="Integer"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - Left"
+				"1 - Center"
+				"2 - Right"
+			#tag EndEnumValues
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TextColor"
+			Visible=true
+			Group="Appearance"
+			InitialValue="&h000000"
+			Type="Color"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TextFont"
+			Visible=true
+			Group="Font"
+			InitialValue="System"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TextSize"
+			Visible=true
+			Group="Font"
+			InitialValue="0"
+			Type="Single"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TextUnit"
+			Visible=true
+			Group="Font"
+			InitialValue="0"
+			Type="FontUnits"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - Default"
+				"1 - Pixel"
+				"2 - Point"
+				"3 - Inch"
+				"4 - Millimeter"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -168,13 +247,11 @@ Inherits Canvas
 			Group="Behavior"
 			InitialValue="True"
 			Type="Boolean"
-			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="UseFocusRing"
+			Name="Underline"
 			Visible=true
-			Group="Appearance"
-			InitialValue="True"
+			Group="Font"
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty

@@ -194,20 +194,23 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  if (row >= 0) and (row < sender.ListCount) and (column >= 0) and (column < sender.ColumnCount) then
 		    
 		    dim nameAndValue as Pair = sender.celltag(row, column)
+		    
+		    
 		    if nameAndValue <> nil then
 		      
 		      dim tooltipText as String = nameAndValue.left
-		      // ToolTip.Show(tooltipText, System.MouseX, System.MouseY+20, False)
 		      
+		      dim toolTip as new JVToolTip
+		      // // 
 		    else
 		      
-		      // Tooltip.hide
+		      // Projectview(sender).JVToolTip1.hide
 		      
 		    end if
 		    
 		  else
 		    
-		    // Tooltip.hide
+		    // Projectview(sender).JVToolTip1.hide
 		    
 		  end if
 		  
@@ -288,12 +291,6 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    
 		    
 		  end if
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Untitled()
-		  
 		End Sub
 	#tag EndMethod
 

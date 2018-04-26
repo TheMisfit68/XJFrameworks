@@ -25,7 +25,7 @@ Implements NSViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub addTestButton(caption as String, action as NSButton.Action)
+		Sub addTestButton(testButton as JVTestButtonView)
 		  // Define the basic mesurements
 		  dim topBottomMargin as Integer = 20
 		  dim leftRightMargin as Integer = 20
@@ -34,10 +34,7 @@ Implements NSViewDelegate
 		  dim ySpacing as Integer = 20
 		  
 		  // Add the button to the view
-		  dim newTestView as new JVTestView
-		  newTestView.TestButton.caption = caption
-		  newTestView.TestButton.action = action
-		  newTestView.EmbedWithin(developmentView, nextOrigin.x, nextOrigin.y, viewSize.width, viewSize.height)
+		  testButton.EmbedWithin(developmentView, nextOrigin.x, nextOrigin.y, viewSize.width, viewSize.height)
 		  
 		  // Calculate where the next button should be placed
 		  nextOrigin.x = nextOrigin.x+viewSize.width+xSpacing
