@@ -25,7 +25,7 @@ Implements NSViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub addTestButton(testButton as JVTestButtonView)
+		Sub addTestButton(testButton as JVProgressButton)
 		  // Define the basic mesurements
 		  dim topBottomMargin as Integer = 20
 		  dim leftRightMargin as Integer = 20

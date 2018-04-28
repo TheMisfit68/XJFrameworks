@@ -200,17 +200,17 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		      
 		      dim tooltipText as String = nameAndValue.left
 		      
-		      dim toolTip as new JVToolTip
-		      // // 
+		      JVToolTip.sharedToolTip.show(sender, tooltipText, new NSpoint(x, y) )
+		      
 		    else
 		      
-		      // Projectview(sender).JVToolTip1.hide
+		      JVToolTip.sharedToolTip.hide
 		      
 		    end if
 		    
 		  else
 		    
-		    // Projectview(sender).JVToolTip1.hide
+		    JVToolTip.sharedToolTip.hide
 		    
 		  end if
 		  

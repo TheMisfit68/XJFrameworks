@@ -1,5 +1,5 @@
 #tag Window
-Begin NSView JVDevelopmentView
+Begin ContainerControl JVProgressButton
    AcceptFocus     =   False
    AcceptTabs      =   True
    AutoDeactivate  =   True
@@ -9,14 +9,14 @@ Begin NSView JVDevelopmentView
    Enabled         =   True
    EraseBackground =   True
    HasBackColor    =   False
-   Height          =   280
+   Height          =   20
    HelpTag         =   ""
    InitialParent   =   ""
    Left            =   0
-   LockBottom      =   False
-   LockLeft        =   False
+   LockBottom      =   True
+   LockLeft        =   True
    LockRight       =   False
-   LockTop         =   False
+   LockTop         =   True
    TabIndex        =   0
    TabPanelIndex   =   0
    TabStop         =   True
@@ -24,46 +24,84 @@ Begin NSView JVDevelopmentView
    Transparent     =   True
    UseFocusRing    =   False
    Visible         =   True
-   Width           =   514
+   Width           =   100
+   Begin NSButton mainButton
+      AutoDeactivate  =   True
+      Bold            =   False
+      ButtonStyle     =   "0"
+      Cancel          =   False
+      Caption         =   "Test code"
+      Default         =   True
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   0
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   True
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   0
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   0
+      Underline       =   False
+      Visible         =   True
+      Width           =   100
+      Begin ProgressWheel progressIndicator
+         AutoDeactivate  =   True
+         Enabled         =   True
+         Height          =   16
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "mainButton"
+         Left            =   3
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   0
+         TabPanelIndex   =   0
+         TabStop         =   True
+         Top             =   3
+         Visible         =   False
+         Width           =   16
+      End
+   End
 End
 #tag EndWindow
 
 #tag WindowCode
 	#tag Method, Flags = &h0
-		Function copy() As JVDevelopmentView
-		  dim copiedView as new JVDevelopmentView
+		Sub constructor(caption as String, method as NSButton.Action)
+		  me.mainButton.Caption = caption
+		  me.method = method
 		  
-		  For controlNumber as Integer = 0 to ControlCount-1
-		    dim control as Control =  control(controlNumber)
-		    System.DebugLog(control.classname)
-		    
-		    if control isa JVProgressButton then
-		      dim oldTestView  as JVProgressButton = JVProgressButton(control)
-		      dim newTestView as new JVProgressButton
-		      newTestView.mainButton.Caption = oldTestView.mainButton.Caption
-		      newTestView.mainButton.action = oldTestView.mainButton.action
-		      newTestView.EmbedWithin(copiedView, oldTestView.Left, oldTestView.Top, oldTestView.width, oldTestView.Height)
-		    end if
-		    
-		  next
+		  me.mainButton.action = NSButton.action(addressof methodWithProgressIndicators)
 		  
-		  
-		  return copiedView
-		End Function
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methodWithProgressIndicators(sender as NSButton)
+		  progressIndicator.Visible = True
+		  method.Invoke(mainButton)
+		  progressIndicator.Visible = False
+		End Sub
 	#tag EndMethod
 
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  Return JVDevelopmentViewController(owner)
-			End Get
-		#tag EndGetter
-		developmentViewController As JVDevelopmentViewController
-	#tag EndComputedProperty
-
 	#tag Property, Flags = &h0
-		Untitled As Integer
+		method As NSButton.Action
 	#tag EndProperty
 
 
@@ -96,14 +134,14 @@ End
 	#tag ViewProperty
 		Name="BackColor"
 		Visible=true
-		Group="Appearance"
+		Group="Background"
 		InitialValue="&hFFFFFF"
 		Type="Color"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Backdrop"
 		Visible=true
-		Group="Appearance"
+		Group="Background"
 		Type="Picture"
 		EditorType="Picture"
 	#tag EndViewProperty
@@ -126,14 +164,14 @@ End
 	#tag ViewProperty
 		Name="HasBackColor"
 		Visible=true
-		Group="Appearance"
+		Group="Background"
 		InitialValue="False"
 		Type="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Height"
 		Visible=true
-		Group="Position"
+		Group="Size"
 		InitialValue="300"
 		Type="Integer"
 	#tag EndViewProperty
@@ -147,11 +185,6 @@ End
 		Name="InitialParent"
 		Group="Position"
 		Type="String"
-	#tag EndViewProperty
-	#tag ViewProperty
-		Name="isInstalled"
-		Group="Behavior"
-		Type="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Left"
@@ -206,7 +239,7 @@ End
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="TabPanelIndex"
-		Group="Behavior"
+		Group="Position"
 		InitialValue="0"
 		Type="Integer"
 	#tag EndViewProperty
@@ -233,11 +266,6 @@ End
 		EditorType="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
-		Name="Untitled"
-		Group="Behavior"
-		Type="Integer"
-	#tag EndViewProperty
-	#tag ViewProperty
 		Name="UseFocusRing"
 		Visible=true
 		Group="Appearance"
@@ -256,7 +284,7 @@ End
 	#tag ViewProperty
 		Name="Width"
 		Visible=true
-		Group="Position"
+		Group="Size"
 		InitialValue="300"
 		Type="Integer"
 	#tag EndViewProperty

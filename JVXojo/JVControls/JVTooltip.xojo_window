@@ -1,5 +1,5 @@
 #tag Window
-Begin NSView JVDevelopmentView
+Begin ContainerControl JVTooltip
    AcceptFocus     =   False
    AcceptTabs      =   True
    AutoDeactivate  =   True
@@ -9,14 +9,14 @@ Begin NSView JVDevelopmentView
    Enabled         =   True
    EraseBackground =   True
    HasBackColor    =   False
-   Height          =   280
+   Height          =   22
    HelpTag         =   ""
    InitialParent   =   ""
    Left            =   0
    LockBottom      =   False
-   LockLeft        =   False
+   LockLeft        =   True
    LockRight       =   False
-   LockTop         =   False
+   LockTop         =   True
    TabIndex        =   0
    TabPanelIndex   =   0
    TabStop         =   True
@@ -24,51 +24,117 @@ Begin NSView JVDevelopmentView
    Transparent     =   True
    UseFocusRing    =   False
    Visible         =   True
-   Width           =   514
+   Width           =   58
+   Begin Canvas Appearance
+      AcceptFocus     =   False
+      AcceptTabs      =   False
+      AutoDeactivate  =   True
+      Backdrop        =   0
+      DoubleBuffer    =   False
+      Enabled         =   False
+      EraseBackground =   True
+      Height          =   22
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Left            =   0
+      LockBottom      =   True
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   True
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   0
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Top             =   0
+      Transparent     =   True
+      UseFocusRing    =   True
+      Visible         =   True
+      Width           =   58
+   End
 End
 #tag EndWindow
 
 #tag WindowCode
 	#tag Method, Flags = &h0
-		Function copy() As JVDevelopmentView
-		  dim copiedView as new JVDevelopmentView
-		  
-		  For controlNumber as Integer = 0 to ControlCount-1
-		    dim control as Control =  control(controlNumber)
-		    System.DebugLog(control.classname)
+		Sub show(containingControl as rectControl, tipText as String,  origin as NSpoint)
+		  if (tipText <> "") then
 		    
-		    if control isa JVProgressButton then
-		      dim oldTestView  as JVProgressButton = JVProgressButton(control)
-		      dim newTestView as new JVProgressButton
-		      newTestView.mainButton.Caption = oldTestView.mainButton.Caption
-		      newTestView.mainButton.action = oldTestView.mainButton.action
-		      newTestView.EmbedWithin(copiedView, oldTestView.Left, oldTestView.Top, oldTestView.width, oldTestView.Height)
+		    JVTooltip.tipText = tipText
+		    if me.Parent <> containingControl then
+		      embedWithin(containingControl, origin.x, origin.y)
+		    else
+		      me.Visible = True
+		      
+		      me.origin = origin
+		      me.left = origin.x
+		      me.top = origin.y
+		      
 		    end if
 		    
-		  next
-		  
-		  
-		  return copiedView
-		End Function
+		    refresh // Redraw the design
+		  end if
+		End Sub
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h21
+		Private Shared msharedToolTip As JVToolTip
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Shared origin As NSpoint
+	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  Return JVDevelopmentViewController(owner)
+			  
+			  if msharedToolTip = nil then
+			    msharedToolTip = new JVToolTip
+			  end if
+			  
+			  return msharedToolTip
+			  
 			End Get
 		#tag EndGetter
-		developmentViewController As JVDevelopmentViewController
+		Shared sharedToolTip As JVToolTip
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
-		Untitled As Integer
+		Shared tipText As String
 	#tag EndProperty
 
 
 #tag EndWindowCode
 
+#tag Events Appearance
+	#tag Event
+		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
+		  
+		  dim textSize as integer = 10
+		  dim padding as Integer =  4
+		  
+		  g.TextSize=textSize
+		  dim textWidth as Integer = g.StringWidth(tipText)
+		  dim textHeight as Integer = g.StringHeight(tiptext, textWidth+1)
+		  
+		  width = textWidth+2*padding
+		  height = textHeight+2*padding
+		  left = origin.x+10
+		  top = origin.y+2*height
+		  
+		  g.ForeColor = NSColor.Yellow
+		  g.FillRect(0, 0, width, height)
+		  g.ForeColor = NSColor.DarkGrey
+		  g.drawRect(0, 0, width, height)
+		  
+		  g.DrawString(tipText,padding, padding+textHeight/2+textSize/2)
+		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag ViewBehavior
 	#tag ViewProperty
 		Name="AcceptFocus"
@@ -96,14 +162,14 @@ End
 	#tag ViewProperty
 		Name="BackColor"
 		Visible=true
-		Group="Appearance"
+		Group="Background"
 		InitialValue="&hFFFFFF"
 		Type="Color"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Backdrop"
 		Visible=true
-		Group="Appearance"
+		Group="Background"
 		Type="Picture"
 		EditorType="Picture"
 	#tag EndViewProperty
@@ -126,14 +192,14 @@ End
 	#tag ViewProperty
 		Name="HasBackColor"
 		Visible=true
-		Group="Appearance"
+		Group="Background"
 		InitialValue="False"
 		Type="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Height"
 		Visible=true
-		Group="Position"
+		Group="Size"
 		InitialValue="300"
 		Type="Integer"
 	#tag EndViewProperty
@@ -147,11 +213,6 @@ End
 		Name="InitialParent"
 		Group="Position"
 		Type="String"
-	#tag EndViewProperty
-	#tag ViewProperty
-		Name="isInstalled"
-		Group="Behavior"
-		Type="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Left"
@@ -206,7 +267,7 @@ End
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="TabPanelIndex"
-		Group="Behavior"
+		Group="Position"
 		InitialValue="0"
 		Type="Integer"
 	#tag EndViewProperty
@@ -233,11 +294,6 @@ End
 		EditorType="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
-		Name="Untitled"
-		Group="Behavior"
-		Type="Integer"
-	#tag EndViewProperty
-	#tag ViewProperty
 		Name="UseFocusRing"
 		Visible=true
 		Group="Appearance"
@@ -256,7 +312,7 @@ End
 	#tag ViewProperty
 		Name="Width"
 		Visible=true
-		Group="Position"
+		Group="Size"
 		InitialValue="300"
 		Type="Integer"
 	#tag EndViewProperty
