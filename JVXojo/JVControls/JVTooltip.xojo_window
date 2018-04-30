@@ -79,6 +79,12 @@ End
 	#tag EndMethod
 
 
+	#tag Note, Name = Class description
+		
+		Replaces the buggy implementation of the standard tooltips when used under Windows
+	#tag EndNote
+
+
 	#tag Property, Flags = &h21
 		Private Shared msharedToolTip As JVToolTip
 	#tag EndProperty
@@ -116,21 +122,27 @@ End
 		  dim textSize as integer = 10
 		  dim padding as Integer =  4
 		  
-		  g.TextSize=textSize
-		  dim textWidth as Integer = g.StringWidth(tipText)
-		  dim textHeight as Integer = g.StringHeight(tiptext, textWidth+1)
+		  if (tipText <> "") and (origin <> nil) then
+		    
+		    g.TextSize=textSize
+		    dim textWidth as Integer = g.StringWidth(tipText)
+		    dim textHeight as Integer = g.StringHeight(tiptext, textWidth+1)
+		    
+		    width = textWidth+2*padding
+		    height = textHeight+2*padding
+		    
+		    left = origin.x+10
+		    top = origin.y+2*height
+		    
+		    g.ForeColor = NSColor.Yellow
+		    g.FillRect(0, 0, width, height)
+		    g.ForeColor = NSColor.DarkGrey
+		    g.drawRect(0, 0, width, height)
+		    
+		    g.DrawString(tipText,padding, padding+textHeight/2+textSize/2)
+		    
+		  end if
 		  
-		  width = textWidth+2*padding
-		  height = textHeight+2*padding
-		  left = origin.x+10
-		  top = origin.y+2*height
-		  
-		  g.ForeColor = NSColor.Yellow
-		  g.FillRect(0, 0, width, height)
-		  g.ForeColor = NSColor.DarkGrey
-		  g.drawRect(0, 0, width, height)
-		  
-		  g.DrawString(tipText,padding, padding+textHeight/2+textSize/2)
 		  
 		End Sub
 	#tag EndEvent

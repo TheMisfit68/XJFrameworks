@@ -262,7 +262,7 @@ Inherits SQLiteDatabase
 		  dim affectedPKs() as Integer
 		  dim pkFieldName as String = pkForTable(baseTableName)
 		  
-		  If records <> Nil Then
+		  If (records <> Nil) and (records.RecordCount > 0) Then
 		    
 		    
 		    newFields = stripPKsFromRecord(baseTableName, newFields)
@@ -309,7 +309,9 @@ Inherits SQLiteDatabase
 		      
 		    end if
 		    
-		    records.Close
+		    if records.EOF then
+		      records.Close
+		    end if
 		    
 		  End If
 		  

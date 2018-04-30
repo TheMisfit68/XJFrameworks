@@ -47,9 +47,6 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		      dim representedObject as DatabaseRecord = node.representedObject
 		      numberOfFields = representedObject.FieldCount
 		    end if
-		    // Adjust the number of columns if needed
-		    treeView.ColumnCount = Max(treeView.ColumnCount, numberOfFields)
-		    
 		    
 		    // Proces the record
 		    dim itsAnExpandableNode as Boolean =(treeView.treeViewDataSource.isItemExpandable(node))
@@ -64,6 +61,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    
 		    // Proces the individual fields
 		    
+		    dim columnNumber as Integer = 0
 		    for  fieldNumber as Integer = 0 to numberOfFields-1
 		      
 		      dim fieldName as Variant
@@ -78,14 +76,22 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		        fieldValue = representedObject.Column(fieldName.StringValue)
 		      end if
 		      
-		      // Prepare the field in the backend
-		      dim tagValue as Pair = fieldName: fieldValue
-		      treeView.celltag(newRowNumber, fieldNumber) = tagValue
-		      
-		      // Make the cell redraw itself
-		      treeView.InvalidateCell(newRowNumber, fieldNumber)
+		      if not cellType(fieldName) isa JVHiddenCell then
+		        
+		        // Prepare the field in the backend
+		        dim tagValue as Pair = fieldName: fieldValue
+		        treeView.celltag(newRowNumber, columnNumber) = tagValue
+		        
+		        // Make the cell redraw itself
+		        treeView.InvalidateCell(newRowNumber, columnNumber)
+		        
+		        columnNumber =columnNumber+1
+		      end if
 		      
 		    next
+		    
+		    // Adjust the number of columns if needed
+		    treeView.ColumnCount = Max(columnNumber+1, treeView.ColumnCount)
 		    
 		  end  if
 		  
