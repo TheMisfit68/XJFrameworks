@@ -232,7 +232,9 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  // Part of the JVTableViewDelegate interface.
 		  
 		  dim row as integer = sender.ListIndex
+		  
 		  if (row >= 0) and (row < sender.ListCount) then
+		    originalSelection = row
 		    selectedNode = treeView.rowTag(row)
 		    system.DebugLog("Node selected with path "+pathForRow(row))
 		  else
@@ -285,11 +287,13 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		      treeView.DeleteAllRows
 		      dim nodesToDisplay() as NSTreeNode = arrangedObjects.children
 		      For each node as NSTreeNode in nodesToDisplay
-		        
 		        displayNode(node)
 		      next
 		      
-		      restoreexpandedNodes
+		      restoreExpandedNodes
+		      if originalSelection > -1 then
+		        treeView.ListIndex = originalSelection
+		      end if
 		      
 		    end if
 		    
@@ -326,6 +330,10 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 
 	#tag Property, Flags = &h0
 		expandedNodes() As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		originalSelection As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -367,6 +375,11 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 			Visible=true
 			Group="ID"
 			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="originalSelection"
+			Group="Behavior"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

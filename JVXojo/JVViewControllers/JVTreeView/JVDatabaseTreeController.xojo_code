@@ -95,20 +95,6 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub onListSelectionDidChange(sender as JVTableView)
-		  // Part of the JVTableViewDelegate interface.
-		  
-		  dim row as integer = sender.ListIndex
-		  if (row >= 0) and (row < sender.ListCount) then
-		    selectedNode = treeView.rowTag(row)
-		    system.DebugLog("Node selected with path "+pathForRow(row))
-		  else
-		    selectedNode = nil
-		  end if
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub onTaskFinished(sender as JVBackgroundTask)
 		  // Part of the JVBackgroundTaskDelegate interface.
 		  dim records as recordSet = backGroundQuery.foundRecords
@@ -120,8 +106,9 @@ Implements JVBackgroundTaskDelegate
 		  end if
 		  
 		  syncInterface(True)
+		  reloadBusy = False
 		  
-		  treeView.ListIndex = originalSelection
+		  
 		End Sub
 	#tag EndMethod
 
@@ -139,8 +126,7 @@ Implements JVBackgroundTaskDelegate
 
 	#tag Method, Flags = &h0
 		Sub reloadData(optional SQLStatement as String = "")
-		  
-		  originalSelection = treeView.ListIndex
+		  reloadBusy = True
 		  if SQLStatement <> "" then
 		    dim previousDataBase as JVSQLiteDatabase = backGroundQuery.database
 		    backGroundQuery = new JVbackGroundQuery(previousDataBase, SQLStatement )
@@ -175,7 +161,7 @@ Implements JVBackgroundTaskDelegate
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		originalSelection As Integer
+		reloadBusy As Boolean
 	#tag EndProperty
 
 
