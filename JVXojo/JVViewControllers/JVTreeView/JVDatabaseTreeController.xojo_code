@@ -197,6 +197,11 @@ Implements JVBackgroundTaskDelegate
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="reloadBusy"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"

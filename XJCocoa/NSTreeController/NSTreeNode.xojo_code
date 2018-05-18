@@ -33,7 +33,7 @@ Implements JVCustomStringConvertable
 		  records.MoveFirst
 		  While Not records.EOF
 		    
-		    dim columns() as Pair
+		    dim reverseColumns() as Pair
 		    
 		    // Create a new child for the base node
 		    dim newNode as new NSTreeNode(new DatabaseRecord)
@@ -49,21 +49,22 @@ Implements JVCustomStringConvertable
 		      if fieldName.contains("keyPath") then
 		        currentkeyPathString = fieldValue // When you come across an keypath store it for later use
 		      else
-		        columns.Append(fieldName : fieldValue) // Store the data of an field to capture
+		        reverseColumns.Append(fieldName : fieldValue) // Store the data of an field to capture
 		      end if
 		      
 		    next fieldNumber
 		    
-		    // Add any captured columns to the new node
-		    if (columns.Ubound>=0) then
+		    
+		    // Add any captured columns to the node
+		    if (reverseColumns.Ubound>=0) then
 		      // Reverse te order while adding te columns because they are always inserted at index 0
-		      for reverseColumNumber as Integer = columns.Ubound to 0 step -1
-		        dim columnName as String = columns(reverseColumNumber).left
-		        dim columnValue as String = columns(reverseColumNumber).Right
+		      for reverseColumNumber as Integer = reverseColumns.Ubound to 0 step -1
+		        dim columnName as String = reverseColumns(reverseColumNumber).left
+		        dim columnValue as String = reverseColumns(reverseColumNumber).Right
 		        dim representedObject as DatabaseRecord =currentNode.representedObject
 		        representedObject.Column(columnName) = columnValue
 		      next reverseColumNumber
-		      redim columns(-1)
+		      redim reverseColumns(-1)
 		    end if
 		    
 		    // And add the keypath if it was found
@@ -87,14 +88,12 @@ Implements JVCustomStringConvertable
 		  // Create a basenode to be used as a container for the actual nodes
 		  dim  baseNode as  NSTreeNode = me
 		  baseNode.parent = nil
-		  
-		  dim activeBranchNumber as Integer = 0
-		  dim activeBranches() as NSTreeNode
-		  dim activeBranchValues() as Variant
+		  dim currentBranches() as NSTreeNode
+		  dim currentBranchValues() as Variant
 		  for i as Integer = 0 to branchFields.Ubound
 		    keyPath.append(0)
-		    activeBranches.append(baseNode)
-		    activeBranchValues.Append(nil)
+		    currentBranches.append(baseNode)
+		    currentBranchValues.Append(nil)
 		  next
 		  
 		  dim currentNode as  NSTreeNode
@@ -104,105 +103,125 @@ Implements JVCustomStringConvertable
 		  records.MoveFirst
 		  While Not records.EOF
 		    
-		    Dim branchIsActive as Boolean = False
-		    dim columns() as Pair
+		    dim currentField as DatabaseField
+		    dim nextField as DatabaseField
+		    dim startBranch as Boolean = False
+		    dim activeBranch as Boolean = False
+		    dim endBranch as Boolean = False
+		    dim currentBranchNumber as Integer
+		    dim reverseColumns() as Pair
 		    
 		    // Proces every field
 		    for fieldNumber as Integer = 1 to records.FieldCount
 		      
-		      dim currentField as DatabaseField = records.IdxField(fieldNumber)
-		      dim fieldName as String = currentField.Name
-		      dim fieldValue as Variant = currentField.Value
-		      dim matchingBranch as Integer= branchFields.IndexOf(fieldName)
-		      dim itsaBranchField as Boolean = matchingBranch >=0
+		      // Evaluate the current field
+		      currentField  = records.IdxField(fieldNumber)
+		      dim currentFieldName as String = currentField.Name
+		      dim currentFieldValue as Variant = currentField.Value
 		      
-		      // Changes within a branchField make the branch active
-		      if  itsaBranchField and not branchIsActive  then 
-		        
-		        if (fieldValue <> activeBranchValues(matchingBranch)) then
-		          branchIsActive =  True
-		          activeBranchNumber = matchingBranch
-		          activeBranchValues(activeBranchNumber) = fieldValue
-		        end if
-		        
+		      dim currentFieldBranchNumber as Integer = branchFields.IndexOf(currentFieldName)
+		      dim currentFieldIsaBranchField as Boolean = currentFieldBranchNumber >=0
+		      startBranch = currentFieldIsaBranchField and (currentFieldValue.StringValue <> "") and (currentFieldValue <> currentBranchValues(currentFieldBranchNumber))
+		      
+		      // Get some info about the next field upfront
+		      dim nextFieldNumberWithinBounds as Integer = Min(fieldNumber+1, records.FieldCount)
+		      nextField = records.IdxField(nextFieldNumberWithinBounds)
+		      dim nextFieldName as String = nextField.Name
+		      dim nextFieldValue as Variant = nextField.Value
+		      
+		      dim nextFieldBranchNumber as Integer = branchFields.IndexOf(nextFieldName)
+		      dim nextFieldisaBranchField as Boolean = nextFieldBranchNumber >= 0
+		      endBranch =  nextFieldisaBranchField or (fieldNumber = records.FieldCount)
+		      
+		      // Keep track of any changes from branch to branch
+		      if  currentFieldIsaBranchField then
+		        currentBranchNumber = currentFieldBranchNumber
+		        currentBranchValues(currentBranchNumber) = currentFieldValue
 		      end if
 		      
-		      if fieldName.contains("keyPath") then
-		        currentkeyPathString = fieldValue     // When you come across an keypath store it for later use
-		      elseif branchIsActive then
-		        columns.Append(fieldName : fieldValue)  // Store the data of an active branch
+		      // Remember the keypath at the start of each record
+		      if currentFieldName.contains("keyPath") then
+		        currentkeyPathString = currentFieldValue   // When you come across an keypath store it for later use
 		      end if
 		      
-		      // Look ahead to the next field to predict the end of a branch
-		      dim lastFieldOfCurrentBranch as Boolean =False
-		      if branchIsActive then
-		        if (fieldNumber = records.FieldCount) then
-		          lastFieldOfCurrentBranch = True
-		        else
-		          dim nextField as DatabaseField = records.IdxField(fieldNumber+1)
-		          dim nextFieldName as String = nextField.Name
-		          dim nextFieldValue as Variant = nextField.value
-		          dim nextFieldIsBranchField as Boolean = (branchFields.IndexOf(nextFieldName)>=0)
-		          lastFieldOfCurrentBranch = nextFieldIsBranchField
-		        end if
-		      end if
-		      
-		      // At the end of each branch store the data in a new TreeNode
-		      if lastFieldOfCurrentBranch then
+		      if startBranch then
+		        activeBranch = True
 		        
-		        // Create a new child for the current parent
-		        dim newNode as new NSTreeNode(new DatabaseRecord)
+		        // Find a valid parent for the current branch 
 		        dim currentParent as NSTreeNode = nil
-		        dim parentBranchNumber as Integer = activeBranchNumber-1
-		        if  (activeBranchNumber > 0) then
-		          while (currentParent = nil) and (parentBranchNumber >= 0)
-		            currentParent = activeBranches(parentBranchNumber)
-		            parentBranchNumber= parentBranchNumber-1
-		          wend
-		        end if
+		        
+		        for parentBranchNumber as Integer = 0 to currentBranchNumber-1
+		          dim currentBranchValue as variant = currentBranchValues(parentBranchNumber) 
+		          dim currentParentName as String = branchFields(parentBranchNumber)
+		          dim currentParentValue as Variant = records.Field(currentParentName).value
+		          
+		          if currentParentValue <> currentBranchValue then
+		            exit for parentBranchNumber
+		          end if
+		          
+		          if currentBranchValue.StringValue <> "" then
+		            currentParent = currentBranches(parentBranchNumber)
+		          end if
+		          
+		        next
 		        if currentParent  = nil then
 		          currentParent = baseNode
 		        end if
+		        
+		        // and create a new childNode for it
+		        dim newNode as new NSTreeNode(new DatabaseRecord)
 		        currentNode =  currentParent.addChild(newNode)
 		        
-		        // Add any captured columns to the new node
-		        if (columns.Ubound>=0) then
-		          // Reverse te order while adding te columns because they are always inserted at index 0
-		          for reverseColumNumber as Integer = columns.Ubound to 0 step -1
-		            dim columnName as String = columns(reverseColumNumber).left
-		            dim columnValue as String = columns(reverseColumNumber).Right
-		            dim representedObject as DatabaseRecord =currentNode.representedObject
-		            representedObject.Column(columnName) = columnValue
-		          next reverseColumNumber
-		          redim columns(-1)
-		        end if
-		        
-		        // And add the keypath if it was found
-		        if currentkeyPathString <> "" then
-		          dim keys() as String = split(currentkeyPathString,".")
-		          dim keyForBranch as Integer
-		          for branchNumber as Integer = 0 to activeBranches.Ubound
-		            if  (branchNumber <= activeBranchNumber) and (branchNumber <= keys.Ubound) then
-		              keyForBranch = val(keys(branchNumber))
-		            else
-		              keyForBranch = 0
-		            end if
-		            currentNode.keyPath.append(keyForBranch)
-		          next branchNumber
-		        end if
-		        
-		        
 		        // Adjust the current branches to the current node
-		        activeBranches(activeBranchNumber) = currentNode
+		        if activeBranch then
+		          currentBranches(currentBranchNumber) = currentNode
+		        end if
 		        // and subbranches
-		        for subBrancheNumber as Integer= activeBranchNumber+1 to activeBranches.Ubound
-		          activeBranches(subBrancheNumber) = nil
-		          activeBranchValues(subBrancheNumber) = nil
+		        for subBrancheNumber as Integer= currentBranchNumber+1 to currentBranches.Ubound
+		          currentBranches(subBrancheNumber) = nil
+		          currentBranchValues(subBrancheNumber) = nil
 		        next
 		        
-		        branchIsActive = False
+		        startBranch = False // Only perform once for each new branch
 		      end if
 		      
+		      // Parse the node itself
+		      if activeBranch then
+		        reverseColumns.Append(currentFieldName : currentFieldValue)  // Store the data of an active branch
+		        
+		        if endBranch then
+		          activeBranch = False
+		          
+		          // Add any captured columns to the node
+		          if (reverseColumns.Ubound>=0) then
+		            // Reverse te order while adding te columns because they are always inserted at index 0
+		            for reverseColumNumber as Integer = reverseColumns.Ubound to 0 step -1
+		              dim columnName as String = reverseColumns(reverseColumNumber).left
+		              dim columnValue as String = reverseColumns(reverseColumNumber).Right
+		              dim representedObject as DatabaseRecord =currentNode.representedObject
+		              representedObject.Column(columnName) = columnValue
+		            next reverseColumNumber
+		            redim reverseColumns(-1)
+		          end if
+		          
+		          // And add the keypath if it was found
+		          if currentkeyPathString <> "" then
+		            dim keys() as String = split(currentkeyPathString,".")
+		            dim keyForBranch as Integer
+		            for branchNumber as Integer = 0 to currentBranches.Ubound
+		              if  (branchNumber <= currentBranchNumber) and (branchNumber <= keys.Ubound) then
+		                keyForBranch = val(keys(branchNumber))
+		              else
+		                keyForBranch = 0
+		              end if
+		              currentNode.keyPath.append(keyForBranch)
+		            next branchNumber
+		          end if
+		          
+		          endBranch = False // Only perform once for each finished branch
+		        end if
+		        
+		      end if
 		      
 		    next fieldNumber
 		    
