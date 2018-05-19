@@ -60,7 +60,6 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    
 		    
 		    // Proces the individual fields
-		    
 		    dim columnNumber as Integer = 0
 		    for  fieldNumber as Integer = 0 to numberOfFields-1
 		      
@@ -94,12 +93,6 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    treeView.ColumnCount = Max(columnNumber+1, treeView.ColumnCount)
 		    
 		  end  if
-		  
-		  
-		  
-		  
-		  
-		  
 		  
 		  
 		End Sub
