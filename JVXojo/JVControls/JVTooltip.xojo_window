@@ -58,6 +58,14 @@ End
 
 #tag WindowCode
 	#tag Method, Flags = &h0
+		Sub hide()
+		  me.visible = False
+		  sharedToolTip = nil
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub show(containingControl as rectControl, tipText as String,  origin as NSpoint)
 		  if (tipText <> "") then
 		    
@@ -65,15 +73,16 @@ End
 		    if me.Parent <> containingControl then
 		      embedWithin(containingControl, origin.x, origin.y)
 		    else
-		      me.Visible = True
 		      
 		      me.origin = origin
-		      me.left = origin.x
-		      me.top = origin.y
+		      me.left = me.origin.x
+		      me.top = me.origin.y
 		      
 		    end if
 		    
-		    refresh // Redraw the design
+		    me.Visible = True
+		    me.Refresh  // Redraw the design
+		    
 		  end if
 		End Sub
 	#tag EndMethod
@@ -105,6 +114,11 @@ End
 			  
 			End Get
 		#tag EndGetter
+		#tag Setter
+			Set
+			  msharedToolTip = value
+			End Set
+		#tag EndSetter
 		Shared sharedToolTip As JVToolTip
 	#tag EndComputedProperty
 
