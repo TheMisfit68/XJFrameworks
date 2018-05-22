@@ -15,7 +15,7 @@ Begin ContainerControl JVTooltip
    Left            =   0
    LockBottom      =   False
    LockLeft        =   True
-   LockRight       =   False
+   LockRight       =   True
    LockTop         =   True
    TabIndex        =   0
    TabPanelIndex   =   0
@@ -48,7 +48,7 @@ Begin ContainerControl JVTooltip
       TabPanelIndex   =   0
       TabStop         =   True
       Top             =   0
-      Transparent     =   True
+      Transparent     =   False
       UseFocusRing    =   True
       Visible         =   True
       Width           =   58
