@@ -199,17 +199,19 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		      
 		      dim tooltipText as String = nameAndValue.left
 		      
-		      JVToolTip.sharedToolTip.show(sender, tooltipText, new NSpoint(x, y) )
+		      dim xPos as Integer = sender.left+x+40
+		      dim yPos as Integer = sender.top+y+100 // Needs extra offset due to a bug
+		      tooltip.show(tooltipText, xPos, yPos)
 		      
 		    else
 		      
-		      JVToolTip.sharedToolTip.hide
+		      tooltip.hide
 		      
 		    end if
 		    
 		  else
 		    
-		    JVToolTip.sharedToolTip.hide
+		    tooltip.hide
 		    
 		  end if
 		  
