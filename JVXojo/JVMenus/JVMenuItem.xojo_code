@@ -147,10 +147,6 @@ Inherits menuItem
 
 
 	#tag Property, Flags = &h0
-		index As Integer
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		owner As Object
 	#tag EndProperty
 

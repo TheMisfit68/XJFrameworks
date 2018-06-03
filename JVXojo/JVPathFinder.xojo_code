@@ -32,7 +32,7 @@ Protected Class JVPathFinder
 		  dim completeMatch as FolderItem
 		  dim partialMatch as FolderItem
 		  
-		  while (completeMatch = nil) and (subDirectoriesToSearch.Ubound >= 0) 
+		  while (completeMatch = nil) and (subDirectoriesToSearch.ubound >= 0) 
 		    
 		    dim currentDirectory as folderItem = subDirectoriesToSearch(0)
 		    
@@ -70,6 +70,43 @@ Protected Class JVPathFinder
 		    return nil
 		  end if
 		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function findFilesMatching(searchPattern as String, optional useRegex as Boolean = False) As folderItem()
+		  dim filesFound() as folderItem
+		  
+		  dim subDirectoriesToSearch() as folderitem = Array(baseFolder)
+		  
+		  dim currentDirectory as folderItem = subDirectoriesToSearch(0)
+		  
+		  while subDirectoriesToSearch.ubound >= 0
+		    
+		    for i as Integer=1 to currentDirectory.Count
+		      dim currentItem as FolderItem = currentDirectory.TrueItem(i)
+		      
+		      if not currentItem.alias then
+		        
+		        if currentItem.Directory then
+		          subDirectoriesToSearch.Append(currentItem)
+		        else
+		          
+		          if currentItem.name.contains(searchpattern, True)  then
+		            filesFound.Append(currentItem)
+		          end if
+		          
+		        end if
+		        
+		      end if
+		      
+		    next
+		    
+		    subDirectoriesToSearch.Remove(0)
+		    
+		  wend
+		  
+		  return filesFound
 		End Function
 	#tag EndMethod
 

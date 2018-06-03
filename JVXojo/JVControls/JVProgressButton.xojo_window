@@ -6,6 +6,7 @@ Begin ContainerControl JVProgressButton
    BackColor       =   &cFFFFFF00
    Backdrop        =   0
    Compatibility   =   ""
+   DoubleBuffer    =   False
    Enabled         =   True
    EraseBackground =   True
    HasBackColor    =   False
@@ -52,6 +53,7 @@ Begin ContainerControl JVProgressButton
       TextSize        =   0.0
       TextUnit        =   0
       Top             =   0
+      Transparent     =   False
       Underline       =   False
       Visible         =   True
       Width           =   100
@@ -73,6 +75,7 @@ Begin ContainerControl JVProgressButton
          TabPanelIndex   =   0
          TabStop         =   True
          Top             =   3
+         Transparent     =   False
          Visible         =   False
          Width           =   16
       End
@@ -108,6 +111,14 @@ End
 #tag EndWindowCode
 
 #tag ViewBehavior
+	#tag ViewProperty
+		Name="DoubleBuffer"
+		Visible=true
+		Group="Windows Behavior"
+		InitialValue="False"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
 	#tag ViewProperty
 		Name="AcceptFocus"
 		Visible=true
