@@ -39,7 +39,7 @@ Protected Class JVPathFinder
 		    for i as Integer=1 to currentDirectory.Count
 		      dim currentItem as FolderItem = currentDirectory.TrueItem(i)
 		      
-		      if not currentItem.alias then
+		      if (currentItem <> nil) and currentItem.Exists and not currentItem.alias then
 		        
 		        if currentItem.Directory then
 		          subDirectoriesToSearch.Append(currentItem)
@@ -79,20 +79,20 @@ Protected Class JVPathFinder
 		  
 		  dim subDirectoriesToSearch() as folderitem = Array(baseFolder)
 		  
-		  dim currentDirectory as folderItem = subDirectoriesToSearch(0)
-		  
 		  while subDirectoriesToSearch.ubound >= 0
+		    
+		    dim currentDirectory as folderItem = subDirectoriesToSearch(0)
 		    
 		    for i as Integer=1 to currentDirectory.Count
 		      dim currentItem as FolderItem = currentDirectory.TrueItem(i)
 		      
-		      if not currentItem.alias then
+		      if (currentItem <> nil) and currentItem.Exists and not currentItem.alias then
 		        
 		        if currentItem.Directory then
 		          subDirectoriesToSearch.Append(currentItem)
 		        else
 		          
-		          if currentItem.name.contains(searchpattern, True)  then
+		          if currentItem.name.contains(searchpattern, useRegex)  then
 		            filesFound.Append(currentItem)
 		          end if
 		          
@@ -123,7 +123,7 @@ Protected Class JVPathFinder
 		    for i as Integer=1 to currentDirectory.Count
 		      dim currentItem as FolderItem = currentDirectory.trueItem(i)
 		      
-		      if not currentItem.alias then
+		      if (currentItem <> nil) and currentItem.Exists and not currentItem.alias then
 		        
 		        if currentItem.Directory then
 		          
