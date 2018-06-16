@@ -15,11 +15,15 @@ Implements JVCustomCell
 		Sub draw(listBox as JVtableView , g as graphics, row as integer, column as integer)
 		  
 		  // While  drawing the field don't make it editable just yet, just draw a default cell
-		  listbox.CellType(row, column) = Listbox.TypeDefault
+		  if listbox.CellType(row, column) <> Listbox.TypeDefault then
+		    listbox.CellType(row, column) = Listbox.TypeDefault
+		  end if
 		  dim backValue as Pair = listbox.cellTag(row, column)
 		  if backValue <> nil then
 		    dim frontValue as String = backValue.right.StringValue
-		    listbox.Cell(row, column) = frontValue
+		    if listbox.Cell(row, column) <> frontValue then
+		      listbox.Cell(row, column) = frontValue
+		    end if
 		  end if
 		  
 		End Sub
