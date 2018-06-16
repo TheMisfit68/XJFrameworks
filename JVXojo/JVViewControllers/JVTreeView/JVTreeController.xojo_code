@@ -194,14 +194,22 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    
 		    dim nameAndValue as Pair = sender.celltag(row, column)
 		    
-		    
 		    if nameAndValue <> nil then
 		      
 		      dim tooltipText as String = nameAndValue.left
 		      
-		      dim xPos as Integer = sender.left+x+40
-		      dim yPos as Integer = sender.top+y+100 // Needs extra offset due to a bug
-		      tooltip.show(tooltipText, xPos, yPos)
+		      dim parentView as Window = sender.Window
+		      dim cursorX as Integer = parentView.left+sender.left+x
+		      dim cursorY as Integer = parentView.top+sender.top+y
+		      
+		      while parentView <> sender.TrueWindow
+		        dim embeddedView as ContainerControl = ContainerControl(parentView)
+		        parentView = embeddedView.window
+		        cursorX = cursorX + parentView.left
+		        cursorY = cursorY + parentView.top
+		      wend
+		      
+		      tooltip.show(tooltipText, cursorX+10, cursorY+10)
 		      
 		    else
 		      
