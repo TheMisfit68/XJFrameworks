@@ -201,7 +201,18 @@ Inherits SQLiteDatabase
 		      
 		      For fieldNumber As Integer = 0 To request.FieldCount-1
 		        dim fieldName as String = request.FieldName(fieldNumber)
-		        dim fieldValue as String = request.Column(fieldName)
+		        
+		        dim fieldValue as Variant
+		        select case request.FieldType(fieldNumber)
+		        case 3
+		          fieldValue = request.IntegerColumn(fieldName)
+		        case 5
+		          fieldValue = request.Column(fieldName)
+		        case 12
+		          fieldValue = request.BooleanColumn(fieldName)
+		        else
+		          fieldValue = request.Column(fieldName)
+		        end select
 		        
 		        matchFieldNames.append(fieldName+" = ?")
 		        matchFieldValues.append(fieldValue)
@@ -448,10 +459,51 @@ Inherits SQLiteDatabase
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="DatabaseFile"
-			Visible=true
-			Type="FolderItem"
-			EditorType="FolderItem"
+			Name="DatabaseName"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Error"
+			Group="Behavior"
+			InitialValue="0"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ErrorCode"
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ErrorMessage"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Host"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Password"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UserName"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="LibraryVersion"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DebugMode"
