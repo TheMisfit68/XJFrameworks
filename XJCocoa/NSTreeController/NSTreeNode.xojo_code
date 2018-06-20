@@ -142,6 +142,8 @@ Implements JVCustomStringConvertable
 		      // Remember the keypath at the start of each record
 		      if currentFieldName.contains("keyPath") then
 		        currentkeyPathString = currentFieldValue   // When you come across an keypath store it for later use
+		      elseif (FieldNumber = 1) and (currentFieldName.Right(2) ="ID") then
+		        currentkeyPathString = currentFieldValue  // When nu keypath found in a view, use the PK from the table
 		      end if
 		      
 		      if startBranch then
