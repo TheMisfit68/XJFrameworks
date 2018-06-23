@@ -21,7 +21,7 @@ Implements JVCustomStringConvertable
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub constructor(records as Recordset)
+		Sub constructor(records as Recordset, optional keypathFieldName as String ="keyPath")
 		  // Create a basenode to be used as a container for the actual nodes
 		  dim  baseNode as  NSTreeNode = me
 		  baseNode.parent = nil
@@ -46,8 +46,8 @@ Implements JVCustomStringConvertable
 		      dim fieldName as String = currentField.Name
 		      dim fieldValue as Variant = currentField.Value
 		      
-		      if fieldName.contains("keyPath") then
-		        currentkeyPathString = fieldValue // When you come across an keypath store it for later use
+		      if fieldName.contains(keypathFieldName) then
+		        currentkeyPathString = fieldValue // When you come across a keypath store it for later use
 		      else
 		        reverseColumns.Append(fieldName : fieldValue) // Store the data of an field to capture
 		      end if
@@ -84,14 +84,13 @@ Implements JVCustomStringConvertable
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub constructor(records as Recordset, branchFields() as String)
+		Sub constructor(records as Recordset, branchFields() as String, optional keypathFieldName as String ="keyPath")
 		  // Create a basenode to be used as a container for the actual nodes
 		  dim  baseNode as  NSTreeNode = me
 		  baseNode.parent = nil
 		  dim currentBranches() as NSTreeNode
 		  dim currentBranchValues() as Variant
 		  for i as Integer = 0 to branchFields.Ubound
-		    keyPath.append(0)
 		    currentBranches.append(baseNode)
 		    currentBranchValues.Append(nil)
 		  next
@@ -139,11 +138,9 @@ Implements JVCustomStringConvertable
 		        currentBranchValues(currentBranchNumber) = currentFieldValue
 		      end if
 		      
-		      // Remember the keypath at the start of each record
-		      if currentFieldName.contains("keyPath") then
+		      // Remember the keyPath at the start of each record
+		      if currentFieldName.contains(keypathFieldName)  then
 		        currentkeyPathString = currentFieldValue   // When you come across an keypath store it for later use
-		      elseif (FieldNumber = 1) and (currentFieldName.Right(2) ="ID") then
-		        currentkeyPathString = currentFieldValue  // When nu keypath found in a view, use the PK from the table
 		      end if
 		      
 		      if startBranch then
@@ -251,12 +248,14 @@ Implements JVCustomStringConvertable
 		  // Part of the JVCustomStringConvertable interface.
 		  
 		  dim myIndexPath as String
-		  for each index as Integer in indexPath
-		    myIndexPath = myIndexPath+Str(index)+EndOfLine
-		  next
+		  if keyPathString <> "" then
+		    myIndexPath = keyPathString+"@"+indexPathString+EndOfLine
+		  else
+		    myIndexPath = indexPathString+EndOfLine
+		  end if
 		  
 		  for each child as NSTreeNode in children
-		    myIndexPath = myIndexPath+child.description
+		    myIndexPath = Tab+myIndexPath+child.description
 		  next
 		  
 		  return myIndexPath

@@ -21,7 +21,7 @@ Implements JVBackgroundTaskDelegate
 		  // Part of the JVTreeViewDataSource interface.
 		  
 		  #if DebugBuild then
-		    system.DebugLog("Delete record with keypath "+node.keyPathString)
+		    system.DebugLog("Delete node "+node.keyPathString+" @ indexpath "+node.indexPathString)
 		  #Endif
 		  
 		  // Find the right sourcetable, sourceField and name of the PK-field
@@ -60,7 +60,7 @@ Implements JVBackgroundTaskDelegate
 		  // Part of the JVTreeViewDataSource interface.
 		  
 		  #if DebugBuild then
-		    system.DebugLog("Changing record with keypath "+node.keyPathString)
+		    system.DebugLog("Changing node "+node.keyPathString+" @ indexpath "+node.indexPathString)
 		  #Endif
 		  
 		  // Find the right sourcetable, sourceField and name of the PK-field

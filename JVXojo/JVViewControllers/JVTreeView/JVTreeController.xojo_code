@@ -239,11 +239,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  if (row >= 0) and (row < sender.ListCount) then
 		    originalSelection = row
 		    selectedNode = treeView.rowTag(row)
-		    if selectedNode.keyPathString <> "" then
-		      system.DebugLog("Node selected with indexpath "+pathForRow(row)+" and keypath "+selectedNode.keyPathString)
-		    else
-		      system.DebugLog("Node selected with indexpath "+pathForRow(row))
-		    end if
+		    system.DebugLog("Selecting node "+selectedNode.keyPathString+" @ indexpath "+selectedNode.indexPathString)
 		  else
 		    selectedNode = nil
 		  end if

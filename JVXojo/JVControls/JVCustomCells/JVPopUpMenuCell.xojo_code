@@ -12,7 +12,7 @@ Implements JVCustomCell
 		  dim existingCellName as String = celltag.left
 		  
 		  // Process the contained popup
-		  dim selectedMenu as JVMenuItem = JVMenuItem(PopUp)
+		  dim selectedMenu as JVMenuItem = JVMenuItem(PopUp) // Cast the result
 		  if selectedMenu <> nil then
 		    
 		    dim newValue as Variant =  selectedMenu.values.left

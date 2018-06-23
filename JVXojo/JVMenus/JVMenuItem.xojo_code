@@ -19,7 +19,7 @@ Inherits menuItem
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub constructor(node as NSTreeNode, valueColumn as String, textColumn as String)
+		Sub constructor(node as NSTreeNode, textColumn as String)
 		  dim  thisMenuItem as JVMenuItem = me
 		  textualRepresentations = new Dictionary
 		  dim currentValue as Variant = nil
@@ -30,14 +30,14 @@ Inherits menuItem
 		    if node.representedObject isa Dictionary then
 		      dim representedObject as Dictionary = node.representedObject
 		      
-		      if valueColumn.contains("keyPath") then
-		        thisMenuItem.tag = node.finalKey
-		      elseif representedObject.HasKey(valueColumn) then
-		        thisMenuItem.tag = representedObject.value(valueColumn)
-		      else
-		        dim key as String = representedObject.key(0)
-		        thisMenuItem.tag = representedObject.value(key)
-		      end if
+		      // if valueColumn.contains("keyPath") then
+		      thisMenuItem.tag = node.finalKey
+		      // elseif representedObject.HasKey(valueColumn) then
+		      // thisMenuItem.tag = representedObject.value(valueColumn)
+		      // else
+		      // dim key as String = representedObject.key(0)
+		      // thisMenuItem.tag = representedObject.value(key)
+		      // end if
 		      
 		      if representedObject.HasKey(textColumn) then
 		        thisMenuItem.Text = representedObject.value(textColumn)
@@ -49,14 +49,15 @@ Inherits menuItem
 		    elseif node.representedObject isa DatabaseRecord then
 		      dim representedObject as DatabaseRecord = node.representedObject
 		      
-		      if valueColumn.contains("keyPath") then
-		        thisMenuItem.tag = node.finalKey
-		      elseif representedObject.hasColumn(valueColumn) then
-		        thisMenuItem.tag = representedObject.Column(valueColumn)
-		      else
-		        dim columName as String = representedObject.FieldName(0)
-		        thisMenuItem.tag = representedObject.Column(columName)
-		      end if
+		      // if valueColumn.contains("keyPath") then
+		      thisMenuItem.tag = node.finalKey
+		      // elseif representedObject.hasColumn(valueColumn) then
+		      // thisMenuItem.tag = representedObject.Column(valueColumn)
+		      // system.DebugLog("Using value "+representedObject.Column(valueColumn))
+		      // else
+		      // dim columName as String = representedObject.FieldName(0)
+		      // thisMenuItem.tag = representedObject.Column(columName)
+		      // end if
 		      
 		      if representedObject.hasColumn(textColumn) then
 		        thisMenuItem.Text = representedObject.Column(textColumn)
@@ -72,7 +73,7 @@ Inherits menuItem
 		    
 		    for each childNode as NSTreeNode in node.children
 		      
-		      dim childMenu as new JVMenuItem(ChildNode, valueColumn, textColumn)
+		      dim childMenu as new JVMenuItem(ChildNode, textColumn)
 		      Append(childMenu)
 		      
 		      // Copy the textualRepresentations from the lower level menu's to the current level
