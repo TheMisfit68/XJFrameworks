@@ -12,6 +12,12 @@ Protected Module LocalizedStandardStrings
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Wis"
 	#tag EndConstant
 
+	#tag Constant, Name = kDeselectAll, Type = String, Dynamic = True, Default = \"Deselect all", Scope = Protected
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Deselect all"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Deselect all"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Deselecteer alles"
+	#tag EndConstant
+
 	#tag Constant, Name = kExport, Type = String, Dynamic = True, Default = \"Export", Scope = Protected
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Export"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Export"
@@ -34,6 +40,18 @@ Protected Module LocalizedStandardStrings
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Project"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Project"
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Project"
+	#tag EndConstant
+
+	#tag Constant, Name = kSelectAll, Type = String, Dynamic = True, Default = \"Select all", Scope = Protected
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Select all"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Select all"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Selecteer alles"
+	#tag EndConstant
+
+	#tag Constant, Name = kSelectFolder, Type = String, Dynamic = True, Default = \"Select folder", Scope = Protected
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"Select folder\xE2\x80\xA6"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Select folder\xE2\x80\xA6"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Selecteer map"
 	#tag EndConstant
 
 	#tag Constant, Name = kTemplates, Type = String, Dynamic = True, Default = \"Templates", Scope = Protected
