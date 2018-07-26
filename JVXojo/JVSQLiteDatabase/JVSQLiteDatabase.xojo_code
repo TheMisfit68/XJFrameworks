@@ -2,6 +2,56 @@
 Protected Class JVSQLiteDatabase
 Inherits SQLiteDatabase
 	#tag Method, Flags = &h0
+		Function baseTableForAlias(fullyQualifiedAliasName as String) As String
+		  
+		  if aliasSchema.HasKey(fullyQualifiedAliasName) then
+		    return aliasSchema.value(fullyQualifiedAliasName)
+		  else
+		    return ""
+		  end if
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function fkForRelationship(relatedTables as Pair) As String
+		  dim relationshipKey as String = relatedTables.Left.StringValue+" : "+relatedTables.Right.StringValue // Real pairs might not work as dictionary-keys because they are not value-types
+		  if fkSchema.HasKey(relationshipKey) then
+		    return fkSchema.value(relationshipKey)
+		  else
+		    return ""
+		  end if
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function getColumns(records() as databaseRecord,  paramarray columnNames as String) As DatabaseRecord()
+		  dim columns() as DatabaseRecord
+		  
+		  for each record as databaserecord in records
+		    dim recordSubset as new DatabaseRecord
+		    
+		    for fieldNumber as Integer = 0 to record.FieldCount-1
+		      dim fieldName as String = record.fieldName(fieldNumber)
+		      if columnNames.indexof(fieldName) >=0 then
+		        recordSubset.Column(fieldName) =  record.Column(fieldName)
+		      end 
+		      
+		    next fieldnumber
+		    
+		    if recordSubset.fieldcount > 0 then
+		      columns.append(recordSubset)
+		    end if
+		    
+		  next record
+		  
+		  return columns
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function InsertOrUpdateRecords(baseTableName as String, requests() as JVDataBaseRequest, records() as DatabaseRecord) As Integer()
 		  dim affectedPKs() as Integer
 		  
@@ -146,17 +196,12 @@ Inherits SQLiteDatabase
 
 	#tag Method, Flags = &h0
 		Function pkForTable(baseTableName as String) As String
-		  dim pkField As String = ""
+		  if pkSchema.HasKey(baseTableName) then
+		    return pkSchema.value(baseTableName)
+		  else
+		    return ""
+		  end if
 		  
-		  dim tablesInfo as RecordSet = FieldSchema(baseTableName)
-		  while pkField = "" and not tablesInfo.eof
-		    if tablesInfo.Field("IsPrimary").BooleanValue = TRUE then
-		      pkField = tablesInfo.Field("ColumnName")
-		    end if
-		    tablesInfo.MoveNext
-		  wend
-		  
-		  return pkField
 		End Function
 	#tag EndMethod
 
@@ -268,6 +313,24 @@ Inherits SQLiteDatabase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function summarizeRecords(records() as databaseRecord, summaryFieldName as String) As DatabaseRecord()
+		  dim summarizedSet() as DatabaseRecord
+		  dim previousSummaryValue as Variant  = nil
+		  
+		  for each record as databaserecord in records
+		    dim summaryValue as Variant = record.Column(summaryFieldName)
+		    if summaryValue <> previousSummaryValue then
+		      summarizedSet.append(record)
+		    end 
+		    
+		    previousSummaryValue = summaryValue
+		  next record
+		  
+		  return summarizedSet
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function updateRecords(baseTableName as String, records as RecordSet, newFields as DatabaseRecord, optional wholeSet as Boolean = False) As Integer()
 		  dim pk as Integer 
 		  dim affectedPKs() as Integer
@@ -336,7 +399,7 @@ Inherits SQLiteDatabase
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  // Lazy loading of tabelForField
+			  // Lazy loading of the tables that are attached to each alias
 			  
 			  if (maliasSchema = nil) or (maliasSchema.Count = 0) then
 			    
@@ -443,9 +506,92 @@ Inherits SQLiteDatabase
 		aliasSchema As Dictionary
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Lazy loading of the dictionary that holds the FKs for each relationship
+			  if (mfkSchema = nil) or (mpkSchema.Count = 0) then
+			    
+			    mfkSchema = new Dictionary
+			    
+			    dim tablesInfo as Recordset = TableSchema
+			    if tablesInfo <> nil then
+			      while not tablesInfo.EOF
+			        dim childTable as String = tablesInfo.IdxField(1).StringValue
+			        
+			        dim fkInfo as RecordSet = SQLSELECT("PRAGMA foreign_key_list("+childTable+")")
+			        
+			        if fkInfo <> nil then
+			          while not fkinfo.eof
+			            
+			            dim parentTable as String = fkInfo.Field("table").StringValue
+			            dim relatedTables as String = parentTable+" : "+childTable // Real pairs might not work as dictionary-keys because they are not value-types
+			            mfkSchema.value(relatedTables) = fkInfo.Field("to").stringvalue
+			            
+			            fkInfo.MoveNext
+			          wend
+			        end if
+			        
+			        tablesInfo.MoveNext
+			      wend
+			    end if
+			    
+			  end if
+			  
+			  return mfkSchema
+			End Get
+		#tag EndGetter
+		fkSchema As Dictionary
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h21
 		Private maliasSchema As Dictionary
 	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mfkSchema As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mpkSchema As Dictionary
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  // Lazy loading of the dictionary that holds the PKs for each table
+			  if (mpkSchema = nil) or (mpkSchema.Count = 0) then
+			    
+			    mpkSchema = new Dictionary
+			    
+			    dim tablesInfo as Recordset = TableSchema
+			    if tablesInfo <> nil then
+			      while not tablesInfo.EOF
+			        dim tableName as String = tablesInfo.IdxField(1).StringValue
+			        
+			        dim fieldsInfo as RecordSet = FieldSchema(tableName)
+			        if fieldsInfo <> nil then
+			          while not mpkSchema.HasKey(tableName) and not fieldsInfo.eof
+			            
+			            if fieldsInfo.Field("IsPrimary").BooleanValue = TRUE then
+			              mpkSchema.value(tableName) = fieldsInfo.Field("ColumnName").stringvalue
+			            end if
+			            
+			            fieldsInfo.MoveNext
+			          wend
+			        end if
+			        
+			        tablesInfo.MoveNext
+			      wend
+			    end if
+			    
+			  end if
+			  
+			  return mpkSchema
+			End Get
+		#tag EndGetter
+		pkSchema As Dictionary
+	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter

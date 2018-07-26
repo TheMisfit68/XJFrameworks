@@ -97,7 +97,11 @@ End
 	#tag Method, Flags = &h0
 		Sub methodWithProgressIndicators(sender as NSButton)
 		  progressIndicator.Visible = True
+		  App.MouseCursor = System.Cursors.Wait
+		  
 		  method.Invoke(mainButton)
+		  
+		  App.MouseCursor = System.Cursors.StandardPointer
 		  progressIndicator.Visible = False
 		End Sub
 	#tag EndMethod

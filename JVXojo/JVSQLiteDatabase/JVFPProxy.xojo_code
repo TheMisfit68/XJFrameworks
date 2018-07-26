@@ -34,6 +34,34 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function constrainFoundset(extraRequests() as JVDatabaseRequest) As DatabaseRecord()
+		  enterMode(Modes.Browse)
+		  
+		  for each extraRequest as databaseRecord in extraRequests
+		    
+		    for fieldNumber as Integer = 1 to extraRequest.FieldCount
+		      dim fieldName as String = extraRequest.FieldName(fieldNumber)
+		      dim fieldValue as Variant = extraRequest.Column(fieldName)
+		      
+		      for each existingRequest as DatabaseRecord in requests
+		        if existingRequest.hasColumn(fieldName) then
+		          existingRequest.Column(fieldname) = fieldValue
+		        end if
+		      next existingRequest
+		      
+		    next fieldNumber
+		    
+		  next extraRequest
+		  
+		  executeFind
+		  
+		  return foundset
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub deleteAllRecords(optional withoutDialog as Boolean = False)
 		  if currentMode = MODES.Browse then
 		    
@@ -152,6 +180,65 @@ Implements JVBackgroundTaskDelegate
 		  // Perform find without any find requests to find all recoxrds in a table
 		  enterMode(MODES.Find)
 		  executeFind(asynchronious)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub extendFoundSet(extraRequests() as JVDatabaseRequest)
+		  enterMode(Modes.Browse)
+		  
+		  for each extraRequest as JVDatabaseRequest in extraRequests
+		    addRequest(extraRequest)
+		  next extraRequest
+		  
+		  executeFind
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub findAndGotoRelatedRecords(relationship as String)
+		  
+		  dim remainingTables() as String = relationship.Split(".")
+		  
+		  // If there are related tables left to process then do so
+		  if remainingTables.ubound >= 1 then
+		    
+		    // Get both tables from the relationship and adjust the relationship one level down
+		    dim parentTable As String = remainingTables(0)
+		    dim primaryKey as String = pkForTable(parentTable)
+		    
+		    dim childTable As String = remainingTables(1)
+		    dim foreignKey as String = fkForRelationship(parentTable : childTable)
+		    
+		    remainingTables.Remove(0)
+		    
+		    // Find the FK's in the related table 
+		    goToLayoutOrView(childTable)
+		    enterMode(MODES.Find)
+		    for each record as DatabaseRecord in foundset
+		      dim request as new JVDatabaseRequest
+		      request.IntegerColumn(foreignKey) = record.IntegerColumn(primaryKey)
+		      addRequest(request)
+		    next record
+		    executeFind
+		    
+		    //Try to process the next level using recursion
+		    dim remainingRelationship as String = join(remainingTables, ".")
+		    findAndGotoRelatedRecords(remainingRelationship)
+		    
+		  elseif remainingTables.ubound >= 0 then
+		    
+		    // otherwise end-recursion with the current foundset using the last table as the final layout 
+		    dim finalLayout as String=  remainingTables(0)
+		    goToLayoutOrView(finalLayout)
+		    
+		  end if
+		  
+		  
+		  
+		  
+		  
 		End Sub
 	#tag EndMethod
 
