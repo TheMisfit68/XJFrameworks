@@ -23,7 +23,7 @@ Inherits JVMenuItem
 		  // Constructor(copy as MenuItem) -- From MenuItem
 		  // Constructor(Text As String, Tag As Variant = Nil) -- From MenuItem
 		  
-		  Super.Constructor(HelpMenu, "About "+app.shortName+"…", 0)
+		  Super.Constructor(HelpMenu, LocalizedStandardStrings.kAbout+" "+app.shortName, 0)
 		  owner = JVAboutWindowController.sharedAboutWindowController
 		  JVAboutMenuItem.isInstalled = True
 		  

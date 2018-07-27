@@ -49,7 +49,7 @@ Begin NSWIndow JVAboutWindow
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
-      Text            =   "Untitled"
+      Text            =   "#LocalizedStandardStrings.kUntitled"
       TextAlign       =   0
       TextColor       =   &c00000000
       TextFont        =   "System"
@@ -84,7 +84,7 @@ Begin NSWIndow JVAboutWindow
       TabIndex        =   2
       TabPanelIndex   =   0
       TabStop         =   True
-      Text            =   "version"
+      Text            =   "#LocalizedStandardStrings.kVersion"
       TextAlign       =   0
       TextColor       =   &c00000000
       TextFont        =   "System"
@@ -147,7 +147,7 @@ Begin NSWIndow JVAboutWindow
       TabIndex        =   4
       TabPanelIndex   =   0
       TabStop         =   True
-      Text            =   "developer"
+      Text            =   "#LocalizedStandardStrings.kDeveloper"
       TextAlign       =   0
       TextColor       =   &c00000000
       TextFont        =   "System"

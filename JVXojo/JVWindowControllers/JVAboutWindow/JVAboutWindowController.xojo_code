@@ -24,6 +24,9 @@ Implements NSWindowDelegate
 		Sub onWindowActivate(sender as NSWindow)
 		  // Part of the NSWindowDelegate interface.
 		  
+		  // Set the window title
+		  window.title = LocalizedStandardStrings.kAbout+" "+App.shortName
+		  
 		  // Set the applications name
 		  aboutwindow.AppNameLabel.Text = App.shortName
 		  
@@ -35,14 +38,14 @@ Implements NSWindowDelegate
 		  End If
 		  
 		  //Set the applications version
-		  aboutwindow.appVersionLabel.text = "Version "+app.fullVersion + Chr(9) + Str(app.BuildDate.Year)
+		  aboutwindow.appVersionLabel.text = LocalizedStandardStrings.kVersion+" "+app.fullVersion + Chr(9) + Str(app.BuildDate.Year)
 		  
 		  // Set the developer
-		  aboutwindow.developerLabel.text = "Developed by: " + app.developer
+		  aboutwindow.developerLabel.text = LocalizedStandardStrings.kDeveloper+": " + app.developer
 		  
 		  // Set the beta testing
 		  if app.betaTesting <> "" then
-		    aboutwindow.betaTestingLabel.text = "Beta testing performed by: " + app.betaTesting
+		    aboutwindow.betaTestingLabel.text = LocalizedStandardStrings.kBetatesting+": " + app.betaTesting
 		  else
 		    aboutwindow.betaTestingLabel.text = ""
 		  end if
