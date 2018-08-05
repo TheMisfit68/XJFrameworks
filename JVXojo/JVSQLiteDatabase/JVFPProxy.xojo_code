@@ -35,23 +35,33 @@ Implements JVBackgroundTaskDelegate
 
 	#tag Method, Flags = &h0
 		Function constrainFoundset(extraRequests() as JVDatabaseRequest) As DatabaseRecord()
-		  enterMode(Modes.Browse)
+		  
+		  // Inject the extra requests into the existing requests and copy them to a backup-array while doing so
+		  
+		  dim newRequests() as JVDatabaseRequest
 		  
 		  for each extraRequest as databaseRecord in extraRequests
 		    
-		    for fieldNumber as Integer = 1 to extraRequest.FieldCount
+		    for fieldNumber as Integer = 0 to extraRequest.FieldCount-1
 		      dim fieldName as String = extraRequest.FieldName(fieldNumber)
 		      dim fieldValue as Variant = extraRequest.Column(fieldName)
 		      
-		      for each existingRequest as DatabaseRecord in requests
-		        if existingRequest.hasColumn(fieldName) then
-		          existingRequest.Column(fieldname) = fieldValue
-		        end if
+		      for each existingRequest as JVDatabaseRequest in requests
+		        
+		        newRequests.Append(existingRequest)
+		        existingRequest.Column(fieldname) = fieldValue
+		        
 		      next existingRequest
 		      
 		    next fieldNumber
 		    
 		  next extraRequest
+		  
+		  
+		  // Then use the new requests to perform a new find
+		  
+		  enterMode(MODES.find)
+		  requests = newRequests
 		  
 		  executeFind
 		  
@@ -184,16 +194,36 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub extendFoundSet(extraRequests() as JVDatabaseRequest)
-		  enterMode(Modes.Browse)
+		Function extendFoundSet(extraRequests() as JVDatabaseRequest) As DatabaseRecord()
+		  // add the extra requests to the existing requests and copy them to a new-array while doing so
+		  
+		  dim newRequests() as JVDatabaseRequest
+		  
+		  for each existingRequest as JVDatabaseRequest in requests
+		    
+		    newRequests.Append(existingRequest)
+		    
+		  next existingRequest
 		  
 		  for each extraRequest as JVDatabaseRequest in extraRequests
-		    addRequest(extraRequest)
+		    
+		    newRequests.Append(extraRequest)
+		    
 		  next extraRequest
+		  
+		  // Then use the new requests to perform a new find
+		  
+		  enterMode(MODES.find)
+		  requests = newRequests
 		  
 		  executeFind
 		  
-		End Sub
+		  return foundset
+		  
+		  
+		  
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -227,15 +257,13 @@ Implements JVBackgroundTaskDelegate
 		    dim remainingRelationship as String = join(remainingTables, ".")
 		    findAndGotoRelatedRecords(remainingRelationship)
 		    
-		  elseif remainingTables.ubound >= 0 then
+		  elseif remainingTables.ubound = 0 then
 		    
 		    // otherwise end-recursion with the current foundset using the last table as the final layout 
 		    dim finalLayout as String=  remainingTables(0)
 		    goToLayoutOrView(finalLayout)
 		    
 		  end if
-		  
-		  
 		  
 		  
 		  

@@ -215,11 +215,19 @@ Inherits SQLiteDatabase
 		  sqlStatement.bindvariables(sqlExpresions.value("Values"))
 		  dim foundRecords as RecordSet = sqlStatement.SQLSelect
 		  
+		  #if debugbuild then
+		    system.debuglog( _
+		    "[JVSQLiteDatabase] SQL Select: "+ENDOFLINE+ _
+		    sqlExpresions.value("CompoundStatement") _
+		    )
+		  #endif
+		  
 		  If Error Then
 		    #if debugbuild then
 		      system.debuglog( _
 		      "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _
-		      sqlString)
+		      sqlExpresions.value("CompoundStatement") _
+		      )
 		    #endif
 		    Return nil
 		  End If
@@ -285,6 +293,12 @@ Inherits SQLiteDatabase
 		  
 		  sqlExpressions.value("Statement") = sqlString
 		  sqlExpressions.value("Values") = matchFieldValues
+		  
+		  dim debugString as String = sqlString
+		  for each value as variant in matchFieldValues
+		    debugString = debugString.replace("?", value.StringValue)
+		  next value
+		  sqlExpressions.value("CompoundStatement") = debugString
 		  
 		  return sqlExpressions
 		End Function
