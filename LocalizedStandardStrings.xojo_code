@@ -72,6 +72,12 @@ Protected Module LocalizedStandardStrings
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Herstel"
 	#tag EndConstant
 
+	#tag Constant, Name = kError, Type = String, Dynamic = True, Default = \"Error", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Error"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Error"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Fout"
+	#tag EndConstant
+
 	#tag Constant, Name = kExport, Type = String, Dynamic = True, Default = \"Export", Scope = Public
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Export"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Export"
@@ -141,6 +147,12 @@ Protected Module LocalizedStandardStrings
 		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Version"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Version"
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Versie"
+	#tag EndConstant
+
+	#tag Constant, Name = kWarning, Type = String, Dynamic = True, Default = \"Warning", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Warning"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Warning"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Melding"
 	#tag EndConstant
 
 
