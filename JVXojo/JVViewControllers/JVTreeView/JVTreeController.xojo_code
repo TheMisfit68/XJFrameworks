@@ -238,7 +238,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  
 		  if (row >= 0) and (row < sender.ListCount) then
 		    originalSelection = row
-		    selectedNode = treeView.rowTag(row)
+		    selectedNode = sender.rowTag(row)
 		    system.DebugLog("Selecting node "+selectedNode.keyPathString+" @ indexpath "+selectedNode.indexPathString)
 		  else
 		    selectedNode = nil
@@ -287,16 +287,21 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    
 		    if  arrangedObjects <> nil then
 		      
+		      // Store the view state before changing anything to the treeView
+		      dim originalScrollPosition as Integer = treeView.ScrollPosition
+		      dim originalSelection as Integer = treeview.ListIndex
+		      
+		      // Perform the actual interface update
 		      treeView.DeleteAllRows
 		      dim nodesToDisplay() as NSTreeNode = arrangedObjects.children
 		      For each node as NSTreeNode in nodesToDisplay
 		        displayNode(node)
 		      next
 		      
+		      // Restore the view state
 		      restoreExpandedNodes
-		      if originalSelection > -1 then
-		        treeView.ListIndex = originalSelection
-		      end if
+		      treeView.ListIndex = originalSelection
+		      treeView.ScrollPosition = originalScrollPosition
 		      
 		    end if
 		    
@@ -333,10 +338,6 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 
 	#tag Property, Flags = &h0
 		expandedNodes() As String
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		originalSelection As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
