@@ -18,7 +18,6 @@ Inherits JVBackgroundTask
 
 	#tag Method, Flags = &h0
 		Sub Constructor(database as JVSQLiteDatabase , statementString as String)
-		  super.constructor
 		  
 		  me.database = database
 		  me.sqlString = statementString
@@ -53,11 +52,6 @@ Inherits JVBackgroundTask
 			Group="ID"
 			Type="Integer"
 			EditorType="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="mEventWasFired"
-			Group="Behavior"
-			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"

@@ -237,7 +237,6 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  dim row as integer = sender.ListIndex
 		  
 		  if (row >= 0) and (row < sender.ListCount) then
-		    originalSelection = row
 		    selectedNode = sender.rowTag(row)
 		    system.DebugLog("Selecting node "+selectedNode.keyPathString+" @ indexpath "+selectedNode.indexPathString)
 		  else
@@ -379,11 +378,6 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 			Visible=true
 			Group="ID"
 			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="originalSelection"
-			Group="Behavior"
-			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

@@ -1,37 +1,14 @@
 #tag Class
 Protected Class JVBackgroundTask
 Inherits Thread
-	#tag Method, Flags = &h21
-		Private Sub checkCurrentState(sender as Timer)
-		  If  State= Thread.NotRunning and not mEventWasFired then
-		    
-		    mEventWasFired=  TRUE
-		    RaiseEvent finished
-		    
-		  end if
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h1000
-		Sub constructor()
-		  // mLock = New CriticalSection
-		  
-		  mEventWasFired = FALSE
-		  
-		  mTimer = New Timer
-		  mTimer.Period = 500
-		  mTimer.Mode = Timer.ModeMultiple
-		  
-		  AddHandler mTimer.Action, WeakAddressOf checkCurrentState
-		  mTimer.Enabled = TRUE
-		  
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub run()
-		  mEventWasFired = FALSE
+		  
+		  RaiseEvent starting
+		  
 		  super.run
+		  
+		  RaiseEvent finished
 		  
 		  
 		End Sub
@@ -40,6 +17,10 @@ Inherits Thread
 
 	#tag Hook, Flags = &h0
 		Event finished()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event starting()
 	#tag EndHook
 
 
@@ -55,6 +36,7 @@ Inherits Thread
 			  if mbackgroundTaskDelegate <> nil then
 			    
 			    // Remove any previously set delegate
+			    RemoveHandler starting, AddressOf mbackgroundTaskDelegate.onTaskStarting
 			    RemoveHandler finished, AddressOf mbackgroundTaskDelegate.onTaskFinished
 			    
 			  end if
@@ -65,7 +47,9 @@ Inherits Thread
 			  if mbackgroundTaskDelegate <> nil then
 			    
 			    // Redirect all events to the delegate
+			    AddHandler starting, AddressOf mbackgroundTaskDelegate.onTaskStarting
 			    AddHandler finished, AddressOf mbackgroundTaskDelegate.onTaskFinished
+			    
 			    
 			  end if
 			End Set
@@ -77,18 +61,6 @@ Inherits Thread
 		Private mBackgroundTaskDelegate As JVBackgroundTaskDelegate
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		mEventWasFired As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mLock As CriticalSection
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private mTimer As Timer
-	#tag EndProperty
-
 
 	#tag ViewBehavior
 		#tag ViewProperty
@@ -97,11 +69,6 @@ Inherits Thread
 			Group="ID"
 			Type="Integer"
 			EditorType="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="mEventWasFired"
-			Group="Behavior"
-			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
@@ -130,6 +97,11 @@ Inherits Thread
 			Group="ID"
 			Type="String"
 			EditorType="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="mFinishedEventWasFired"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

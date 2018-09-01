@@ -112,6 +112,14 @@ Implements JVBackgroundTaskDelegate
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub onTaskStarting(sender as JVBackgroundTask)
+		  // Part of the JVBackgroundTaskDelegate interface.
+		  
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Function pathForRow(row as Integer) As String
 		  
@@ -190,11 +198,6 @@ Implements JVBackgroundTaskDelegate
 			Visible=true
 			Group="ID"
 			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="originalSelection"
-			Group="Behavior"
-			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="reloadBusy"

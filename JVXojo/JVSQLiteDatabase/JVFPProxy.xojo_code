@@ -383,6 +383,14 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub onTaskStarting(sender as JVBackgroundTask)
+		  // Part of the JVBackgroundTaskDelegate interface.
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function replaceAll(newValues as DataBaseRecord) As Integer()
 		  
 		  dim affectedPKs() as Integer = updateRecords(currentLayout, mfoundSet, newValues, True)

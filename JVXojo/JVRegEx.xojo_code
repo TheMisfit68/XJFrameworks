@@ -20,15 +20,22 @@ Inherits regex
 		  me.SearchPattern = searchPattern
 		  me.options.CaseSensitive =  FALSE
 		  
-		  dim numberofOpeningBrackets as Integer = split(searchPattern, "(").ubound
-		  dim numberofClosingBrackets as Integer = split(searchPattern, ")").ubound
+		  dim numberOfOpeningBrackets as Integer = split(searchPattern, "(").ubound
+		  dim numberOfClosingBrackets as Integer = split(searchPattern, ")").ubound
+		  
 		  dim numberOfBracketsForOptionalGroups as Integer = split(searchPattern, "(?:").ubound
 		  if numberOfBracketsForOptionalGroups > 0 then
-		    numberofOpeningBrackets = numberofOpeningBrackets-numberOfBracketsForOptionalGroups
-		    numberofClosingBrackets = numberofClosingBrackets-numberOfBracketsForOptionalGroups
+		    numberofOpeningBrackets = numberOfOpeningBrackets-numberOfBracketsForOptionalGroups
+		    numberofClosingBrackets = numberOfClosingBrackets-numberOfBracketsForOptionalGroups
 		  end if
 		  
-		  if (numberofOpeningBrackets = numberofClosingBrackets) and  (numberofOpeningBrackets = labelsForSubExpressions.ubound+1) then
+		  dim numberOfEscapedBrackets as Integer = split(searchPattern, "\(").ubound
+		  if numberOfEscapedBrackets > 0 then
+		    numberofOpeningBrackets = numberOfOpeningBrackets-numberOfEscapedBrackets
+		    numberofClosingBrackets = numberOfClosingBrackets-numberOfEscapedBrackets
+		  end if
+		  
+		  if (numberofOpeningBrackets = numberOfClosingBrackets) and  (numberofOpeningBrackets = labelsForSubExpressions.ubound+1) then
 		    
 		    me.labelsForSubExpressions = labelsForSubExpressions
 		    me.labelsForSubExpressions.Insert(0, "MainExpression")
@@ -49,7 +56,7 @@ Inherits regex
 
 	#tag Method, Flags = &h0
 		Shared Function optionalGroup(uncapturedExpression as String) As String
-		  return "(?:"+uncapturedExpression+")*"
+		  return "(?:"+uncapturedExpression+")"
 		End Function
 	#tag EndMethod
 
@@ -92,6 +99,24 @@ Inherits regex
 		labelsForSubExpressions() As String
 	#tag EndProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return optionalGroup(".*"+NewLinePattern)+"*?"
+			End Get
+		#tag EndGetter
+		Shared MultipleLinesPattern As String
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return "[\n\r]+"
+			End Get
+		#tag EndGetter
+		Shared NewLinePattern As String
+	#tag EndComputedProperty
+
 
 	#tag ViewBehavior
 		#tag ViewProperty
@@ -111,12 +136,6 @@ Inherits regex
 			Visible=true
 			Group="ID"
 			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Options"
-			Visible=true
-			Type="RegExOptions"
-			EditorType="RegExOptions"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ReplacementPattern"

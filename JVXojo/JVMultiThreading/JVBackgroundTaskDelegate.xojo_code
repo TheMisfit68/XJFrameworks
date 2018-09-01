@@ -6,6 +6,12 @@ Protected Interface JVBackgroundTaskDelegate
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub onTaskStarting(sender as JVBackgroundTask)
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Note, Name = Protocol description
 		Defines the protocol all BackgroundTask-delegates must conform to
