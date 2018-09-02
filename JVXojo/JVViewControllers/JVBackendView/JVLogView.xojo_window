@@ -6,6 +6,7 @@ Begin NSView JVLogView
    BackColor       =   &cFFFFFF00
    Backdrop        =   0
    Compatibility   =   ""
+   DoubleBuffer    =   False
    Enabled         =   True
    EraseBackground =   True
    HasBackColor    =   False
@@ -67,10 +68,56 @@ Begin NSView JVLogView
       TextSize        =   0.0
       TextUnit        =   0
       Top             =   0
+      Transparent     =   False
       Underline       =   False
       UseFocusRing    =   True
       Visible         =   True
       Width           =   400
+      Begin BevelButton customPushbuttonClearConsole
+         AcceptFocus     =   True
+         AutoDeactivate  =   True
+         BackColor       =   &c00000000
+         Bevel           =   0
+         Bold            =   False
+         ButtonType      =   0
+         Caption         =   ""
+         CaptionAlign    =   3
+         CaptionDelta    =   0
+         CaptionPlacement=   1
+         Enabled         =   True
+         HasBackColor    =   False
+         HasMenu         =   0
+         Height          =   32
+         HelpTag         =   ""
+         Icon            =   0
+         IconAlign       =   0
+         IconDX          =   0
+         IconDY          =   0
+         Index           =   -2147483648
+         InitialParent   =   "Console"
+         Italic          =   False
+         Left            =   348
+         LockBottom      =   True
+         LockedInPosition=   False
+         LockLeft        =   False
+         LockRight       =   True
+         LockTop         =   False
+         MenuValue       =   0
+         Scope           =   0
+         TabIndex        =   0
+         TabPanelIndex   =   0
+         TabStop         =   True
+         TextColor       =   &c00000000
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   193
+         Transparent     =   False
+         Underline       =   False
+         Value           =   False
+         Visible         =   True
+         Width           =   32
+      End
    End
 End
 #tag EndWindow
@@ -88,7 +135,35 @@ End
 
 #tag EndWindowCode
 
+#tag Events customPushbuttonClearConsole
+	#tag Event
+		Sub Action()
+		  JVBackendViewController.sharedBackendViewController.logController.clearConsole
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Open()
+		  dim pathFinder as new JVPathFinder
+		  dim artworkFolder as FolderItem = pathFinder.findFolder("ArtWork")
+		  
+		  dim iconfile as folderItem = artworkFolder.Child("clearConsoleButton.png")
+		  
+		  dim smallestDimension as Integer = min(me.width, me.height)
+		  dim clearConsoleIcon as Picture = JVPicture.open(iconfile, smallestDimension, smallestDimension)
+		  
+		  me.Icon = clearConsoleIcon
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag ViewBehavior
+	#tag ViewProperty
+		Name="DoubleBuffer"
+		Visible=true
+		Group="Windows Behavior"
+		InitialValue="False"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
 	#tag ViewProperty
 		Name="AcceptFocus"
 		Visible=true

@@ -41,7 +41,7 @@ Inherits NSViewController
 		  
 		  if terminal.ErrorCode <> 0 then
 		    dim logger as JVLogViewController = JVBackendViewController.sharedBackendViewController.logController
-		    logger.LogAsError("Error executing command: "+ENDOFLINE+DOSCommand+ENDOFLINE+terminal.result)
+		    logger.Log("Error executing command: "+ENDOFLINE+DOSCommand+ENDOFLINE+terminal.result, JVLogViewController.JVLogLevel.ERROR)
 		  end if
 		  
 		End Sub

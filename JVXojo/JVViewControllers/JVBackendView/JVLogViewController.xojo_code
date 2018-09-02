@@ -3,81 +3,80 @@ Protected Class JVLogViewController
 Inherits NSViewController
 Implements NSViewDelegate
 	#tag Method, Flags = &h0
+		Sub clearConsole()
+		  if logView.isInstalled then
+		    
+		    console.Text = ""
+		    
+		  end if
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Constructor()
 		  super.constructor(new JVLogView, nil)
 		  
 		  console.Styled = True
-		  
-		  
+		  console.MultiLine =True
+		  console.LineSpacing = 1.25
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Function log(message as String) As NSRange
-		  
-		  dim timestamp as Date = new date
-		  dim timestampedMessage as String = timestamp.LongTime+" "+message+ENDOFLINE+ENDOFLINE
-		  
+	#tag Method, Flags = &h0
+		Sub log(message as String, optional logLevel as JVLogLevel = JVLoglevel.plain)
 		  if logView.isInstalled then
 		    
-		    dim start as Integer = len(console.StyledText.text)
+		    // Set formatting for each loglevel
+		    dim icon as String
+		    dim textColor as Color
+		    dim boldState as Boolean
+		    
+		    select case logLevel
+		    case JVLogLevel.ERROR
+		      icon = "🛑"
+		      textColor =  &cFF0000
+		      boldState =  TRUE
+		    case JVLogLevel.WARNING
+		      icon = "⚠️"
+		      textColor =  &cFF7F00
+		      boldState =  TRUE
+		    case JVLogLevel.INFO
+		      icon = "ℹ️"
+		      textColor =  &c4C4C4C
+		      boldState =  FALSE
+		    case JVLogLevel.MESSAGE
+		      icon = "💬"
+		      textColor =  &c4C4C4C
+		      boldState =  FALSE
+		    else
+		      icon = ""
+		      textColor=  &c4C4C4C
+		      boldState =  FALSE
+		    end select
+		    
+		    
+		    // Compose the entire message
+		    dim timestamp as Date = new date
+		    dim timestampedMessage as String = icon+Tab+timestamp.LongTime+": "+message+ENDOFLINE
+		    
+		    // Determine the range of the new message
+		    dim start as Integer = console.StyledText.text.Len
 		    dim length as Integer = timestampedMessage.Len
+		    dim messageRange as NSRange = NSRange.NSMakeRange(start, length)
 		    
-		    console.StyledText.text = console.StyledText.text+timestampedMessage
-		    console.ScrollPosition = console.LineNumAtCharPos(len(console.StyledText.text))
+		    // Log it and apply formatting
+		    console.AppendText(timestampedMessage)
+		    console.StyledText.Bold(messageRange.location, messageRange.length) = boldState 
+		    console.StyledText.TextColor(messageRange.location, messageRange.length) = textColor 
 		    
-		    return NSRange.NSMakeRange(start, length)
 		    
-		  else
+		    console.ScrollPosition = console.LineNumAtCharPos(console.StyledText.text.len)
 		    
-		    return NSRange.ZeroRange
 		    
 		  end if
 		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub logAsError(message as String)
-		  // Log the message
-		  dim messageRange as NSRange = log(message)
-		  
-		  // In Bold and Red
-		  if messageRange.length > 0 then
-		    console.StyledText.Bold(messageRange.location, messageRange.length) = TRUE 
-		    console.StyledText.TextColor(messageRange.location, messageRange.length)  = &cFF0000 
-		  end if
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub logAsPlainText(message as String)
-		  
-		  // Log the message
-		  dim messageRange as NSRange = log(message)
-		  
-		  // In Plain and Dark gray
-		  if messageRange.length > 0 then
-		    console.StyledText.Bold(messageRange.location, messageRange.length) = FALSE 
-		    console.StyledText.TextColor(messageRange.location, messageRange.length)  = &c4C4C4C
-		  end if
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub logAsWarning(message as String)
-		  
-		  // Log the message
-		  dim messageRange as NSRange = log(message)
-		  
-		  // In Bold and Orange
-		  
-		  if messageRange.length > 0 then
-		    console.StyledText.Bold(messageRange.location, messageRange.length) = TRUE 
-		    console.StyledText.TextColor(messageRange.location, messageRange.length)  = &cFF7F00
-		  end if
 		  
 		End Sub
 	#tag EndMethod
@@ -135,6 +134,15 @@ Implements NSViewDelegate
 		#tag EndGetter
 		Private logView As JVLogView
 	#tag EndComputedProperty
+
+
+	#tag Enum, Name = JVLogLevel, Flags = &h0
+		ERROR
+		  WARNING
+		  INFO
+		  MESSAGE
+		PLAIN
+	#tag EndEnum
 
 
 	#tag ViewBehavior
