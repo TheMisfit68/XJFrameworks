@@ -25,6 +25,20 @@ Implements NSViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub drawSeperatorLine()
+		  if logView.isInstalled then
+		    
+		    dim lastLine as Paragraph = console.StyledText.Paragraph(console.StyledText.ParagraphCount-1)
+		    
+		    console.StyledText.Underline(lastLine.StartPos, lastLine.Length) = True
+		    
+		  end if
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub log(message as String, optional logLevel as JVLogLevel = JVLoglevel.plain)
 		  if logView.isInstalled then
 		    
