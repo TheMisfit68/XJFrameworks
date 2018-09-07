@@ -1,5 +1,5 @@
 #tag Class
-Protected Class JVTableController
+Protected Class JVTableViewController
 Implements JVTableViewDataSource,JVTableViewDelegate
 	#tag Method, Flags = &h0
 		Function cellType(fieldName as String) As JVCustomCell
@@ -45,6 +45,7 @@ Implements JVTableViewDataSource,JVTableViewDelegate
 		  if frontendFieldValue <> backendFieldValue then
 		    tableView.tableViewDataSource.editField(row, column, frontendField)
 		  end if
+		  
 		End Sub
 	#tag EndMethod
 

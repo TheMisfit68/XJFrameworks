@@ -28,9 +28,18 @@ Implements NSViewDelegate
 		Sub drawSeperatorLine()
 		  if logView.isInstalled then
 		    
-		    dim lastLine as Paragraph = console.StyledText.Paragraph(console.StyledText.ParagraphCount-1)
+		    dim consoleText as String = ReplaceLineEndings( console.StyledText.text , EndOfLine)
+		    dim seperatedLines() as String = consoleText.split(ENDOFLINE)
 		    
-		    console.StyledText.Underline(lastLine.StartPos, lastLine.Length) = True
+		    dim longestLine as Integer = 0
+		    for each line as String in seperatedLines
+		      longestLine = Max(line.len, longestLine)
+		    next line
+		    
+		    for underScoreNumber as Integer = 1 to longestLine
+		      console.AppendText("＿")
+		    next underScoreNumber
+		    console.AppendText(ENDOFLINE)
 		    
 		  end if
 		  

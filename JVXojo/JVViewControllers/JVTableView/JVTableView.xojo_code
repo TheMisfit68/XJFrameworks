@@ -3,17 +3,20 @@ Protected Class JVTableView
 Inherits Listbox
 	#tag Event
 		Function CellBackgroundPaint(g As Graphics, row As Integer, column As Integer) As Boolean
-		  
-		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		  if not cellHasFocus then // Windows coninuously fires this event during editing of a textcell, leading to erformance issues  if thi line is removed !!!
 		    
-		    dim fieldInfo as Pair = me.CellTag(row, column)
-		    dim fieldName as String
-		    if fieldInfo <> nil then
-		      fieldName = FieldInfo.left
+		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		      
+		      dim fieldInfo as Pair = me.CellTag(row, column)
+		      dim fieldName as String
+		      if fieldInfo <> nil then
+		        fieldName = FieldInfo.left
+		      end if
+		      
+		      dim currentCellType as JVCustomCell = tableViewDataSource.cellType(fieldName)
+		      currentCellType.draw(me, g, row, Column)
+		      
 		    end if
-		    
-		    dim currentCellType as JVCustomCell = tableViewDataSource.cellType(fieldName)
-		    currentCellType.draw(me, g, row, Column)
 		    
 		  end if
 		  
@@ -22,10 +25,18 @@ Inherits Listbox
 	#tag EndEvent
 
 	#tag Event
+		Sub CellGotFocus(row as Integer, column as Integer)
+		  cellHasFocus = TRUE
+		End Sub
+	#tag EndEvent
+
+	#tag Event
 		Sub CellLostFocus(row as Integer, column as Integer)
 		  if CellType(row, column) = listbox.TypeEditableTextField then
 		    CellType(row, column) = listbox.TypeDefault
 		  end if
+		  
+		  cellHasFocus=FALSE
 		End Sub
 	#tag EndEvent
 
@@ -101,6 +112,10 @@ Inherits Listbox
 	#tag EndNote
 
 
+	#tag Property, Flags = &h0
+		cellHasFocus As Boolean
+	#tag EndProperty
+
 	#tag Property, Flags = &h1
 		Protected mTableViewDelegate As JVTableViewDelegate
 	#tag EndProperty
@@ -151,6 +166,14 @@ Inherits Listbox
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Transparent"
+			Visible=true
+			Group="Appearance"
+			InitialValue="False"
+			Type="Boolean"
+			EditorType="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AutoDeactivate"
 			Visible=true
@@ -502,6 +525,11 @@ Inherits Listbox
 			Group="Appearance"
 			InitialValue="-1"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="cellHasFocus"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

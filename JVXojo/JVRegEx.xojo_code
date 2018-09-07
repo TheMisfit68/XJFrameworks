@@ -23,16 +23,20 @@ Inherits regex
 		  dim numberOfOpeningBrackets as Integer = split(searchPattern, "(").ubound
 		  dim numberOfClosingBrackets as Integer = split(searchPattern, ")").ubound
 		  
-		  dim numberOfBracketsForOptionalGroups as Integer = split(searchPattern, "(?:").ubound
+		  dim numberOfBracketsForOptionalGroups as Integer = split(searchPattern, "(?").ubound
 		  if numberOfBracketsForOptionalGroups > 0 then
 		    numberofOpeningBrackets = numberOfOpeningBrackets-numberOfBracketsForOptionalGroups
 		    numberofClosingBrackets = numberOfClosingBrackets-numberOfBracketsForOptionalGroups
 		  end if
 		  
-		  dim numberOfEscapedBrackets as Integer = split(searchPattern, "\(").ubound
-		  if numberOfEscapedBrackets > 0 then
-		    numberofOpeningBrackets = numberOfOpeningBrackets-numberOfEscapedBrackets
-		    numberofClosingBrackets = numberOfClosingBrackets-numberOfEscapedBrackets
+		  dim numberOfEscapedOpeningBrackets as Integer = split(searchPattern, "\(").ubound
+		  if numberOfEscapedOpeningBrackets > 0 then
+		    numberofOpeningBrackets = numberOfOpeningBrackets-numberOfEscapedOpeningBrackets
+		  end if
+		  
+		  dim numberOfEscapedClosingBrackets as Integer = split(searchPattern, "\)").ubound
+		  if numberOfEscapedClosingBrackets > 0 then
+		    numberofClosingBrackets = numberOfClosingBrackets-numberOfEscapedClosingBrackets
 		  end if
 		  
 		  if (numberofOpeningBrackets = numberOfClosingBrackets) and  (numberofOpeningBrackets = labelsForSubExpressions.ubound+1) then
@@ -47,10 +51,11 @@ Inherits regex
 		    // Raise an exception
 		    Dim e As RuntimeException = New RuntimeException
 		    e.ErrorNumber = -1
-		    e.Message = "[JVRegex] Number of subexpressions don't match the number of labels provided for them"
+		    e.Message = "[JVRegex] Number of subexpressions ("+Str(numberofOpeningBrackets)+") don't match the number of labels ("+Str(labelsForSubExpressions.ubound+1)+") provided for them"
 		    Raise e
 		    
 		  end if
+		  
 		End Sub
 	#tag EndMethod
 
@@ -111,7 +116,9 @@ Inherits regex
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return "[\n\r]+"
+			  // return "[\n\r]+" //old version test improved version below before erasing
+			  
+			  return "(?:\r?\n)"
 			End Get
 		#tag EndGetter
 		Shared NewLinePattern As String

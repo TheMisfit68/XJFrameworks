@@ -90,7 +90,7 @@ Begin NSView JVLogView
          Height          =   32
          HelpTag         =   ""
          Icon            =   0
-         IconAlign       =   0
+         IconAlign       =   1
          IconDX          =   0
          IconDY          =   0
          Index           =   -2147483648
@@ -98,7 +98,7 @@ Begin NSView JVLogView
          Italic          =   False
          Left            =   348
          LockBottom      =   True
-         LockedInPosition=   False
+         LockedInPosition=   True
          LockLeft        =   False
          LockRight       =   True
          LockTop         =   False
@@ -129,7 +129,7 @@ End
 			  Return JVLogViewController(owner)
 			End Get
 		#tag EndGetter
-		Private logController As JVLogViewController
+		Private logViewController As JVLogViewController
 	#tag EndComputedProperty
 
 
@@ -138,7 +138,7 @@ End
 #tag Events customPushbuttonClearConsole
 	#tag Event
 		Sub Action()
-		  JVBackendViewController.sharedBackendViewController.logController.clearConsole
+		  JVBackendViewController.sharedBackendViewController.logViewController.clearConsole
 		End Sub
 	#tag EndEvent
 	#tag Event
@@ -152,6 +152,7 @@ End
 		  dim clearConsoleIcon as Picture = JVPicture.open(iconfile, smallestDimension, smallestDimension)
 		  
 		  me.Icon = clearConsoleIcon
+		  me.IconAlign = 1 // Center icon in button
 		End Sub
 	#tag EndEvent
 #tag EndEvents

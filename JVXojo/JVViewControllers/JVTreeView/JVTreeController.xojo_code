@@ -1,6 +1,6 @@
 #tag Class
 Protected Class JVTreeController
-Inherits JVTableController
+Inherits JVTableViewController
 Implements JVTreeViewDelegate,JVTreeViewDataSource
 	#tag Method, Flags = &h0
 		Function cellType(fieldName as String) As JVCustomCell

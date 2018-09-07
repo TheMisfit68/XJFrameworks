@@ -7,7 +7,7 @@ Implements NSViewDelegate
 		  super.constructor(new JVBackendView, nil)
 		  
 		  // Create subcontrollers
-		  logController = new JVLogViewController
+		  logViewController = new JVLogViewController
 		  terminalController = new JVTerminalViewController
 		  
 		  
@@ -51,7 +51,7 @@ Implements NSViewDelegate
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
-		logController As JVLogViewController
+		logViewController As JVLogViewController
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

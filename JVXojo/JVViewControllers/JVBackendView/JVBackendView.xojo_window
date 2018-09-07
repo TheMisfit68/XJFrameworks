@@ -6,6 +6,7 @@ Begin NSView JVBackendView
    BackColor       =   &cFFFFFF00
    Backdrop        =   0
    Compatibility   =   ""
+   DoubleBuffer    =   False
    Enabled         =   True
    EraseBackground =   True
    HasBackColor    =   False
@@ -41,8 +42,8 @@ End
 		  dim subViewsWidth as Integer = width
 		  dim subViewsHeight as Integer = (height-tabBarHeight)/2 
 		  
-		  // Insert subview of logController
-		  subView  = backendController.logController.view
+		  // Insert subview of logViewController
+		  subView  = backendController.logViewController.view
 		  subViewsTop  = tabBarHeight // Keep some space for the tabbar
 		  
 		  subView.EmbedWithin(me, subViewsLeft, subViewsTop, subViewsWidth, subViewsHeight)
@@ -69,6 +70,14 @@ End
 #tag EndWindowCode
 
 #tag ViewBehavior
+	#tag ViewProperty
+		Name="DoubleBuffer"
+		Visible=true
+		Group="Windows Behavior"
+		InitialValue="False"
+		Type="Boolean"
+		EditorType="Boolean"
+	#tag EndViewProperty
 	#tag ViewProperty
 		Name="AcceptFocus"
 		Visible=true

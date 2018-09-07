@@ -271,6 +271,27 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function findRecordwithPK(lookupTable as String, pk as Integer) As DatabaseRecord
+		  
+		  goToLayoutOrView(lookupTable)
+		  dim pkfield as String= pkForTable(lookupTable)
+		  
+		  dim request as new JVDatabaseRequest
+		  request.IntegerColumn(pkfield) = pk
+		  
+		  enterMode(JVFPProxy.MODES.Find)
+		  addRequest(request)
+		  executeFind
+		  
+		  if recordCount > 0 then
+		    return currentRecord
+		  else
+		    return nil
+		  end if
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function foundset() As DatabaseRecord()
 		  // This method acts as a computed property derived from mfoundSet,
 		  // because Xojo doesn't support computed properties of type array

@@ -1,5 +1,12 @@
 #tag Class
 Protected Class NSColor
+	#tag Method, Flags = &h0
+		Shared Function RainBowColors() As Color()
+		  return Array(NSColor.Red, NSColor.Orange, NSColor.Yellow, NSColor.Green, NSColor.Blue, NSColor.Indigo, NSColor.Violet)
+		End Function
+	#tag EndMethod
+
+
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -16,6 +23,15 @@ Protected Class NSColor
 			End Get
 		#tag EndGetter
 		Shared Blue As Color
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return &c66FFFF
+			End Get
+		#tag EndGetter
+		Shared Cyan As Color
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -39,10 +55,28 @@ Protected Class NSColor
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return &c4B0082
+			End Get
+		#tag EndGetter
+		Shared Indigo As Color
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  return &cC0C0C0
 			End Get
 		#tag EndGetter
 		Shared LightGrey As Color
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return &cFF00FF
+			End Get
+		#tag EndGetter
+		Shared Magenta As Color
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -75,6 +109,15 @@ Protected Class NSColor
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
+			  return &cEE82EE
+			End Get
+		#tag EndGetter
+		Shared Violet As Color
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
 			  return &cFFFFFF
 			End Get
 		#tag EndGetter
@@ -84,7 +127,7 @@ Protected Class NSColor
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return &cFFFC79
+			  return &cFFFF66
 			End Get
 		#tag EndGetter
 		Shared Yellow As Color
