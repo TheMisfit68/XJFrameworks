@@ -82,18 +82,18 @@ Implements NSViewDelegate
 		    
 		    // Compose the entire message
 		    dim timestamp as Date = new date
-		    dim timestampedMessage as String = icon+Tab+timestamp.LongTime+": "+message+ENDOFLINE
-		    
-		    // Determine the range of the new message
-		    dim start as Integer = console.StyledText.text.Len
-		    dim length as Integer = timestampedMessage.Len
-		    dim messageRange as NSRange = NSRange.NSMakeRange(start, length)
+		    dim timestampedMessage as String = timestamp.LongTime+": "+message+ENDOFLINE
 		    
 		    // Log it and apply formatting
-		    console.AppendText(timestampedMessage)
-		    console.StyledText.Bold(messageRange.location, messageRange.length) = boldState 
-		    console.StyledText.TextColor(messageRange.location, messageRange.length) = textColor 
+		    console.AppendText(icon+Tab+timestampedMessage)
+		    dim finalPosition as Integer = console.StyledText.text.Len
 		    
+		    console.selstart = finalPosition
+		    
+		    dim textLength as Integer = timestampedMessage.Len
+		    dim startPosition as Integer = finalPosition-textLength
+		    console.StyledText.Bold(startPosition, textLength) = boldState 
+		    console.StyledText.TextColor(startPosition, textLength) = textColor
 		    
 		    console.ScrollPosition = console.LineNumAtCharPos(console.StyledText.text.len)
 		    

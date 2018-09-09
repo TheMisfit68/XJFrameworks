@@ -40,7 +40,7 @@ Begin NSView JVLogView
       Format          =   ""
       Height          =   245
       HelpTag         =   ""
-      HideSelection   =   True
+      HideSelection   =   False
       Index           =   -2147483648
       Italic          =   False
       Left            =   0
