@@ -33,8 +33,8 @@ Protected Module JVStringExtensions
 		    
 		    // Determine soms personal component based on the username
 		    dim personalKeys as String = app.developer
-		    if app.securityController.currentWindowsUser <> "" then
-		      personalKeys = app.securityController.currentWindowsUser
+		    if JVSecurityController.sharedSecurityController.currentWindowsUser <> "" then
+		      personalKeys = JVSecurityController.sharedSecurityController.currentWindowsUser
 		    end if
 		    dim personalKeyPointer as Integer = charNumber mod personalKeys.len
 		    dim personalKey as Byte = asc(mid(personalKeys,personalKeyPointer, 1))
@@ -63,8 +63,8 @@ Protected Module JVStringExtensions
 		    
 		    // Determine soms personal component based on the username
 		    dim personalKeys as String = app.developer
-		    if app.securityController.currentWindowsUser <> "" then
-		      personalKeys = app.securityController.currentWindowsUser
+		    if JVSecurityController.sharedSecurityController.currentWindowsUser <> "" then
+		      personalKeys = JVSecurityController.sharedSecurityController.currentWindowsUser
 		    end if
 		    dim personalKeyPointer as Integer = charNumber mod personalKeys.len
 		    dim personalKey as Byte = asc(mid(personalKeys,personalKeyPointer, 1))

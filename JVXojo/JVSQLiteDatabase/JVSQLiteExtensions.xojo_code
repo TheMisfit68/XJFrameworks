@@ -86,11 +86,15 @@ Protected Module JVSQLiteExtensions
 	#tag Method, Flags = &h0
 		Sub nilableColumn(extends baseRecord as DatabaseRecord, columnName as String, assigns optionalValue as Variant)
 		  
-		  if optionalValue.Type = Variant.TypeNil  then
+		  Select case optionalValue.Type
+		    
+		  case Variant.TypeNil
 		    baseRecord.column(columnName) = optionalValue
-		  else
+		  case Variant.TypeInteger
 		    baseRecord.IntegerColumn(columnName) = optionalValue
-		  end if
+		  else
+		    baseRecord.column(columnName) = optionalValue
+		  end select
 		  
 		End Sub
 	#tag EndMethod

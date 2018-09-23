@@ -6,11 +6,11 @@ Implements NSViewDelegate
 		Sub adaptView()
 		  // Add or remove as necessary
 		  
-		  if not developmentView.isInstalled and (app.securityController.developerMode)  then
+		  if not developmentView.isInstalled and (JVSecurityController.sharedSecurityController.developerMode)  then
 		    
 		    showView
 		    
-		  elseif developmentView.isInstalled and not (app.securityController.developerMode) then
+		  elseif developmentView.isInstalled and not (JVSecurityController.sharedSecurityController.developerMode) then
 		    
 		    hideView
 		    

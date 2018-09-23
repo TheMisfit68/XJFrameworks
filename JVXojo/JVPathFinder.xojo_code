@@ -8,7 +8,7 @@ Protected Class JVPathFinder
 		  #if TargetWindows then
 		    
 		    #if DebugBuild then
-		      baseFolder = app.ExecutableFile.Parent.Parent
+		      baseFolder = GetFolderItem("")
 		    #else
 		      baseFolder = app.ExecutableFile.Parent
 		    #Endif
@@ -16,7 +16,7 @@ Protected Class JVPathFinder
 		  #else
 		    
 		    #if DebugBuild then
-		      baseFolder = app.ExecutableFile.Parent.Parent.Parent.Parent
+		      baseFolder = GetFolderItem("")
 		    #else
 		      baseFolder = app.ExecutableFile.Parent.Parent.Parent
 		    #Endif

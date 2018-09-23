@@ -308,7 +308,15 @@ Implements JVBackgroundTaskDelegate
 		        dim field as DatabaseField = mfoundSet.IdxField(fieldNumber)
 		        dim fieldName as String = field.Name
 		        dim fieldValue as Variant = field.Value
-		        record.Column(fieldName) =  fieldValue
+		        
+		        // Do not include unfilled fields 
+		        // beacause they wil get a defaultvalue when copied from the recordset to a DatabaseRecord
+		        // (nil doesn't exist in a DatabaseRecord)
+		        // this will produce unwanted changes when de DatabaseRecord-class is used to edit a recordset
+		        if fieldValue <> nil then 
+		          record.nilableColumn(fieldName) =  fieldValue
+		        end if
+		        
 		      next fieldNumber
 		      
 		      databaseRecords.Append(record)

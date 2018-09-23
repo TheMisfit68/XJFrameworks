@@ -392,8 +392,11 @@ Inherits SQLiteDatabase
 		      next fieldNumber
 		      
 		      records.Update
-		      pk = records.Field(pkFieldName).IntegerValue
-		      affectedPKs.Append(pk)
+		      
+		      if pkFieldName <> "" then
+		        pk = records.Field(pkFieldName).IntegerValue
+		        affectedPKs.Append(pk)
+		      end if
 		      
 		    end if
 		    
@@ -593,6 +596,7 @@ Inherits SQLiteDatabase
 			            
 			            fieldsInfo.MoveNext
 			          wend
+			          
 			        end if
 			        
 			        tablesInfo.MoveNext

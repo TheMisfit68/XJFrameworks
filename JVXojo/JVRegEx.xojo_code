@@ -16,51 +16,76 @@ Inherits regex
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub constructor(searchPattern as String, paramarray labelsForSubExpressions as String)
+		Sub constructor(searchPattern as String, labelsForSubExpressions() as String)
 		  me.SearchPattern = searchPattern
 		  me.options.CaseSensitive =  FALSE
 		  
-		  dim numberOfOpeningBrackets as Integer = split(searchPattern, "(").ubound
-		  dim numberOfClosingBrackets as Integer = split(searchPattern, ")").ubound
-		  
-		  dim numberOfBracketsForOptionalGroups as Integer = split(searchPattern, "(?").ubound
-		  if numberOfBracketsForOptionalGroups > 0 then
-		    numberofOpeningBrackets = numberOfOpeningBrackets-numberOfBracketsForOptionalGroups
-		    numberofClosingBrackets = numberOfClosingBrackets-numberOfBracketsForOptionalGroups
-		  end if
-		  
-		  dim numberOfEscapedOpeningBrackets as Integer = split(searchPattern, "\(").ubound
-		  if numberOfEscapedOpeningBrackets > 0 then
-		    numberofOpeningBrackets = numberOfOpeningBrackets-numberOfEscapedOpeningBrackets
-		  end if
-		  
-		  dim numberOfEscapedClosingBrackets as Integer = split(searchPattern, "\)").ubound
-		  if numberOfEscapedClosingBrackets > 0 then
-		    numberofClosingBrackets = numberOfClosingBrackets-numberOfEscapedClosingBrackets
-		  end if
-		  
-		  if (numberofOpeningBrackets = numberOfClosingBrackets) and  (numberofOpeningBrackets = labelsForSubExpressions.ubound+1) then
+		  if  (labelsForSubExpressions = nil) or (labelsForSubExpressions.ubound < 0) then
 		    
-		    me.labelsForSubExpressions = labelsForSubExpressions
-		    me.labelsForSubExpressions.Insert(0, "MainExpression")
+		    me.labelsForSubExpressions = Array("MainExpression")
 		    
 		  else
 		    
-		    me.labelsForSubExpressions = nil
+		    // Count the number of brackets that belong tot a capturing group…
+		    dim numberOfOpeningBrackets as Integer = split(searchPattern, "(").ubound
+		    dim numberOfClosingBrackets as Integer = split(searchPattern, ")").ubound
 		    
-		    // Raise an exception
-		    Dim e As RuntimeException = New RuntimeException
-		    e.ErrorNumber = -1
-		    e.Message = "[JVRegex] Number of subexpressions ("+Str(numberofOpeningBrackets)+") don't match the number of labels ("+Str(labelsForSubExpressions.ubound+1)+") provided for them"
-		    Raise e
+		    // taking into account other sort of groups
+		    dim numberOfBracketsForpassiveGroups as Integer = split(searchPattern, "(?").ubound
+		    if numberOfBracketsForpassiveGroups > 0 then
+		      numberofOpeningBrackets = numberOfOpeningBrackets-numberOfBracketsForpassiveGroups
+		      numberofClosingBrackets = numberOfClosingBrackets-numberOfBracketsForpassiveGroups
+		    end if
+		    
+		    dim numberOfEscapedOpeningBrackets as Integer = split(searchPattern, "\(").ubound
+		    if numberOfEscapedOpeningBrackets > 0 then
+		      numberofOpeningBrackets = numberOfOpeningBrackets-numberOfEscapedOpeningBrackets
+		    end if
+		    
+		    dim numberOfEscapedClosingBrackets as Integer = split(searchPattern, "\)").ubound
+		    if numberOfEscapedClosingBrackets > 0 then
+		      numberofClosingBrackets = numberOfClosingBrackets-numberOfEscapedClosingBrackets
+		    end if
+		    
+		    if(  (numberofOpeningBrackets = labelsForSubExpressions.ubound+1) and (numberofOpeningBrackets = numberOfClosingBrackets) ) then
+		      
+		      me.labelsForSubExpressions = labelsForSubExpressions
+		      me.labelsForSubExpressions.Insert(0, "MainExpression")
+		      
+		    else
+		      
+		      me.labelsForSubExpressions = nil
+		      
+		      // Raise an exception
+		      Dim e As RuntimeException = New RuntimeException
+		      e.ErrorNumber = -1
+		      e.Message = "[JVRegex] Number of subexpressions ("+Str(numberofOpeningBrackets)+") don't match the number of labels ("+Str(labelsForSubExpressions.ubound+1)+") provided for them"
+		      Raise e
+		      
+		    end if
 		    
 		  end if
+		  
+		  
+		  
+		  
+		  
+		  
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function optionalGroup(uncapturedExpression as String) As String
+		Sub constructor(searchPattern as String, paramarray labelsForSubExpressions as String)
+		  // Constructor using paramarray as convinience
+		  // calls the designated initializer that uses a regular array
+		  
+		  constructor(searchPattern, labelsForSubExpressions)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Shared Function passiveGroup(uncapturedExpression as String) As String
 		  return "(?:"+uncapturedExpression+")"
 		End Function
 	#tag EndMethod
@@ -95,6 +120,21 @@ Inherits regex
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Shared Function stringToExpression(nonRegexString as String) As String
+		  // Replace any special character with its Regex equivalent
+		  
+		  dim regexString as String = nonRegexString
+		  
+		  regexString = regexString.replace(" ","\s")
+		  regexString = regexString.replace("/","\/")
+		  
+		  // ... complete expressions later
+		  
+		  return RegExString
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		labeledSubExpressions As Dictionary
@@ -107,7 +147,7 @@ Inherits regex
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return optionalGroup(".*"+NewLinePattern)+"*?"
+			  return passiveGroup(".*"+NewLinePattern)+"*?"
 			End Get
 		#tag EndGetter
 		Shared MultipleLinesPattern As String
@@ -116,9 +156,8 @@ Inherits regex
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  // return "[\n\r]+" //old version test improved version below before erasing
 			  
-			  return "(?:\r?\n)"
+			  return "\R"
 			End Get
 		#tag EndGetter
 		Shared NewLinePattern As String

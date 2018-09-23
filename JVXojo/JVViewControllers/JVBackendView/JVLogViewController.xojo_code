@@ -20,86 +20,97 @@ Implements NSViewDelegate
 		  
 		  console.Styled = True
 		  console.MultiLine =True
-		  console.LineSpacing = 1.25
+		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub drawSeperatorLine()
+		Sub drawSeperatorLine(optional lineColor as Color = &c797979)
+		  
 		  if logView.isInstalled then
 		    
+		    dim seperator as new StyleRun
+		    seperator.textcolor = lineColor
+		    
+		    // Draw the line as long as the longest existing textline
 		    dim consoleText as String = ReplaceLineEndings( console.StyledText.text , EndOfLine)
 		    dim seperatedLines() as String = consoleText.split(ENDOFLINE)
 		    
 		    dim longestLine as Integer = 0
 		    for each line as String in seperatedLines
-		      longestLine = Max(line.len, longestLine)
+		      // Don't parse existing seperatorlines
+		      dim itsATextLine as Boolean = (line.ReplaceAll("_","").len > 0)
+		      if itsATextLine then
+		        longestLine = Max(line.len*2, longestLine) // * 2 to make sure enough underscores will be generated
+		      end if
 		    next line
 		    
-		    for underScoreNumber as Integer = 1 to longestLine
-		      console.AppendText("＿")
-		    next underScoreNumber
-		    console.AppendText(ENDOFLINE)
+		    dim  underscores as String =""
+		    underscores=underscores.pad(longestLine, "_")
+		    seperator.Text = underscores+ENDOFLINE
+		    
+		    console.StyledText.AppendStyleRun(seperator)
 		    
 		  end if
-		  
-		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub log(message as String, optional logLevel as JVLogLevel = JVLoglevel.plain)
+		Sub log(message as string, optional logLevel as JVLogLevel = JVLoglevel.plain)
+		  
 		  if logView.isInstalled then
 		    
-		    // Set formatting for each loglevel
-		    dim icon as String
-		    dim textColor as Color
-		    dim boldState as Boolean
+		    
+		    
+		    dim icon as Text
+		    dim timestamp as Date = new date
+		    dim formattedText as new Stylerun
 		    
 		    select case logLevel
 		    case JVLogLevel.ERROR
 		      icon = "🛑"
-		      textColor =  &cFF0000
-		      boldState =  TRUE
+		      formattedText.textColor =  &cFF0000
+		      formattedText.Bold =  TRUE
 		    case JVLogLevel.WARNING
 		      icon = "⚠️"
-		      textColor =  &cFF7F00
-		      boldState =  TRUE
+		      formattedText.textColor =  &cFF7F00
+		      formattedText.Bold =  TRUE
 		    case JVLogLevel.INFO
 		      icon = "ℹ️"
-		      textColor =  &c4C4C4C
-		      boldState =  FALSE
+		      formattedText.textColor =  &c4C4C4C
+		      formattedText.Bold =  FALSE
 		    case JVLogLevel.MESSAGE
 		      icon = "💬"
-		      textColor =  &c4C4C4C
-		      boldState =  FALSE
+		      formattedText.textColor =  &c4C4C4C
+		      formattedText.Bold =  FALSE
 		    else
 		      icon = ""
-		      textColor=  &c4C4C4C
-		      boldState =  FALSE
+		      formattedText.textColor=  &c4C4C4C
+		      formattedText.Bold =  FALSE
 		    end select
 		    
+		    // Compose the complete message
+		    formattedText.Size =12
+		    formattedText.text = (icon+TAB+timestamp.LongTime+": "+message+ENDOFLINE)
 		    
-		    // Compose the entire message
-		    dim timestamp as Date = new date
-		    dim timestampedMessage as String = timestamp.LongTime+": "+message+ENDOFLINE
+		    // Workaround!:
+		    // Compensate for the fact that under Windows an oneven number of characters doesn't display/ format correctly 
+		    #if TargetWindows then
+		      dim extraCharacterNeeded as boolean = (formattedText.text.Len mod 2 <> 0)
+		      if extraCharacterNeeded then
+		        formattedtext.text = formattedText.text+" "
+		      end if
+		    #endif
 		    
-		    // Log it and apply formatting
-		    console.AppendText(icon+Tab+timestampedMessage)
-		    dim finalPosition as Integer = console.StyledText.text.Len
+		    //  Log it
+		    console.Styledtext.AppendStyleRun(formattedText)
 		    
-		    console.selstart = finalPosition
-		    
-		    dim textLength as Integer = timestampedMessage.Len
-		    dim startPosition as Integer = finalPosition-textLength
-		    console.StyledText.Bold(startPosition, textLength) = boldState 
-		    console.StyledText.TextColor(startPosition, textLength) = textColor
-		    
-		    console.ScrollPosition = console.LineNumAtCharPos(console.StyledText.text.len)
-		    
+		    // Scroll down
+		    console.LineHeight = 18.0
+		    console.LineSpacing = 1.25
+		    console.ScrollPosition = console.LineNumAtCharPos(console.Styledtext.text.len)
 		    
 		  end if
-		  
 		  
 		End Sub
 	#tag EndMethod
