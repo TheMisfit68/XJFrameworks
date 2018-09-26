@@ -3,7 +3,7 @@ Protected Class JVTableView
 Inherits Listbox
 	#tag Event
 		Function CellBackgroundPaint(g As Graphics, row As Integer, column As Integer) As Boolean
-		  if not cellHasFocus then // Windows coninuously fires this event during editing of a textcell, leading to erformance issues  if thi line is removed !!!
+		  if not cellHasFocus then // Windows coninuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
 		    
 		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		      
