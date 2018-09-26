@@ -422,88 +422,96 @@ Inherits SQLiteDatabase
 			    
 			    maliasSchema = new Dictionary
 			    
-			    dim tablesInfo as Recordset = SQLSelect("SELECT * FROM sqlite_master ORDER BY type")
+			    dim tablesInfo as Recordset = SQLSelect("SELECT * FROM sqlite_master ORDER BY type, tbl_name")
 			    if tablesInfo <> nil then
 			      while not tablesInfo.EOF
 			        
 			        dim viewName as String= tablesInfo.field("tbl_name")
 			        dim viewType as String = tablesInfo.field("type")
 			        
-			        dim fullyQualifiedAliasName as String
-			        dim baseTableName as String
-			        dim fieldName as String
-			        
-			        Select Case viewType
-			        Case "table"
-			          baseTableName = viewName
+			        if  viewName.left(6) <> "sqlite" then
 			          
-			          dim fieldInfo  as RecordSet = fieldSchema(baseTableName)
-			          while not fieldInfo.EOF
-			            
-			            fieldName = fieldInfo.field("ColumnName")
-			            
-			            // Assign to the result
-			            dim sourceInfo as new Dictionary("table" : baseTableName, "field" : fieldName)
-			            fullyQualifiedAliasName = baseTableName+"."+fieldName
-			            maliasSchema.value(fullyQualifiedAliasName) = sourceInfo
-			            
-			            fieldInfo.MoveNext
-			          wend
+			          dim fullyQualifiedAliasName as String
+			          dim baseTableName as String
+			          dim fieldName as String
 			          
-			        Case "view"
-			          
-			          // Filter out the relevant part
-			          dim sqlString  as String = tablesInfo.field("sql")
-			          sqlString = ReplaceLineEndings(sqlString," ")
-			          dim fieldsWithAliasesString as String = sqlString.Replace(SQLstatementPattern,"$1",True)
-			          baseTableName = sqlString.Replace(SQLstatementPattern,"$2",True)
-			          
-			          fieldsWithAliasesString = fieldsWithAliasesString.Replace("\s*,\s*",ENDOFLINE, True)
-			          dim fieldsWithAliases() as String =  Split(fieldsWithAliasesString, ENDOFLINE)
-			          
-			          // Split into viewName, fieldname and alias
-			          for each fieldsWithAlias as String in fieldsWithAliases
+			          Select Case viewType
+			          Case "table"
+			            baseTableName = viewName
 			            
-			            dim fieldsWithAliasPattern as String = "(.*)\s(?:AS\s)?(.*)?"
-			            fieldName = fieldsWithAlias.replace(fieldsWithAliasPattern,"$1", True)
-			            
-			            dim aliasName as String
-			            if fieldsWithAlias.contains(fieldsWithAliasPattern, true) then
-			              aliasName = fieldsWithAlias.replace(fieldsWithAliasPattern,"$2", True)
-			            else
-			              aliasName = fieldName.NthField( ".", fieldName.CountFields("."))
-			            end if
-			            
-			            // Only store the result if the fieldName includes the tableName
-			            if fieldName.contains(".") then
+			            dim fieldInfo  as RecordSet = fieldSchema(baseTableName)
+			            while not fieldInfo.EOF
 			              
-			              baseTableName = fieldName.NthField( ".", 1)
-			              fieldName = fieldName.NthField( ".", fieldName.CountFields("."))
+			              fieldName = fieldInfo.field("ColumnName")
 			              
-			            else
+			              // Assign to the result
+			              fullyQualifiedAliasName = baseTableName+"."+fieldName
+			              dim sourceInfo as new Dictionary("table" : baseTableName, "field" : fieldName)
+			              maliasSchema.value(fullyQualifiedAliasName) = sourceInfo
 			              
-			              // otherwise try to find the matching table from the exisitng entries
-			              for each existingEntry as Dictionary  in maliasSchema.values
+			              fieldInfo.MoveNext
+			            wend
+			            
+			          Case "view"
+			            
+			            // Filter out the relevant part
+			            dim sqlString  as String = tablesInfo.field("sql")
+			            sqlString = ReplaceLineEndings(sqlString," ")
+			            dim fieldsWithAliasesString as String = sqlString.Replace(SQLstatementPattern,"$1",True)
+			            baseTableName = sqlString.Replace(SQLstatementPattern,"$2",True)
+			            
+			            fieldsWithAliasesString = fieldsWithAliasesString.Replace("\s*,\s*",ENDOFLINE, True)
+			            dim fieldsWithAliases() as String =  Split(fieldsWithAliasesString, ENDOFLINE)
+			            
+			            // Split into viewName, fieldname and alias
+			            for each fieldsWithAlias as String in fieldsWithAliases
+			              
+			              if fieldsWithAlias.right(7) <> "keyPath" then
 			                
-			                if existingEntry.value("field") = fieldName then
-			                  baseTableName = existingEntry.value("table")
+			                dim fieldsWithAliasPattern as String = "(.*)\s(?:AS\s)?(.*)?"
+			                fieldName = fieldsWithAlias.replace(fieldsWithAliasPattern,"$1", True)
+			                
+			                dim aliasName as String
+			                if fieldsWithAlias.contains(fieldsWithAliasPattern, true) then
+			                  aliasName = fieldsWithAlias.replace(fieldsWithAliasPattern,"$2", True)
+			                else
+			                  aliasName = fieldName.NthField( ".", fieldName.CountFields("."))
 			                end if
-			              next existingEntry
-			              
-			            end if
+			                
+			                // Only store the result if the fieldName includes the tableName
+			                if fieldName.contains(".") then
+			                  
+			                  baseTableName = fieldName.NthField( ".", 1)
+			                  fieldName = fieldName.NthField( ".", fieldName.CountFields("."))
+			                  
+			                else
+			                  
+			                  // otherwise try to find the matching table from the exisitng entries
+			                  for each existingEntry as Dictionary  in maliasSchema.values
+			                    
+			                    if existingEntry.value("field") = fieldName then
+			                      baseTableName = existingEntry.value("table")
+			                    end if
+			                  next existingEntry
+			                  
+			                end if
+			                
+			                // Assign to the result
+			                fullyQualifiedAliasName  = viewName+"."+aliasName
+			                dim sourceInfo as new Dictionary("table" : baseTableName, "field" : fieldName)
+			                maliasSchema.value(fullyQualifiedAliasName) = sourceInfo
+			                
+			                
+			              end if
+			            next
 			            
-			            // Assign to the result
-			            dim sourceInfo as new Dictionary("table" : baseTableName, "field" : fieldName)
-			            fullyQualifiedAliasName  = viewName+"."+aliasName
-			            maliasSchema.value(fullyQualifiedAliasName) = sourceInfo
+			          Case "index"
 			            
-			          next
+			          Else
+			            
+			          End Select
 			          
-			        Case "index"
-			          
-			        Else
-			          
-			        End Select
+			        end if
 			        
 			        
 			        tablesInfo.MoveNext

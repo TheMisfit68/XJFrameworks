@@ -302,6 +302,10 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		      treeView.ListIndex = originalSelection
 		      treeView.ScrollPosition = originalScrollPosition
 		      
+		    else
+		      
+		      treeView.DeleteAllRows
+		      
 		    end if
 		    
 		  else

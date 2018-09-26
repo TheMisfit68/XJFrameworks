@@ -83,8 +83,9 @@ Implements JVBackgroundTaskDelegate
 		    // If it is  still OK to delete
 		    if okToDelete = 1 then
 		      
-		      for recordNumber as Integer = 0 to recordCount-1
-		        deleteRecord(recordNumber)
+		      goToRecord(1)
+		      for recordNumber as Integer = 1 to recordCount
+		        deleteRecord()
 		      next recordNumber
 		      
 		    end if
@@ -94,11 +95,17 @@ Implements JVBackgroundTaskDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub deleteRecord(optional recordNumber as Integer = -1)
+		Sub deleteRecord()
 		  if currentMode = MODES.Browse then
 		    
-		    goToRecord(recordNumber)
+		    foundset.Remove(currentRecordNumber-1)
 		    mfoundSet.DeleteRecord
+		    
+		    If Error Then
+		      MsgBox("DB Error: " + ErrorMessage)
+		    End If
+		    
+		    Commit
 		    
 		  end if
 		End Sub
@@ -356,7 +363,7 @@ Implements JVBackgroundTaskDelegate
 		      currentRecordNumber = currentRecordNumber+1
 		    end if
 		    
-		  end if 
+		  end if
 		End Sub
 	#tag EndMethod
 
@@ -364,12 +371,12 @@ Implements JVBackgroundTaskDelegate
 		Sub goToPreviousRecord()
 		  if currentMode = MODES.browse then
 		    
-		    if (recordCount > 0) and (currentRecordNumber > 2) then 
+		    if (recordCount > 0) and (currentRecordNumber > 1) then
 		      mfoundSet.MovePrevious
 		      currentRecordNumber = currentRecordNumber-1
 		    end if
 		    
-		  end if 
+		  end if
 		End Sub
 	#tag EndMethod
 
@@ -377,25 +384,24 @@ Implements JVBackgroundTaskDelegate
 		Sub goToRecord(optional recordNumber as Integer = -1)
 		  if currentMode = MODES.browse then
 		    
-		    if recordNumber >=0 then
+		    if (recordCount > 0) and (recordNumber >= 1) and (recordNumber <= recordCount) then
 		      
-		      if (recordCount > 0) and (recordNumber <= recordCount) then
-		        
-		        // Browse the recordset in the SQL-backend 
-		        mfoundSet.MoveFirst
-		        if recordNumber >= 2 then
-		          for recordsBrowsed as Integer = 1 to recordNumber-1
-		            mfoundSet.MoveNext  // Browse extra records
-		          next
-		        end if
-		        
-		        // and the record in the FP-Frontend
-		        currentRecordNumber = recordNumber
+		      if currentRecordNumber > recordNumber then
+		        while(currentRecordNumber > recordNumber)
+		          goToPreviousRecord
+		        wend
+		      end if
+		      
+		      if currentRecordNumber < recordNumber then
+		        while(currentRecordNumber < recordNumber)
+		          goToNextRecord
+		        wend
 		      end if
 		      
 		    end if
 		    
 		  end if
+		  
 		End Sub
 	#tag EndMethod
 

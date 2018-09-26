@@ -103,6 +103,10 @@ Implements JVBackgroundTaskDelegate
 		    
 		    arrangedObjects = new NSTreeNode(records, branchfields)
 		    
+		  else
+		    
+		    arrangedObjects = nil
+		    
 		  end if
 		  
 		  syncInterface(True)
