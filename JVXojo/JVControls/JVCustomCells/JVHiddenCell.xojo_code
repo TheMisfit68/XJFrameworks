@@ -2,19 +2,28 @@
 Protected Class JVHiddenCell
 Implements JVCustomCell
 	#tag Method, Flags = &h0
-		Sub activate(listBox as JVtableView, row as integer, column as Integer)
+		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
 		  // Part of the JVCustomCell interface.
 		  
-		  // A hidden cell can't be activated
-		End Sub
+		  return False
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub draw(listBox as JVtableView , g as graphics, row as integer, column as integer)
+		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
 		  // Part of the JVCustomCell interface.
 		  
-		  // A hidden cell doesn't do any drawing at all
-		End Sub
+		  // A hidden cell can't be activated
+		  
+		  return False
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  
+		End Function
 	#tag EndMethod
 
 

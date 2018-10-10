@@ -129,7 +129,7 @@ Protected Module JVStringExtensions
 
 	#tag Method, Flags = &h0
 		Function singleQuote(unquotedString as String) As String
-		  return SINGLEQUOTEMARK+unquotedString +SINGLEQUOTEMARK
+		  return SINGLEQUOTEMARK+unquotedString+SINGLEQUOTEMARK
 		End Function
 	#tag EndMethod
 

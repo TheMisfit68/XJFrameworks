@@ -133,6 +133,7 @@ Implements JVBackgroundTaskDelegate
 		  
 		  if currentMode = MODES.Browse then
 		    
+		    system.debuglog("Changing fields: "+EndOfLine+newValues.description)
 		    affectedPKs = updateRecords(currentLayout, mfoundSet, newValues)
 		    
 		  end if
@@ -484,7 +485,7 @@ Implements JVBackgroundTaskDelegate
 		#tag Getter
 			Get
 			  
-			  if  (mfoundSet <> nil)  and (mfoundSet.RecordCount > 0)  and not (mfoundSet.EOF) then
+			  if  (mfoundSet <> nil)  then
 			    return mfoundSet.RecordCount
 			  else
 			    return 0

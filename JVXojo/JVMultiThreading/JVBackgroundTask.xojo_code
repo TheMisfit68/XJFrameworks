@@ -98,11 +98,6 @@ Inherits Thread
 			Type="String"
 			EditorType="String"
 		#tag EndViewProperty
-		#tag ViewProperty
-			Name="mFinishedEventWasFired"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass

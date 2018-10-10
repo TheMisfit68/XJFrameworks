@@ -72,7 +72,7 @@ Protected Class JVSequencer
 		  // JVLogViewController.logAsError("Unexpected result encountered:"+ENDOFLINE+"[ "+data+" ]")
 		  // exit
 		  // Else
-		  // JVLogViewController.log("Setting entered succesfull")
+		  // JVLogViewController.log("Setting entered successfull")
 		  // end if
 		  
 		  

@@ -7,18 +7,79 @@ Inherits Listbox
 		    
 		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		      
-		      dim fieldInfo as Pair = me.CellTag(row, column)
-		      dim fieldName as String
-		      if fieldInfo <> nil then
-		        fieldName = FieldInfo.left
+		      dim currentCustomCell as JVCustomCell= customCell(row, column)
+		      if  currentCustomCell <> nil then
+		        return currentCustomCell.paintBackground(me, g, row, Column)
+		      else
+		        return False
 		      end if
 		      
-		      dim currentCellType as JVCustomCell = tableViewDataSource.cellType(fieldName)
-		      currentCellType.draw(me, g, row, Column)
 		      
 		    end if
 		    
 		  end if
+		  
+		  
+		  
+		  
+		  
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Function CellClick(row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  
+		  
+		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		    
+		    
+		    // In an hiërarchical cell leave some extra space for the disclosure triangle
+		    if Hierarchical and (column = 0)  and RowIsFolder(row) and (x < (rowdepth(row)+1)*15) then
+		      
+		      return False
+		      
+		    elseif Hierarchical and (column = 0)  and not RowIsFolder(row) and (x < (rowdepth(row))*15) then
+		      
+		      return False
+		      
+		    else
+		      
+		      dim returnValue as Boolean = False
+		      dim currentCustomCell as JVCustomCell= customCell(row, column)
+		      if  currentCustomCell <> nil then
+		        
+		        returnValue =  currentCustomCell.activate(me, row, Column, x, y)
+		        
+		        if (currentCustomCell isa JVPopUpMenuCell)  or (currentCustomCell isa JVFilePathCell)  then
+		          
+		          // Call a custom method to notify the change to the delegate
+		          // Should in time be replaced with a real eventdefinition and an event that gets raised on JVTreeview
+		          tableViewDelegate.onCellTagAction(me, row, column)
+		          
+		        else 
+		          
+		          // Depend on standard events (that get delageted to the JVTreeController/JVTreeViewDelegate)
+		          
+		        end if
+		        
+		        return returnValue
+		        
+		      else
+		        
+		        return False
+		        
+		      end if
+		      
+		      
+		    end if
+		    
+		  end if
+		  
+		  
+		  
+		  
+		  
+		  
 		  
 		  
 		End Function
@@ -41,50 +102,23 @@ Inherits Listbox
 	#tag EndEvent
 
 	#tag Event
-		Function MouseDown(x As Integer, y As Integer) As Boolean
-		  dim rowAndColumn as Pair = rowAndColumnClicked(x, y)
-		  dim row as Integer = rowAndColumn.left
-		  dim column as Integer = rowAndColumn.right
+		Function CellTextPaint(g As Graphics, row As Integer, column As Integer, x as Integer, y as Integer) As Boolean
 		  
-		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		  if not cellHasFocus then // Windows coninuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
 		    
-		    // In an hiërarchical cell leave some extra space for the disclosure triangle
-		    if Hierarchical and (column = 0)  and RowIsFolder(row) and (x < (rowdepth(row)+1)*15) then
+		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		      tableViewDataSource.formatCell(row, column)
 		      
-		      return False
-		      
-		    elseif Hierarchical and (column = 0)  and not RowIsFolder(row) and (x < (rowdepth(row))*15) then
-		      
-		      return False
-		      
-		    else
-		      
-		      dim fieldInfo as Pair = me.CellTag(row, column)
-		      dim fieldName as String
-		      if fieldInfo <> nil then
-		        fieldName = FieldInfo.left
-		      end if
-		      
-		      dim currentCellType as JVCustomCell = tableViewDataSource.cellType(fieldName)
-		      currentCellType.activate(me, row, Column)
-		      
-		      if currentCellType isa JVPopUpMenuCell  then
-		        
-		        // Call a custom method to notify the change to the delegate
-		        // Should in time be replaced with a real eventdefinition and an event that gets raised on JVTreeview
-		        tableViewDelegate.onCellTagAction(me, row, column)
-		        
-		      else 
-		        
-		        // Depend on standard events (that get delageted to the JVTreeController/JVTreeViewDelegate)
-		        
+		      dim currentCustomCell as JVCustomCell= customCell(row, column)
+		      if  currentCustomCell <> nil then
+		        return currentCustomCell.paintText(me, g, row, Column, x, y)
+		      else
+		        return False
 		      end if
 		      
 		    end if
 		    
 		  end if
-		  
-		  return False
 		  
 		  
 		  
@@ -93,13 +127,39 @@ Inherits Listbox
 
 
 	#tag Method, Flags = &h0
-		Function rowAndColumnClicked(x as Integer, y as integer) As pair
+		Function customCell(row as Integer, column as integer) As JVCustomCell
+		  if mCustomCells= nil then
+		    mCustomCells = new Dictionary
+		  end if
 		  
-		  Dim row As Integer = RowFromXY(x, y)
-		  Dim column As Integer = ColumnFromXY(x, y)
-		  dim rowAndColumn as pair =  row : column
+		  dim fieldName as String
+		  dim fieldInfo as Pair = celltag(row, column)
 		  
-		  return rowAndColumn
+		  if fieldInfo <> nil then
+		    fieldName = fieldInfo.left
+		    
+		    // Try to determine a customcell for the cell by its name
+		    if (not mCustomCells.HasKey(fieldName)) or (mCustomCells.value(fieldName) = nil)  then
+		      
+		      // ask the delegate for the cellType if needed
+		      dim newCellType as JVCustomCell = tableViewDataSource.cellType(fieldName)
+		      if newCellType  isa JVCustomCell then
+		        mCustomCells.value(fieldname) = newCellType
+		      end if
+		      
+		    end if
+		    
+		    return mCustomCells.value(fieldName)
+		    
+		  else
+		    
+		    return nil
+		    
+		  end if
+		  
+		  
+		  
+		  
 		  
 		  
 		End Function
@@ -114,6 +174,10 @@ Inherits Listbox
 
 	#tag Property, Flags = &h0
 		cellHasFocus As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		mCustomCells As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

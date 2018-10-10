@@ -3,7 +3,7 @@ Protected Class JVPopUpMenuCell
 Inherits JVMenuItem
 Implements JVCustomCell
 	#tag Method, Flags = &h0
-		Sub activate(listBox as JVtableView, row as integer, column as Integer)
+		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
 		  // Part of the JVCustomCell interface.
 		  
 		  listbox.ListIndex = row
@@ -20,12 +20,14 @@ Implements JVCustomCell
 		    
 		  end if
 		  
+		  return False
 		  
-		End Sub
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub draw(listBox as JVtableView, g as graphics, row as integer, column as integer)
+		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
 		  // Part of the JVCustomCell interface.
 		  
 		  // In an hiërarchical cell leave some extra space for the disclosure triangle
@@ -60,15 +62,38 @@ Implements JVCustomCell
 		  g.FillPolygon(points)
 		  
 		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
 		  dim fieldInfo as Pair = listbox.celltag(row, column)
 		  dim value as Integer = fieldInfo.Right
 		  dim text as String = textRepresentation(value)
 		  
-		  g.ForeColor = NSColor.DarkGrey
-		  g.DrawString(text, extraOffset+35, g.height-4)
+		  // In an hiërarchical cell leave some extra space for the disclosure triangle
+		  dim extraOffset as Integer = 0
+		  if (listbox.Hierarchical) and (column = 0)  then
+		    if listbox.RowIsFolder(row) then
+		      extraOffset  = (listbox.rowDepth(row)+1)*15
+		    else
+		      extraOffset  = listbox.rowDepth(row)*15
+		    end if
+		  end if
 		  
-		End Sub
+		  listBox.CellAlignmentOffset(row, column) = 30+extraOffset
+		  listBox.cell(row, column) = text
+		  
+		  return False
+		  
+		End Function
 	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		textArea As Graphics
+	#tag EndProperty
 
 
 	#tag ViewBehavior

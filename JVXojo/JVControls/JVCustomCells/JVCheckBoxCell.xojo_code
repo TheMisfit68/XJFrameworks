@@ -2,13 +2,15 @@
 Protected Class JVCheckBoxCell
 Implements JVCustomCell
 	#tag Method, Flags = &h0
-		Sub activate(listBox as JVtableView, row as integer, column as Integer)
+		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
 		  // Do nothing special, let Xojo handle the standard checkbox
-		End Sub
+		  return False
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub draw(listBox as JVtableView , g as graphics, row as integer, column as integer)
+		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
 		  // Part of the JVCustomCell interface.
 		  
 		  ListBox.CellType(row, column) = Listbox.TypeCheckbox
@@ -17,7 +19,13 @@ Implements JVCustomCell
 		  dim value as CheckBox.CheckedStates = fieldInfo.Right
 		  
 		  ListBox.CellState(row, column) = value
-		End Sub
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  
+		End Function
 	#tag EndMethod
 
 

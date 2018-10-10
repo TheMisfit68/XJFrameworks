@@ -27,6 +27,13 @@ Implements JVTableViewDataSource,JVTableViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub formatCell(row as Integer, column as Integer)
+		  // Part of the JVTableViewDataSource interface.
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub onCellAction(sender as JVTableView, row as Integer, column as Integer)
 		  
 		  dim backendField as Pair = sender.cellTag(row, column)

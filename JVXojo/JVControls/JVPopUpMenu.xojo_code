@@ -21,6 +21,14 @@ Inherits PopupMenu
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="Transparent"
+			Visible=true
+			Group="Appearance"
+			InitialValue="False"
+			Type="Boolean"
+			EditorType="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="AutoDeactivate"
 			Visible=true
 			Group="Appearance"

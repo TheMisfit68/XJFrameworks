@@ -90,7 +90,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    next
 		    
 		    // Adjust the number of columns if needed
-		    treeView.ColumnCount = Max(columnNumber+1, treeView.ColumnCount)
+		    treeView.ColumnCount = Max(columnNumber, treeView.ColumnCount)
 		    
 		  end  if
 		  
@@ -186,9 +186,8 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 	#tag Method, Flags = &h0
 		Sub onlistmouseMove(sender as JVTreeView, x as Integer, y as Integer)
 		  
-		  dim rowAndColumn as Pair = sender.rowAndColumnClicked(x, y)
-		  dim row as Integer = rowAndColumn.left
-		  dim column as Integer = rowAndColumn.right
+		  dim row as Integer = sender.RowFromXY(x, y)
+		  dim column as Integer = sender.ColumnFromXY(x, y)
 		  
 		  if (row >= 0) and (row < sender.ListCount) and (column >= 0) and (column < sender.ColumnCount) then
 		    
@@ -296,6 +295,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		      For each node as NSTreeNode in nodesToDisplay
 		        displayNode(node)
 		      next
+		      
 		      
 		      // Restore the view state
 		      restoreExpandedNodes

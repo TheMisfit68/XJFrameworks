@@ -2,17 +2,22 @@
 Protected Class JVEditableTextCell
 Implements JVCustomCell
 	#tag Method, Flags = &h0
-		Sub activate(listBox as JVtableView, row as integer, column as Integer)
+		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  
 		  
 		  if listbox.CellType(row, column) <> listbox.TypeEditableTextField then
-		    listbox.CellType(row, column) = listbox.TypeEditableTextField
+		    listbox.CellType(row, column) = listbox.TypeEditableTextField // Just turn the default cell in EditableTextField the first time it gets clicked
+		  else
+		    listbox.EditCell(row, column) // Edit the cell if its gets clicked second time 
 		  end if
 		  
-		End Sub
+		  return False
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub draw(listBox as JVtableView , g as graphics, row as integer, column as integer)
+		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
 		  
 		  // While  drawing the field don't make it editable just yet, just draw a default cell
 		  if listbox.CellType(row, column) <> Listbox.TypeDefault then
@@ -26,7 +31,13 @@ Implements JVCustomCell
 		    end if
 		  end if
 		  
-		End Sub
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  
+		End Function
 	#tag EndMethod
 
 

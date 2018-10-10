@@ -12,6 +12,12 @@ Protected Interface JVTableViewDataSource
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub formatCell(row as Integer, column as Integer)
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag ViewBehavior
 		#tag ViewProperty
