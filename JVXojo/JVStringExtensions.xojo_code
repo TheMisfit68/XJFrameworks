@@ -86,6 +86,21 @@ Protected Module JVStringExtensions
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function matches(extends baseString as String, searchPattern as string, optional useRegex as Boolean = False) As Boolean
+		  if useRegex then
+		    
+		    dim anchoredExpression as String = "^"+searchPattern+"$"
+		    return baseString.contains(anchoredExpression, True)
+		    
+		  else
+		    
+		    return (baseString = searchPattern)
+		    
+		  end if
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function pad(extends baseString as String, totalLength as Integer, char as String) As String
 		  dim charcount as Integer = baseString.Len
 		  dim paddingChar as String = left(char,1)
