@@ -30,14 +30,7 @@ Inherits menuItem
 		    if node.representedObject isa Dictionary then
 		      dim representedObject as Dictionary = node.representedObject
 		      
-		      // if valueColumn.contains("keyPath") then
 		      thisMenuItem.tag = node.finalKey
-		      // elseif representedObject.HasKey(valueColumn) then
-		      // thisMenuItem.tag = representedObject.value(valueColumn)
-		      // else
-		      // dim key as String = representedObject.key(0)
-		      // thisMenuItem.tag = representedObject.value(key)
-		      // end if
 		      
 		      if representedObject.HasKey(textColumn) then
 		        thisMenuItem.Text = representedObject.value(textColumn)
@@ -49,15 +42,7 @@ Inherits menuItem
 		    elseif node.representedObject isa DatabaseRecord then
 		      dim representedObject as DatabaseRecord = node.representedObject
 		      
-		      // if valueColumn.contains("keyPath") then
 		      thisMenuItem.tag = node.finalKey
-		      // elseif representedObject.hasColumn(valueColumn) then
-		      // thisMenuItem.tag = representedObject.Column(valueColumn)
-		      // system.DebugLog("Using value "+representedObject.Column(valueColumn))
-		      // else
-		      // dim columName as String = representedObject.FieldName(0)
-		      // thisMenuItem.tag = representedObject.Column(columName)
-		      // end if
 		      
 		      if representedObject.hasColumn(textColumn) then
 		        thisMenuItem.Text = representedObject.Column(textColumn)
@@ -68,8 +53,15 @@ Inherits menuItem
 		      
 		    end if
 		    
-		    // Store them togeter for future reference
-		    textualRepresentations.Value(thisMenuItem.tag) = thisMenuItem.Text
+		    // Store them together for future reference
+		    dim textSegments() as String
+		    textSegments.Append(thisMenuItem.Text)
+		    dim parent as JVMenuItem = JVMenuItem(thisMenuItem.parentMenu)
+		    while parent <> nil
+		      textSegments.Insert(0, parentMenu.Text)
+		      parent = JVMenuItem(parent.parentMenu)
+		    wend
+		    textualRepresentations.Value(thisMenuItem.tag) = join(textSegments, " > ")
 		    
 		    for each childNode as NSTreeNode in node.children
 		      

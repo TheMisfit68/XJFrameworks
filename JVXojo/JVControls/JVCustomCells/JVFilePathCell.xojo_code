@@ -104,7 +104,9 @@ Implements JVCustomCell
 		  dim textualArea as Graphics = leftArea.clip(textXPadding, textYPadding, leftArea.width-(2*TextXPadding), leftArea.Height-(2*TextYPadding))
 		  textualArea.DrawString(textRepresentation, textualArea.Width-tekstLength, textualArea.TextAscent) // Right-align the path to dsiplay the most relevant part in a small column
 		  
-		  listbox.CellType(row, column) =listbox.TypeEditableTextField
+		  if listbox.CellType(row, column) <> listbox.TypeEditableTextField then
+		    listbox.CellType(row, column) = listbox.TypeEditableTextField
+		  end if
 		  
 		  return True
 		End Function

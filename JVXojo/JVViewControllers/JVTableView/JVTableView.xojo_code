@@ -3,7 +3,9 @@ Protected Class JVTableView
 Inherits Listbox
 	#tag Event
 		Function CellBackgroundPaint(g As Graphics, row As Integer, column As Integer) As Boolean
-		  if not cellHasFocus then // Windows coninuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
+		  if active and not cellHasFocus then // Windows continuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
+		    
+		    system.debuglog("firing bg "+str(row) +"/"+str(column))
 		    
 		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		      
@@ -104,7 +106,9 @@ Inherits Listbox
 	#tag Event
 		Function CellTextPaint(g As Graphics, row As Integer, column As Integer, x as Integer, y as Integer) As Boolean
 		  
-		  if not cellHasFocus then // Windows coninuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
+		  if active and not cellHasFocus then // Windows continuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
+		    
+		    system.debuglog("firing txt "+str(row) +"/"+str(column))
 		    
 		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		      tableViewDataSource.formatCell(row, column)
