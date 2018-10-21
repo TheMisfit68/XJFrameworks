@@ -12,13 +12,16 @@ Implements JVCustomCell
 	#tag Method, Flags = &h0
 		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
 		  // Part of the JVCustomCell interface.
-		  
-		  ListBox.CellType(row, column) = Listbox.TypeCheckbox
+		  if ListBox.CellType(row, column) <> Listbox.TypeCheckbox then
+		    ListBox.CellType(row, column) = Listbox.TypeCheckbox
+		  end if
 		  
 		  dim fieldInfo as Pair = listbox.celltag(row, column)
 		  dim value as CheckBox.CheckedStates = fieldInfo.Right
 		  
-		  ListBox.CellState(row, column) = value
+		  if ListBox.CellState(row, column) <> value then
+		    ListBox.CellState(row, column) = value
+		  end if
 		End Function
 	#tag EndMethod
 
