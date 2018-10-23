@@ -128,34 +128,33 @@ Inherits Listbox
 
 	#tag Method, Flags = &h0
 		Function customCell(row as Integer, column as integer) As JVCustomCell
-		  if mCustomCells= nil then
-		    mCustomCells = new Dictionary
-		  end if
+		  dim existingRows as Integer = ubound(mCustomCells,1)
+		  dim existingColumns as Integer = ubound(mCustomCells,2)
 		  
-		  dim fieldName as String
-		  dim fieldInfo as Pair = celltag(row, column)
+		  redim mCustomCells( max(row,existingRows), max(column,existingColumns) )
 		  
-		  if fieldInfo <> nil then
-		    fieldName = fieldInfo.left
+		  // Ask the delegate for the cellType if needed
+		  if mCustomCells(row, column) = nil then
 		    
-		    // Try to determine a customcell for the cell by its name
-		    if (not mCustomCells.HasKey(fieldName)) or (mCustomCells.value(fieldName) = nil)  then
+		    dim fieldInfo as Pair = celltag(row, column)
+		    if fieldInfo <> nil then
+		      dim fieldName as String = fieldInfo.left
 		      
-		      // ask the delegate for the cellType if needed
 		      dim newCellType as JVCustomCell = tableViewDataSource.cellType(fieldName)
-		      if newCellType  isa JVCustomCell then
-		        mCustomCells.value(fieldname) = newCellType
-		      end if
+		      mCustomCells(row, column) = newCellType
 		      
 		    end if
 		    
-		    return mCustomCells.value(fieldName)
-		    
-		  else
-		    
-		    return nil
-		    
 		  end if
+		  
+		  // Return the stored instance of JVCustomCell
+		  if mCustomCells(row, column) isa JVCustomCell then
+		    return mCustomCells(row, column)
+		  else
+		    return nil
+		  end if
+		  
+		  
 		  
 		  
 		  
@@ -177,7 +176,7 @@ Inherits Listbox
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		mCustomCells As Dictionary
+		mCustomCells(-1,-1) As JVCustomCell
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
