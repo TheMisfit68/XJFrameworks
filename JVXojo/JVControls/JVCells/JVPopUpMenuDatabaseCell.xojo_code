@@ -9,32 +9,29 @@ Inherits JVPopUpMenuCell
 		  me.branchFields = branchFields
 		  me.keypathField = TextAndValueField.right
 		  
-		  Super.Constructor(treenode, TextAndValueField.left)
-		  
-		  
-		  
+		  menu = new JVMenuItem(treenode, TextAndValueField.left)
 		  
 		End Sub
 	#tag EndMethod
 
 
-	#tag Property, Flags = &h0
-		branchFields() As String
+	#tag Property, Flags = &h21
+		Private branchFields() As String
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		keypathField As String
+	#tag Property, Flags = &h21
+		Private keypathField As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private mTreenode As NSTreeNode
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		preparedStatement As SQLitePreparedStatement
+	#tag Property, Flags = &h21
+		Private preparedStatement As SQLitePreparedStatement
 	#tag EndProperty
 
-	#tag ComputedProperty, Flags = &h0
+	#tag ComputedProperty, Flags = &h21
 		#tag Getter
 			Get
 			  if mTreenode = nil then  //Lazy loading of records from the dbase
@@ -47,7 +44,7 @@ Inherits JVPopUpMenuCell
 			  Return mTreenode
 			End Get
 		#tag EndGetter
-		treenode As NSTreeNode
+		Private treenode As NSTreeNode
 	#tag EndComputedProperty
 
 
@@ -141,12 +138,6 @@ Inherits JVPopUpMenuCell
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="_mName"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="keypathField"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"

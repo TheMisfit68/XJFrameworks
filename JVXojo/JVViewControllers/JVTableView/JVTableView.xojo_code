@@ -7,9 +7,9 @@ Inherits Listbox
 		    
 		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		      
-		      dim currentCustomCell as JVCustomCell= customCell(row, column)
-		      if  currentCustomCell <> nil then
-		        return currentCustomCell.paintBackground(me, g, row, Column)
+		      dim attachedCell as JVCell = cellTag(row, column)
+		      if  attachedCell <> nil then
+		        return attachedCell.paintBackground(me, g, row, Column)
 		      else
 		        return False
 		      end if
@@ -18,8 +18,6 @@ Inherits Listbox
 		    end if
 		    
 		  end if
-		  
-		  
 		  
 		  
 		  
@@ -45,12 +43,12 @@ Inherits Listbox
 		    else
 		      
 		      dim returnValue as Boolean = False
-		      dim currentCustomCell as JVCustomCell= customCell(row, column)
-		      if  currentCustomCell <> nil then
+		      dim attachedCell as JVCell = cellTag(row, column)
+		      if  attachedCell <> nil then
 		        
-		        returnValue =  currentCustomCell.activate(me, row, Column, x, y)
+		        returnValue =  attachedCell.activate(me, row, Column, x, y)
 		        
-		        if (currentCustomCell isa JVPopUpMenuCell)  or (currentCustomCell isa JVFilePathCell)  then
+		        if (attachedCell isa JVPopUpMenuCell)  or (attachedCell isa JVFilePathCell)  then
 		          
 		          // Call a custom method to notify the change to the delegate
 		          // Should in time be replaced with a real eventdefinition and an event that gets raised on JVTreeview
@@ -109,9 +107,9 @@ Inherits Listbox
 		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		      tableViewDataSource.formatCell(row, column)
 		      
-		      dim currentCustomCell as JVCustomCell= customCell(row, column)
-		      if  currentCustomCell <> nil then
-		        return currentCustomCell.paintText(me, g, row, Column, x, y)
+		      dim attachedCell as JVCell = cellTag(row, column)
+		      if  attachedCell <> nil then
+		        return attachedCell.paintText(me, g, row, Column, x, y)
 		      else
 		        return False
 		      end if
@@ -126,57 +124,8 @@ Inherits Listbox
 	#tag EndEvent
 
 
-	#tag Method, Flags = &h0
-		Function customCell(row as Integer, column as integer) As JVCustomCell
-		  dim existingRows as Integer = ubound(mCustomCells,1)
-		  dim existingColumns as Integer = ubound(mCustomCells,2)
-		  
-		  redim mCustomCells( max(row,existingRows), max(column,existingColumns) )
-		  
-		  // Ask the delegate for the cellType if needed
-		  if mCustomCells(row, column) = nil then
-		    
-		    dim fieldInfo as Pair = celltag(row, column)
-		    if fieldInfo <> nil then
-		      dim fieldName as String = fieldInfo.left
-		      
-		      dim newCellType as JVCustomCell = tableViewDataSource.cellType(fieldName)
-		      mCustomCells(row, column) = newCellType
-		      
-		    end if
-		    
-		  end if
-		  
-		  // Return the stored instance of JVCustomCell
-		  if mCustomCells(row, column) isa JVCustomCell then
-		    return mCustomCells(row, column)
-		  else
-		    return nil
-		  end if
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		End Function
-	#tag EndMethod
-
-
-	#tag Note, Name = ToDo
-		
-		define onCellTagAction (which part of JVTableViewDelagate) as a real event
-	#tag EndNote
-
-
 	#tag Property, Flags = &h0
 		cellHasFocus As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		mCustomCells(-1,-1) As JVCustomCell
 	#tag EndProperty
 
 	#tag Property, Flags = &h1

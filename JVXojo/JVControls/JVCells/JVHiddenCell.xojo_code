@@ -1,31 +1,56 @@
-#tag Interface
-Protected Interface JVCustomCell
+#tag Class
+Protected Class JVHiddenCell
+Inherits JVCell
 	#tag Method, Flags = &h0
 		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  // Part of the JVCell interface.
 		  
+		  // A hidden cell can't be activated
+		  
+		  return True
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
+		  // Part of the JVCell interface.
 		  
+		  // A hidden cell has no background
+		  
+		  return True
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  // Part of the JVCell interface.
 		  
+		  // A hidden cell has no text
+		  
+		  return True
 		End Function
 	#tag EndMethod
 
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -35,18 +60,6 @@ Protected Interface JVCustomCell
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Name"
-			Visible=true
-			Group="ID"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Super"
-			Visible=true
-			Group="ID"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
@@ -54,5 +67,5 @@ Protected Interface JVCustomCell
 			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
-End Interface
-#tag EndInterface
+End Class
+#tag EndClass

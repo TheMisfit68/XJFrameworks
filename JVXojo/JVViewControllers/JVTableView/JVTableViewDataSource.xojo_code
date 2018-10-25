@@ -1,7 +1,7 @@
 #tag Interface
 Protected Interface JVTableViewDataSource
 	#tag Method, Flags = &h0
-		Function cellType(fieldName as String) As JVCustomCell
+		Function cellType(fieldName as String) As JVCell
 		  
 		End Function
 	#tag EndMethod

@@ -1,6 +1,6 @@
 #tag Class
 Protected Class JVFilePathCell
-Implements JVCustomCell
+Inherits JVCell
 	#tag Method, Flags = &h0
 		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
 		  listbox.ListIndex =row
@@ -23,9 +23,7 @@ Implements JVCustomCell
 		  // Handle the reponse
 		  if (choosenFile <> Nil) and (choosenFile.Exists) Then
 		    
-		    dim celltag as Pair = listbox.celltag(row, column)
-		    dim existingCellName as String = celltag.left
-		    listbox.celltag(row, column) = existingCellName : choosenFile.NativePath
+		    fieldValue = choosenFile.NativePath
 		    
 		  end if
 		  
@@ -53,7 +51,7 @@ Implements JVCustomCell
 
 	#tag Method, Flags = &h0
 		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
-		  // Part of the JVCustomCell interface.
+		  // Part of the JVCell interface.
 		  
 		  
 		  // Calculate all dimensions and
@@ -83,14 +81,9 @@ Implements JVCustomCell
 	#tag Method, Flags = &h0
 		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
 		  
-		  
 		  // Set the frontvalue
-		  dim backValue as Pair = listbox.cellTag(row, column)
-		  if backValue <> nil then
-		    dim newFrontValue as String = backValue.right.StringValue
-		    if listbox.Cell(row, column) <> newFrontValue then
-		      listbox.Cell(row, column) = newFrontValue
-		    end if
+		  if listbox.Cell(row, column) <> fieldValue then
+		    listbox.Cell(row, column) = fieldValue
 		  end if
 		  
 		  dim textRepresentation as String= listbox.Cell(row, column)
@@ -122,6 +115,10 @@ Implements JVCustomCell
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		cachedBackground As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		customDialog As OpenDialog
 	#tag EndProperty
 
@@ -135,6 +132,12 @@ Implements JVCustomCell
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="fieldName"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
@@ -177,6 +180,11 @@ Implements JVCustomCell
 			Name="rightAreaPercentage"
 			Group="Behavior"
 			Type="Double"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="cachedBackground"
+			Group="Behavior"
+			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

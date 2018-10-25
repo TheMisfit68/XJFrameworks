@@ -3,7 +3,7 @@ Protected Class JVTreeController
 Inherits JVTableViewController
 Implements JVTreeViewDelegate,JVTreeViewDataSource
 	#tag Method, Flags = &h0
-		Function cellType(fieldName as String) As JVCustomCell
+		Function cellType(fieldName as String) As JVCell
 		  // Part of the JVTableViewDataSource interface.
 		  
 		  
@@ -58,7 +58,6 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    dim newRowNumber as Integer = treeView.LastIndex
 		    treeview.RowTag(newRowNumber) = node
 		    
-		    
 		    // Proces the individual fields
 		    dim columnNumber as Integer = 0
 		    for  fieldNumber as Integer = 0 to numberOfFields-1
@@ -75,11 +74,13 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		        fieldValue = representedObject.Column(fieldName.StringValue)
 		      end if
 		      
-		      if not cellType(fieldName) isa JVHiddenCell then
+		      dim attachedCell as JVCell = cellType(fieldName)
+		      if not (attachedCell isa JVHiddenCell) then
 		        
 		        // Prepare the field in the backend
-		        dim tagValue as Pair = fieldName: fieldValue
-		        treeView.celltag(newRowNumber, columnNumber) = tagValue
+		        attachedCell.fieldName = fieldName
+		        attachedCell.fieldValue = fieldValue
+		        treeView.celltag(newRowNumber, columnNumber) = attachedCell
 		        
 		        // Make the cell redraw itself
 		        treeView.InvalidateCell(newRowNumber, columnNumber)
@@ -191,11 +192,11 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  
 		  if (row >= 0) and (row < sender.ListCount) and (column >= 0) and (column < sender.ColumnCount) then
 		    
-		    dim nameAndValue as Pair = sender.celltag(row, column)
+		    dim attachedCell as JVCell = sender.celltag(row, column)
 		    
-		    if nameAndValue <> nil then
+		    if attachedCell <> nil then
 		      
-		      dim tooltipText as String = nameAndValue.left
+		      dim tooltipText as String = attachedCell.fieldName
 		      
 		      dim parentView as Window = sender.Window
 		      dim cursorX as Integer = parentView.left+sender.left+x

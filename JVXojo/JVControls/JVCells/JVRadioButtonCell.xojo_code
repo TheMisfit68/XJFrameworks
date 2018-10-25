@@ -1,9 +1,11 @@
 #tag Class
-Protected Class JVCheckBoxCell
-Implements JVCustomCell
+Protected Class JVRadioButtonCell
+Inherits JVCell
 	#tag Method, Flags = &h0
 		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  // Do nothing special, let Xojo handle the standard checkbox
+		  // Part of the JVCell interface.
+		  
+		  // Not yet implemented !!!
 		  return False
 		  
 		End Function
@@ -11,23 +13,19 @@ Implements JVCustomCell
 
 	#tag Method, Flags = &h0
 		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
-		  // Part of the JVCustomCell interface.
-		  if ListBox.CellType(row, column) <> Listbox.TypeCheckbox then
-		    ListBox.CellType(row, column) = Listbox.TypeCheckbox
-		  end if
+		  // Part of the JVCell interface.
 		  
-		  dim fieldInfo as Pair = listbox.celltag(row, column)
-		  dim value as CheckBox.CheckedStates = fieldInfo.Right
-		  
-		  if ListBox.CellState(row, column) <> value then
-		    ListBox.CellState(row, column) = value
-		  end if
+		  // Not yet implemented !!!
+		  return False
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  // Part of the JVCell interface.
 		  
+		  // Not yet implemented !!!
+		  return False
 		End Function
 	#tag EndMethod
 

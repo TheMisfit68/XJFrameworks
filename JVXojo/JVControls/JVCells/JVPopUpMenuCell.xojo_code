@@ -1,22 +1,19 @@
 #tag Class
 Protected Class JVPopUpMenuCell
-Inherits JVMenuItem
-Implements JVCustomCell
+Inherits JVCell
 	#tag Method, Flags = &h0
 		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  // Part of the JVCustomCell interface.
+		  // Part of the JVCell interface.
 		  
 		  listbox.ListIndex = row
 		  listbox.Selected(row) = True
-		  dim celltag as Pair = listbox.celltag(row, column)
-		  dim existingCellName as String = celltag.left
 		  
 		  // Process the contained popup
-		  dim selectedMenu as JVMenuItem = JVMenuItem(PopUp) // Cast the result
+		  dim selectedMenu as JVMenuItem = JVMenuItem(menu.PopUp)
 		  if selectedMenu <> nil then
 		    
-		    dim newValue as Variant =  selectedMenu.values.left
-		    listbox.celltag(row, column) = existingCellName : newValue
+		    fieldValue =  selectedMenu.valueAndText.left
+		    // listbox.celltag(row, column) = fieldName : newValue
 		    
 		  end if
 		  
@@ -27,8 +24,15 @@ Implements JVCustomCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub constructor(node as NSTreeNode, textColumn as String)
+		  
+		  menu = new JVMenuItem(node, textColumn)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
-		  // Part of the JVCustomCell interface.
+		  // Part of the JVCell interface.
 		  
 		  // In an hiërarchical cell leave some extra space for the disclosure triangle
 		  dim extraOffset as Integer = 0
@@ -61,6 +65,8 @@ Implements JVCustomCell
 		  
 		  g.FillPolygon(points)
 		  
+		  return True
+		  
 		  
 		  
 		End Function
@@ -68,9 +74,6 @@ Implements JVCustomCell
 
 	#tag Method, Flags = &h0
 		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  dim fieldInfo as Pair = listbox.celltag(row, column)
-		  dim value as Integer = fieldInfo.Right
-		  dim text as String = textRepresentation(value)
 		  
 		  // In an hiërarchical cell leave some extra space for the disclosure triangle
 		  dim extraOffset as Integer = 0
@@ -82,8 +85,9 @@ Implements JVCustomCell
 		    end if
 		  end if
 		  
+		  dim textRepresentation as String = menu.textRepresentation(fieldValue)
 		  listBox.CellAlignmentOffset(row, column) = 30+extraOffset
-		  listBox.cell(row, column) = text
+		  listBox.cell(row, column) = textRepresentation
 		  
 		  return False
 		  
@@ -92,40 +96,16 @@ Implements JVCustomCell
 
 
 	#tag Property, Flags = &h0
-		textArea As Graphics
+		menu As JVMenuItem
 	#tag EndProperty
 
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="AutoEnable"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Checked"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="CommandKey"
+			Name="fieldName"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Enabled"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Icon"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Picture"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -133,12 +113,6 @@ Implements JVCustomCell
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="KeyboardShortcut"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -160,35 +134,11 @@ Implements JVCustomCell
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Text"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Visible"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="_mIndex"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="_mName"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

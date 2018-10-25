@@ -20,6 +20,7 @@ Inherits menuItem
 
 	#tag Method, Flags = &h0
 		Sub constructor(node as NSTreeNode, textColumn as String)
+		  
 		  dim  thisMenuItem as JVMenuItem = me
 		  textualRepresentations = new Dictionary
 		  dim currentValue as Variant = nil
@@ -53,27 +54,35 @@ Inherits menuItem
 		      
 		    end if
 		    
-		    // Store them together for future reference
-		    dim textSegments() as String
-		    textSegments.Append(thisMenuItem.Text)
-		    dim parent as JVMenuItem = JVMenuItem(thisMenuItem.parentMenu)
-		    while parent <> nil
-		      textSegments.Insert(0, parentMenu.Text)
-		      parent = JVMenuItem(parent.parentMenu)
-		    wend
-		    textualRepresentations.Value(thisMenuItem.tag) = join(textSegments, " > ")
+		    if not node.isLeaf then
+		      
+		      for each childNode as NSTreeNode in node.children
+		        
+		        dim childMenu as new JVMenuItem(ChildNode, textColumn)
+		        Append(childMenu)
+		        
+		        // Copy the textualRepresentations from the lower level menu's to the current level
+		        for each key as Variant in childMenu.textualRepresentations.Keys
+		          textualRepresentations.Value(key) = childMenu.textualRepresentations.value(key)
+		        next key
+		        
+		      next childNode
+		      
+		    else
+		      
+		      // Store them together for future reference
+		      dim textSegments() as String
+		      textSegments.Append(thisMenuItem.Text)
+		      dim parent as JVMenuItem = JVMenuItem(thisMenuItem.parentMenu)
+		      while parent <> nil
+		        textSegments.Insert(0, parentMenu.Text)
+		        parent = JVMenuItem(parent.parentMenu)
+		      wend
+		      textualRepresentations.Value(node.finalKey) = join(textSegments, " > ")
+		      
+		    end if
 		    
-		    for each childNode as NSTreeNode in node.children
-		      
-		      dim childMenu as new JVMenuItem(ChildNode, textColumn)
-		      Append(childMenu)
-		      
-		      // Copy the textualRepresentations from the lower level menu's to the current level
-		      for each key as Variant in childMenu.textualRepresentations.Keys
-		        textualRepresentations.Value(key) = childMenu.textualRepresentations.value(key)
-		      next key
-		      
-		    next childNode
+		    
 		    
 		  end if
 		  
@@ -111,8 +120,8 @@ Inherits menuItem
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function textRepresentation(value as Variant) As String
+	#tag Method, Flags = &h0
+		Function textRepresentation(value as Variant) As String
 		  
 		  if (value <> nil) then
 		    
@@ -167,7 +176,7 @@ Inherits menuItem
 			  
 			End Get
 		#tag EndGetter
-		values As Pair
+		valueAndText As Pair
 	#tag EndComputedProperty
 
 

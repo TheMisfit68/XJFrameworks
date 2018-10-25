@@ -2,7 +2,7 @@
 Protected Class JVTableViewController
 Implements JVTableViewDataSource,JVTableViewDelegate
 	#tag Method, Flags = &h0
-		Function cellType(fieldName as String) As JVCustomCell
+		Function cellType(fieldName as String) As JVCell
 		  // Part of the JVTableViewDataSource interface.
 		  
 		  
@@ -36,21 +36,18 @@ Implements JVTableViewDataSource,JVTableViewDelegate
 	#tag Method, Flags = &h0
 		Sub onCellAction(sender as JVTableView, row as Integer, column as Integer)
 		  
-		  dim backendField as Pair = sender.cellTag(row, column)
-		  dim backendFieldName as String = backendField.left
-		  dim backendFieldValue as Variant = backendField.right
+		  dim attachedCell as JVCell = sender.cellTag(row, column)
+		  dim fieldName as String = attachedCell.fieldName
 		  
-		  dim frontendFieldName as String = backendFieldName
-		  dim frontendFieldValue as Variant = sender.cell(row, column)
+		  dim backendFieldValue as Variant = attachedCell.fieldValue
+		  dim newFrontFieldValue as Variant = sender.cell(row, column)
 		  if sender.CellType(row, column) = Listbox.TypeCheckbox then
-		    dim rawValue as Integer = Integer(sender.CellState(row, column))
-		    frontendFieldValue = rawValue
+		    dim rawFrontValue as Integer = Integer(sender.CellState(row, column))
+		    newFrontFieldValue = rawFrontValue
 		  end if
 		  
-		  dim  frontendField as Pair =  frontendFieldName : frontendFieldValue
-		  
-		  if frontendFieldValue <> backendFieldValue then
-		    tableView.tableViewDataSource.editField(row, column, frontendField)
+		  if newFrontFieldValue <> backendFieldValue then
+		    tableView.tableViewDataSource.editField(row, column, fieldName : newFrontFieldValue)
 		  end if
 		  
 		End Sub
@@ -59,17 +56,16 @@ Implements JVTableViewDataSource,JVTableViewDelegate
 	#tag Method, Flags = &h0
 		Sub onCellTagAction(sender as JVTableView, row as Integer, column as Integer)
 		  
-		  dim backendField as Pair = sender.cellTag(row, column)
-		  dim backendFieldName as String = backendField.left
-		  dim backendFieldValue as Variant = backendField.right
+		  dim attachedCell as JVCell = sender.cellTag(row, column)
+		  dim fieldName as String = attachedCell.fieldName
 		  
-		  dim frontendFieldName as String = backendFieldName
-		  dim frontendFieldValue as Variant = sender.cell(row, column)
-		  dim  frontendField as Pair =  frontendFieldName : frontendFieldValue
+		  dim newBackendFieldValue as Variant = attachedCell.fieldValue
+		  dim frontFieldValue as Variant = sender.cell(row, column)
 		  
-		  if backendFieldValue <> frontendFieldValue then
-		    tableView.tableViewDataSource.editField(row, column, backendField)
+		  if newBackendFieldValue <> frontFieldValue then
+		    tableView.tableViewDataSource.editField(row, column, fieldName : newBackendFieldValue)
 		  end if
+		  
 		End Sub
 	#tag EndMethod
 

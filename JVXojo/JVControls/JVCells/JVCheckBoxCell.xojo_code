@@ -1,16 +1,9 @@
 #tag Class
-Protected Class JVEditableTextCell
-Implements JVCustomCell
+Protected Class JVCheckBoxCell
+Inherits JVCell
 	#tag Method, Flags = &h0
 		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  
-		  
-		  if listbox.CellType(row, column) <> listbox.TypeEditableTextField then
-		    listbox.CellType(row, column) = listbox.TypeEditableTextField // Just turn the default cell in EditableTextField the first time it gets clicked
-		  else
-		    listbox.EditCell(row, column) // Edit the cell if its gets clicked second time 
-		  end if
-		  
+		  // Do nothing special, let Xojo handle the standard checkbox
 		  return False
 		  
 		End Function
@@ -18,17 +11,15 @@ Implements JVCustomCell
 
 	#tag Method, Flags = &h0
 		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
-		  
-		  // While  drawing the field don't make it editable just yet, just draw a default cell
-		  if listbox.CellType(row, column) <> Listbox.TypeDefault then
-		    listbox.CellType(row, column) = Listbox.TypeDefault
+		  // Part of the JVCell interface.
+		  if ListBox.CellType(row, column) <> Listbox.TypeCheckbox then
+		    ListBox.CellType(row, column) = Listbox.TypeCheckbox
 		  end if
-		  dim backValue as Pair = listbox.cellTag(row, column)
-		  if backValue <> nil then
-		    dim frontValue as String = backValue.right.StringValue
-		    if listbox.Cell(row, column) <> frontValue then
-		      listbox.Cell(row, column) = frontValue
-		    end if
+		  
+		  
+		  dim value as CheckBox.CheckedStates = fieldValue
+		  if ListBox.CellState(row, column) <> value then
+		    ListBox.CellState(row, column) = value
 		  end if
 		  
 		End Function
@@ -42,6 +33,12 @@ Implements JVCustomCell
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="fieldName"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true

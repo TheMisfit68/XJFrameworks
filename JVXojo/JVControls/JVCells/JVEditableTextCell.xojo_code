@@ -1,11 +1,16 @@
 #tag Class
-Protected Class JVRadioButtonCell
-Implements JVCustomCell
+Protected Class JVEditableTextCell
+Inherits JVCell
 	#tag Method, Flags = &h0
 		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  // Part of the JVCustomCell interface.
 		  
-		  // Not yet implemented !!!
+		  
+		  if listbox.CellType(row, column) <> listbox.TypeEditableTextField then
+		    listbox.CellType(row, column) = listbox.TypeEditableTextField // Just turn the default cell in EditableTextField the first time it gets clicked
+		  else
+		    listbox.EditCell(row, column) // Edit the cell if its gets clicked second time 
+		  end if
+		  
 		  return False
 		  
 		End Function
@@ -13,20 +18,36 @@ Implements JVCustomCell
 
 	#tag Method, Flags = &h0
 		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
-		  // Part of the JVCustomCell interface.
 		  
-		  // Not yet implemented !!!
+		  // While  drawing the field don't make it editable just yet, just draw a default cell
+		  if listbox.CellType(row, column) <> Listbox.TypeDefault then
+		    listbox.CellType(row, column) = Listbox.TypeDefault
+		  end if
+		  
+		  return False
+		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
 		  
+		  if listbox.Cell(row, column) <> fieldValue then
+		    listbox.Cell(row, column) = fieldValue
+		  end if
+		  
+		  return False
 		End Function
 	#tag EndMethod
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="fieldName"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
