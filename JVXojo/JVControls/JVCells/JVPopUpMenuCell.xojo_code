@@ -2,7 +2,7 @@
 Protected Class JVPopUpMenuCell
 Inherits JVCell
 	#tag Method, Flags = &h0
-		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function activate(x as Integer, y as Integer) As Boolean
 		  // Part of the JVCell interface.
 		  
 		  listbox.ListIndex = row
@@ -13,7 +13,6 @@ Inherits JVCell
 		  if selectedMenu <> nil then
 		    
 		    fieldValue =  selectedMenu.valueAndText.left
-		    // listbox.celltag(row, column) = fieldName : newValue
 		    
 		  end if
 		  
@@ -31,7 +30,7 @@ Inherits JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
+		Function paintBackground(g as graphics) As Boolean
 		  // Part of the JVCell interface.
 		  
 		  // In an hiërarchical cell leave some extra space for the disclosure triangle
@@ -73,7 +72,7 @@ Inherits JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  
 		  // In an hiërarchical cell leave some extra space for the disclosure triangle
 		  dim extraOffset as Integer = 0

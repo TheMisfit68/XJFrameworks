@@ -2,7 +2,7 @@
 Protected Class JVFilePathCell
 Inherits JVCell
 	#tag Method, Flags = &h0
-		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function activate(x as Integer, y as Integer) As Boolean
 		  listbox.ListIndex =row
 		  listbox.Selected(row) = True
 		  
@@ -50,7 +50,7 @@ Inherits JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
+		Function paintBackground(g as graphics) As Boolean
 		  // Part of the JVCell interface.
 		  
 		  
@@ -79,7 +79,7 @@ Inherits JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  
 		  // Set the frontvalue
 		  if listbox.Cell(row, column) <> fieldValue then

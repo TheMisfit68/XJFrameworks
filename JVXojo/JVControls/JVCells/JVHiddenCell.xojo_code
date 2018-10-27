@@ -2,7 +2,7 @@
 Protected Class JVHiddenCell
 Inherits JVCell
 	#tag Method, Flags = &h0
-		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function activate(x as Integer, y as Integer) As Boolean
 		  // Part of the JVCell interface.
 		  
 		  // A hidden cell can't be activated
@@ -12,7 +12,7 @@ Inherits JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
+		Function paintBackground(g as graphics) As Boolean
 		  // Part of the JVCell interface.
 		  
 		  // A hidden cell has no background
@@ -22,7 +22,7 @@ Inherits JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  // Part of the JVCell interface.
 		  
 		  // A hidden cell has no text
@@ -33,6 +33,12 @@ Inherits JVCell
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="fieldName"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
 			Visible=true

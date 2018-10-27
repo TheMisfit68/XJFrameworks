@@ -1,24 +1,31 @@
 #tag Class
 Protected Class JVCell
 	#tag Method, Flags = &h0
-		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function activate(x as Integer, y as Integer) As Boolean
 		  
-		  raise new FunctionNotFoundException // This is an abstract class, you must oveerirde this method in each subclass
+		  raise new FunctionNotFoundException // This is an abstract class, you must override this method in each subclass
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
+		Function paintBackground(g as graphics) As Boolean
 		  
-		  raise new FunctionNotFoundException // This is an abstract class, you must oveerirde this method in each subclass
+		  raise new FunctionNotFoundException // This is an abstract class, you must override this method in each subclass
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  
-		  raise new FunctionNotFoundException // This is an abstract class, you must oveerirde this method in each subclass
+		  raise new FunctionNotFoundException // This is an abstract class, you must override this method in each subclass
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub updateRowAndColumn(rowAndColumn as pair)
+		  row = rowAndColumn.left
+		  column = rowAndColumn.right
+		End Sub
 	#tag EndMethod
 
 
@@ -34,11 +41,23 @@ Protected Class JVCell
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		column As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		fieldName As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		fieldValue As Variant
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		listbox As Listbox
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		row As Integer
 	#tag EndProperty
 
 
@@ -78,6 +97,17 @@ Protected Class JVCell
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="fieldName"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="column"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="row"
 			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty

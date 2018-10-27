@@ -2,7 +2,7 @@
 Protected Class JVEditableTextCell
 Inherits JVCell
 	#tag Method, Flags = &h0
-		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function activate(x as Integer, y as Integer) As Boolean
 		  
 		  
 		  if listbox.CellType(row, column) <> listbox.TypeEditableTextField then
@@ -17,7 +17,7 @@ Inherits JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
+		Function paintBackground(g as graphics) As Boolean
 		  
 		  // While  drawing the field don't make it editable just yet, just draw a default cell
 		  if listbox.CellType(row, column) <> Listbox.TypeDefault then
@@ -30,7 +30,7 @@ Inherits JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  
 		  if listbox.Cell(row, column) <> fieldValue then
 		    listbox.Cell(row, column) = fieldValue

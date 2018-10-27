@@ -7,9 +7,14 @@ Inherits Listbox
 		    
 		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		      
+		      system.DebugLog("Firing CellBackgroundPaint for" +str(row)+" / "+str(column))
+		      
 		      dim attachedCell as JVCell = cellTag(row, column)
-		      if  attachedCell <> nil then
-		        return attachedCell.paintBackground(me, g, row, Column)
+		      if  attachedCell isa JVCell  and (attachedCell.fieldValue <>"") then
+		        
+		        attachedCell.updateRowAndColumn(row : column)
+		        return attachedCell.paintBackground(g)
+		        
 		      else
 		        return False
 		      end if
@@ -44,9 +49,10 @@ Inherits Listbox
 		      
 		      dim returnValue as Boolean = False
 		      dim attachedCell as JVCell = cellTag(row, column)
-		      if  attachedCell <> nil then
+		      if  attachedCell isa JVCell then
 		        
-		        returnValue =  attachedCell.activate(me, row, Column, x, y)
+		        attachedCell.updateRowAndColumn(row : column)
+		        returnValue =  attachedCell.activate(x, y)
 		        
 		        if (attachedCell isa JVPopUpMenuCell)  or (attachedCell isa JVFilePathCell)  then
 		          
@@ -108,8 +114,11 @@ Inherits Listbox
 		      tableViewDataSource.formatCell(row, column)
 		      
 		      dim attachedCell as JVCell = cellTag(row, column)
-		      if  attachedCell <> nil then
-		        return attachedCell.paintText(me, g, row, Column, x, y)
+		      if  attachedCell isa JVCell and (attachedCell.fieldValue <>"") then
+		        
+		        attachedCell.updateRowAndColumn(row : column)
+		        return attachedCell.paintText(g, x, y)
+		        
 		      else
 		        return False
 		      end if

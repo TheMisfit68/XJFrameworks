@@ -78,6 +78,7 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		      if not (attachedCell isa JVHiddenCell) then
 		        
 		        // Prepare the field in the backend
+		        attachedCell.listbox = treeview
 		        attachedCell.fieldName = fieldName
 		        attachedCell.fieldValue = fieldValue
 		        treeView.celltag(newRowNumber, columnNumber) = attachedCell

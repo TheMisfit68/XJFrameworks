@@ -2,7 +2,7 @@
 Protected Class JVCheckBoxCell
 Inherits JVCell
 	#tag Method, Flags = &h0
-		Function activate(listBox as JVtableView, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function activate(x as Integer, y as Integer) As Boolean
 		  // Do nothing special, let Xojo handle the standard checkbox
 		  return False
 		  
@@ -10,7 +10,7 @@ Inherits JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintBackground(listBox as JVtableView, g as graphics, row as integer, column as integer) As Boolean
+		Function paintBackground(g as graphics) As Boolean
 		  // Part of the JVCell interface.
 		  if ListBox.CellType(row, column) <> Listbox.TypeCheckbox then
 		    ListBox.CellType(row, column) = Listbox.TypeCheckbox
@@ -26,7 +26,7 @@ Inherits JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintText(listBox as JVtableView, g as graphics, row as integer, column as Integer, x as Integer, y as Integer) As Boolean
+		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  
 		End Function
 	#tag EndMethod
