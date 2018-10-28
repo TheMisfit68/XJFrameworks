@@ -56,18 +56,17 @@ Inherits Listbox
 		        
 		        if (attachedCell isa JVPopUpMenuCell)  or (attachedCell isa JVFilePathCell)  then
 		          
-		          // Call a custom method to notify the change to the delegate
-		          // Should in time be replaced with a real eventdefinition and an event that gets raised on JVTreeview
-		          tableViewDelegate.onCellTagAction(me, row, column)
+		          // Call a custom method to notify the changes in the background to the delegate
+		          RaiseEvent CellTagAction(row, column)
+		          return returnValue
 		          
 		        else 
 		          
 		          // Depend on standard events (that get delageted to the JVTreeController/JVTreeViewDelegate)
-		          returnValue = true
+		          return False
 		          
 		        end if
 		        
-		        return returnValue
 		        
 		      else
 		        
@@ -136,6 +135,11 @@ Inherits Listbox
 	#tag EndEvent
 
 
+	#tag Hook, Flags = &h0
+		Event CellTagAction(row as Integer, column as Integer)
+	#tag EndHook
+
+
 	#tag Property, Flags = &h0
 		cellHasFocus As Boolean
 	#tag EndProperty
@@ -163,6 +167,7 @@ Inherits Listbox
 			    RemoveHandler Open, AddressOf mTableViewDelegate.onListOpen
 			    RemoveHandler Change, AddressOf mTableViewDelegate.onListSelectionDidChange
 			    RemoveHandler CellAction, AddressOf mTableViewDelegate.onCellAction
+			    RemoveHandler CellTagAction, AddressOf mTableViewDelegate.onCellTagAction
 			    
 			  end if
 			  
@@ -175,6 +180,7 @@ Inherits Listbox
 			    AddHandler Open, AddressOf mTableViewDelegate.onListOpen
 			    AddHandler Change, AddressOf mTableViewDelegate.onListSelectionDidChange
 			    AddHandler CellAction, AddressOf mTableViewDelegate.onCellAction
+			    AddHandler CellTagAction, AddressOf mTableViewDelegate.onCellTagAction
 			    
 			  end if
 			  
