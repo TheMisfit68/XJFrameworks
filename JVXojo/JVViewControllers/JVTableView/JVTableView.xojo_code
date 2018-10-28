@@ -6,11 +6,10 @@ Inherits Listbox
 		  if not cellHasFocus then // Windows continuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
 		    
 		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
-		      
-		      system.DebugLog("Firing CellBackgroundPaint for" +str(row)+" / "+str(column))
+		      system.DebugLog("Firing CellBackgroundPaint for cell " +str(row)+" / "+str(column))
 		      
 		      dim attachedCell as JVCell = cellTag(row, column)
-		      if  attachedCell isa JVCell  and (attachedCell.fieldValue <>"") then
+		      if  attachedCell isa JVCell  then
 		        
 		        attachedCell.updateRowAndColumn(row : column)
 		        return attachedCell.paintBackground(g)
@@ -34,6 +33,7 @@ Inherits Listbox
 		  
 		  
 		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		    system.DebugLog("Firing CellClick for cell " +str(row)+" / "+str(column))
 		    
 		    
 		    // In an hiërarchical cell leave some extra space for the disclosure triangle
@@ -63,6 +63,7 @@ Inherits Listbox
 		        else 
 		          
 		          // Depend on standard events (that get delageted to the JVTreeController/JVTreeViewDelegate)
+		          returnValue = true
 		          
 		        end if
 		        
@@ -111,10 +112,12 @@ Inherits Listbox
 		  if not cellHasFocus then // Windows continuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
 		    
 		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
+		      system.DebugLog("Firing CellTextPaint for cell " +str(row)+" / "+str(column))
+		      
 		      tableViewDataSource.formatCell(row, column)
 		      
 		      dim attachedCell as JVCell = cellTag(row, column)
-		      if  attachedCell isa JVCell and (attachedCell.fieldValue <>"") then
+		      if  attachedCell isa JVCell then
 		        
 		        attachedCell.updateRowAndColumn(row : column)
 		        return attachedCell.paintText(g, x, y)

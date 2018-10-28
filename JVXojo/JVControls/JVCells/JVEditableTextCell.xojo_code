@@ -4,28 +4,34 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Function activate(x as Integer, y as Integer) As Boolean
 		  
-		  
-		  if listbox.CellType(row, column) <> listbox.TypeEditableTextField then
-		    listbox.CellType(row, column) = listbox.TypeEditableTextField // Just turn the default cell in EditableTextField the first time it gets clicked
+		  if (listbox.ListIndex <> row) then
+		    // On the first click just make sure the row gets selected
+		    listbox.ListIndex = row
 		  else
-		    listbox.EditCell(row, column) // Edit the cell if its gets clicked second time 
+		    // Once selected, rows and cells become editable
+		    listbox.CellType(row, column) = listbox.TypeEditableTextField
+		    listbox.EditCell(row, column)
 		  end if
 		  
-		  return False
+		  return True
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub constructor()
+		  // Calling the overridden superclass constructor.
+		  Super.Constructor
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function paintBackground(g as graphics) As Boolean
 		  
-		  // While  drawing the field don't make it editable just yet, just draw a default cell
-		  if listbox.CellType(row, column) <> Listbox.TypeDefault then
-		    listbox.CellType(row, column) = Listbox.TypeDefault
-		  end if
+		  resetToNativeType
 		  
 		  return False
-		  
 		End Function
 	#tag EndMethod
 
@@ -42,6 +48,16 @@ Inherits JVCell
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="column"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="row"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="fieldName"
 			Group="Behavior"

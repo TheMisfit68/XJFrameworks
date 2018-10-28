@@ -16,8 +16,7 @@ Inherits JVCell
 		    
 		  end if
 		  
-		  return False
-		  
+		  return True
 		  
 		End Function
 	#tag EndMethod
@@ -33,36 +32,36 @@ Inherits JVCell
 		Function paintBackground(g as graphics) As Boolean
 		  // Part of the JVCell interface.
 		  
-		  // In an hiërarchical cell leave some extra space for the disclosure triangle
-		  dim extraOffset as Integer = 0
-		  if (listbox.Hierarchical) and (column = 0)  then
-		    if listbox.RowIsFolder(row) then
-		      extraOffset  = (listbox.rowDepth(row)+1)*15
-		    else
-		      extraOffset  = listbox.rowDepth(row)*15
-		    end if
-		  end if
+		  // Calculate all dimensions and
+		  dim outerXPadding as Integer = 2
+		  dim outerYPadding as Integer = 1
+		  dim textXPadding as Integer = 10
+		  dim textYPadding as Integer = 2
+		  
+		  activeRange = NSRange.NSMakeRange(disclosureRange.length, g.width-disclosureRange.length)
+		  dim activeArea as Graphics = g.clip(activeRange.location, 0, activeRange.length, g.Height)
 		  
 		  // Draw an arrow to indicate that clicking this field will
 		  // display a menu
-		  g.ForeColor = &cDFDFDF // Ultra light gray
+		  dim menuArea as Graphics = activeArea.clip(outerXPadding, outerYPadding, activeArea.Width-(2*outerXPadding), activeArea.Height-(2*outerYPadding) )
 		  
-		  g.PenHeight = 1
-		  g.FILLRoundRect(extraOffset+2, 1, g.Width-extraOffset-4, g.Height-2, 10, 10)
+		  menuArea.ForeColor = &cDFDFDF // Ultra light gray
+		  menuArea.PenHeight = 1
+		  menuArea.FILLRoundRect(0, 0, menuArea.Width, menuArea.height, 10, 10)
 		  
-		  g.ForeColor = NSColor.LightGrey
-		  g.DrawLine(extraOffset+30, 1, extraOffset+30,1+g.Height-1)
+		  menuArea.ForeColor = NSColor.LightGrey
+		  menuArea.DrawLine(25, 0, 25, menuArea.height)
 		  
 		  // Points for a triangle on the left side of the cell
 		  Dim points(6) As Integer
-		  points(1) = extraOffset+10
+		  points(1) = 10
 		  points(2) = 4
-		  points(3) = extraOffset+20
+		  points(3) = 20
 		  points(4) = 4 
-		  points(5) = extraOffset+15
+		  points(5) = 15
 		  points(6) = 14 
 		  
-		  g.FillPolygon(points)
+		  menuArea.FillPolygon(points)
 		  
 		  return True
 		  
@@ -74,21 +73,22 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  
-		  // In an hiërarchical cell leave some extra space for the disclosure triangle
-		  dim extraOffset as Integer = 0
-		  if (listbox.Hierarchical) and (column = 0)  then
-		    if listbox.RowIsFolder(row) then
-		      extraOffset  = (listbox.rowDepth(row)+1)*15
-		    else
-		      extraOffset  = listbox.rowDepth(row)*15
-		    end if
-		  end if
-		  
 		  dim textRepresentation as String = menu.textRepresentation(fieldValue)
-		  listBox.CellAlignmentOffset(row, column) = 30+extraOffset
-		  listBox.cell(row, column) = textRepresentation
 		  
-		  return False
+		  // And draw it in place
+		  dim textXPadding as Integer = 5
+		  dim textYPadding as Integer = 1
+		  
+		  dim textualArea as Graphics = g.clip(activeRange.location+25, 0, g.width-(activeRange.location+25), g.Height)
+		  textualArea = textualArea.clip(textXPadding, textYPadding, textualArea.width-(2*TextXPadding), textualArea.Height-(2*TextYPadding))
+		  textualArea.ForeColor = NSColor.Black
+		  textualArea.DrawString(textRepresentation, 0, textualArea.TextAscent)
+		  
+		  return True
+		  
+		  
+		  
+		  
 		  
 		End Function
 	#tag EndMethod
@@ -100,6 +100,21 @@ Inherits JVCell
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="nativeType"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="column"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="row"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="fieldName"
 			Group="Behavior"

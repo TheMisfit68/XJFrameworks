@@ -3,24 +3,33 @@ Protected Class JVCheckBoxCell
 Inherits JVCell
 	#tag Method, Flags = &h0
 		Function activate(x as Integer, y as Integer) As Boolean
-		  // Do nothing special, let Xojo handle the standard checkbox
+		  
+		  // Do nothing special, let Xojo handle the native checkbox
 		  return False
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function paintBackground(g as graphics) As Boolean
-		  // Part of the JVCell interface.
-		  if ListBox.CellType(row, column) <> Listbox.TypeCheckbox then
-		    ListBox.CellType(row, column) = Listbox.TypeCheckbox
-		  end if
+		Sub constructor()
+		  // Calling the overridden superclass constructor.
+		  Super.Constructor(Listbox.TypeCheckbox)
 		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function paintBackground(g as graphics) As Boolean
+		  
+		  resetToNativeType
 		  
 		  dim value as CheckBox.CheckedStates = fieldValue
 		  if ListBox.CellState(row, column) <> value then
 		    ListBox.CellState(row, column) = value
 		  end if
+		  
+		  // Do nothing special, let Xojo handle the native checkbox
+		  return False
 		  
 		End Function
 	#tag EndMethod
@@ -28,11 +37,23 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  
+		  // Do nothing special, let Xojo handle the native checkbox
+		  return False
 		End Function
 	#tag EndMethod
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="column"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="row"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="fieldName"
 			Group="Behavior"

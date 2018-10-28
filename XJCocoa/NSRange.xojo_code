@@ -2,7 +2,7 @@
 Protected Class NSRange
 	#tag Method, Flags = &h0
 		Shared Function NSMakeRange(location as Integer, length as Integer) As NSRange
-		  dim newRange as NSRange = new NSRange
+		  dim newRange as new NSRange
 		  newRange.location = location
 		  newRange.length = length
 		  
