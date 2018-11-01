@@ -98,22 +98,17 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  
-		  // Set the frontvalue
-		  if listbox.Cell(row, column) <> fieldValue then
-		    listbox.Cell(row, column) = fieldValue
-		  end if
-		  
-		  // And draw it in place
+		  // Draw the cells value in place
 		  dim textXPadding as Integer = 5
 		  dim textYPadding as Integer = 1
 		  
-		  dim textRepresentation as String= fieldValue
-		  dim tekstLength as Double = g.StringWidth(textRepresentation)
+		  dim tekstLength as Double = g.StringWidth(cellValue)
 		  
 		  dim textualArea as Graphics = g.clip(0, 0, activeRange.location, g.Height)
 		  textualArea = textualArea.clip(textXPadding, textYPadding, textualArea.width-(2*TextXPadding), textualArea.Height-(2*TextYPadding))
 		  textualArea.ForeColor = NSColor.Black
-		  textualArea.DrawString(textRepresentation, textualArea.Width-tekstLength, textualArea.TextAscent) // Right-align the path to display the most relevant part in a small column
+		  textualArea.DrawString(cellValue, textualArea.Width-tekstLength, textualArea.TextAscent) // Right-align the path to display the most relevant part in a small column
+		  
 		  
 		  return True
 		  
@@ -127,6 +122,16 @@ Inherits JVCell
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="nativeType"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="isDirty"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="column"
 			Group="Behavior"

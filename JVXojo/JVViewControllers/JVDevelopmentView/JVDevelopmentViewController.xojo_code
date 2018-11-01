@@ -85,7 +85,8 @@ Implements NSViewDelegate
 		Function onViewCancelClose(sender as NSview, appQuiting as Boolean) As Boolean
 		  // Part of the NSViewDelegate interface.
 		  
-		  system.debuglog("view will close")
+		  JVDebugger.debuglog("view will close")
+		  
 		  return not appQuiting
 		  
 		End Function

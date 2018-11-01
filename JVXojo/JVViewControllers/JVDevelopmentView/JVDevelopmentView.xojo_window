@@ -36,7 +36,8 @@ End
 		  
 		  For controlNumber as Integer = 0 to ControlCount-1
 		    dim control as Control =  control(controlNumber)
-		    System.DebugLog(control.classname)
+		    
+		    JVDebugger.debuglog(control.classname)
 		    
 		    if control isa JVProgressButton then
 		      dim oldTestView  as JVProgressButton = JVProgressButton(control)

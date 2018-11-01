@@ -2,19 +2,15 @@
 Protected Class JVKeyboard
 	#tag Method, Flags = &h0
 		Shared Sub press(keyString as String)
-		  #if DebugBuild
-		    
-		    //Replace curly braces with square brackets when printing to the log
-		    dim regEx as new RegEx
-		    regEx.SearchPattern ="{([^{}]+)}"
-		    regEx.ReplacementPattern =" \[$1\]"
-		    regEx.Options.ReplaceAllMatches = True
-		    
-		    dim debugString as String = regEx.Replace(keyString )
-		    system.DebugLog("Pressing "+debugString+" on keyboard")
-		    
-		  #endIf
 		  
+		  //Replace curly braces with square brackets when printing to the log
+		  dim regEx as new RegEx
+		  regEx.SearchPattern ="{([^{}]+)}"
+		  regEx.ReplacementPattern =" \[$1\]"
+		  regEx.Options.ReplaceAllMatches = True
+		  
+		  dim debugString as String = regEx.Replace(keyString )
+		  JVDebugger.debuglog("Pressing "+debugString+" on keyboard")
 		  
 		  #If TargetWin32
 		    // Windows-specific code here

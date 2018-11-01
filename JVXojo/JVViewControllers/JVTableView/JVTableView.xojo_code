@@ -3,25 +3,24 @@ Protected Class JVTableView
 Inherits Listbox
 	#tag Event
 		Function CellBackgroundPaint(g As Graphics, row As Integer, column As Integer) As Boolean
-		  if not cellHasFocus then // Windows continuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
+		  // if not cellHasFocus then // Windows continuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
+		  
+		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		    
-		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
-		      system.DebugLog("Firing CellBackgroundPaint for cell " +str(row)+" / "+str(column))
+		    dim attachedCell as JVCell = cellTag(row, column)
+		    if  attachedCell isa JVCell  then
 		      
-		      dim attachedCell as JVCell = cellTag(row, column)
-		      if  attachedCell isa JVCell  then
-		        
-		        attachedCell.updateRowAndColumn(row : column)
-		        return attachedCell.paintBackground(g)
-		        
-		      else
-		        return False
-		      end if
+		      attachedCell.updateRowAndColumn(row : column)
+		      return attachedCell.paintBackground(g)
 		      
-		      
+		    else
+		      return False
 		    end if
 		    
+		    
 		  end if
+		  
+		  // end if
 		  
 		  
 		  
@@ -31,10 +30,7 @@ Inherits Listbox
 	#tag Event
 		Function CellClick(row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
 		  
-		  
 		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
-		    system.DebugLog("Firing CellClick for cell " +str(row)+" / "+str(column))
-		    
 		    
 		    // In an hiërarchical cell leave some extra space for the disclosure triangle
 		    if Hierarchical and (column = 0)  and RowIsFolder(row) and (x < (rowdepth(row)+1)*15) then
@@ -108,26 +104,25 @@ Inherits Listbox
 	#tag Event
 		Function CellTextPaint(g As Graphics, row As Integer, column As Integer, x as Integer, y as Integer) As Boolean
 		  
-		  if not cellHasFocus then // Windows continuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
+		  // if not cellHasFocus then // Windows may continuously fires this event during editing of a textcell, leading to performance issues  if this line is removed !!!
+		  
+		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		    
-		    if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
-		      system.DebugLog("Firing CellTextPaint for cell " +str(row)+" / "+str(column))
+		    tableViewDataSource.formatCell(row, column)
+		    
+		    dim attachedCell as JVCell = cellTag(row, column)
+		    if  (attachedCell isa JVCell) then
 		      
-		      tableViewDataSource.formatCell(row, column)
+		      attachedCell.updateRowAndColumn(row : column)
+		      return attachedCell.paintText(g, x, y)
 		      
-		      dim attachedCell as JVCell = cellTag(row, column)
-		      if  attachedCell isa JVCell then
-		        
-		        attachedCell.updateRowAndColumn(row : column)
-		        return attachedCell.paintText(g, x, y)
-		        
-		      else
-		        return False
-		      end if
-		      
+		    else
+		      return False
 		    end if
 		    
 		  end if
+		  
+		  // end if
 		  
 		  
 		  

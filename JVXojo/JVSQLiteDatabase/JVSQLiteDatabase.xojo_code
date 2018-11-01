@@ -84,10 +84,7 @@ Inherits SQLiteDatabase
 		    
 		    InsertRecord(baseTableName, newfields)
 		    If Error Then
-		      #if debugbuild then
-		        system.debuglog( "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE)
-		      #endif
-		      
+		      JVDebugger.debuglog( "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE)
 		    End If
 		    
 		    dim pk as Integer= lastPKFromTable(baseTableName)
@@ -115,11 +112,9 @@ Inherits SQLiteDatabase
 		  dim recordsFound as recordset = sqlStatement.SQLSelect
 		  
 		  If Error Then
-		    #if debugbuild then
-		      system.debuglog( _
-		      "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _
-		      sqlString)
-		    #endif
+		    JVDebugger.debuglog( _
+		    "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _
+		    sqlString)
 		    Return -1
 		  End If
 		  
@@ -138,11 +133,9 @@ Inherits SQLiteDatabase
 		  dim recordsFound as recordset = sqlStatement.SQLSelect
 		  
 		  If Error Then
-		    #if debugbuild then
-		      system.debuglog( _
-		      "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _
-		      sqlString)
-		    #endif
+		    JVDebugger.debuglog( _
+		    "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _
+		    sqlString)
 		    Return -1
 		  End If
 		  
@@ -176,11 +169,9 @@ Inherits SQLiteDatabase
 		  dim foundRecords as RecordSet = sqlStatement.SQLSelect
 		  
 		  If Error Then
-		    #if debugbuild then
-		      system.debuglog( _
-		      "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _
-		      sqlString)
-		    #endif
+		    JVDebugger.debuglog( _
+		    "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _
+		    sqlString)
 		    return -1
 		  End If
 		  
@@ -215,20 +206,16 @@ Inherits SQLiteDatabase
 		  sqlStatement.bindvariables(sqlExpresions.value("Values"))
 		  dim foundRecords as RecordSet = sqlStatement.SQLSelect
 		  
-		  #if debugbuild then
-		    system.debuglog( _
-		    "[JVSQLiteDatabase] SQL Select: "+ENDOFLINE+ _
-		    sqlExpresions.value("CompoundStatement") _
-		    )
-		  #endif
+		  JVDebugger.debuglog( _
+		  "[JVSQLiteDatabase] SQL Select: "+ENDOFLINE+ _
+		  sqlExpresions.value("CompoundStatement") _
+		  )
 		  
 		  If Error Then
-		    #if debugbuild then
-		      system.debuglog( _
-		      "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _
-		      sqlExpresions.value("CompoundStatement") _
-		      )
-		    #endif
+		    JVDebugger.debuglog( _
+		    "[JVSQLiteDatabase] DB Error: " + ErrorMessage+ENDOFLINE+ _
+		    sqlExpresions.value("CompoundStatement") _
+		    )
 		    Return nil
 		  End If
 		  
@@ -519,9 +506,7 @@ Inherits SQLiteDatabase
 			      
 			    end if
 			    
-			    #if DebugBuild
-			      system.DebugLog(maliasSchema.description)
-			    #Endif
+			    JVDebugger.debuglog(maliasSchema.description)
 			    
 			  end if
 			  

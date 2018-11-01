@@ -57,6 +57,24 @@ Protected Class JVCell
 		Protected activeRange As NSRange
 	#tag EndProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  if mCellValue <> nil then
+			    return mCellValue
+			  else
+			    return fieldValue
+			  end if
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mCellValue = value
+			End Set
+		#tag EndSetter
+		cellValue As Variant
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h0
 		column As Integer
 	#tag EndProperty
@@ -91,6 +109,10 @@ Protected Class JVCell
 
 	#tag Property, Flags = &h0
 		listbox As Listbox
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mCellValue As Variant
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -151,6 +173,16 @@ Protected Class JVCell
 			Name="row"
 			Group="Behavior"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="nativeType"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="isDirty"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

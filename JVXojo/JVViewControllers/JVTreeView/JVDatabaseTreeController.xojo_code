@@ -20,9 +20,7 @@ Implements JVBackgroundTaskDelegate
 		Sub deleteNode(node as NSTreeNode)
 		  // Part of the JVTreeViewDataSource interface.
 		  
-		  #if DebugBuild then
-		    system.DebugLog("Delete node "+node.keyPathString+" @ indexpath "+node.indexPathString)
-		  #Endif
+		  JVDebugger.debuglog("Delete node "+node.keyPathString+" @ indexpath "+node.indexPathString)
 		  
 		  // Find the right sourcetable, sourceField and name of the PK-field
 		  dim database as JVFPProxy = JVFPProxy(backGroundQuery.dataBase)
@@ -59,9 +57,7 @@ Implements JVBackgroundTaskDelegate
 		Sub editNode(node as NSTreeNode, fieldToChange as Pair)
 		  // Part of the JVTreeViewDataSource interface.
 		  
-		  #if DebugBuild then
-		    system.DebugLog("Changing node "+node.keyPathString+" @ indexpath "+node.indexPathString)
-		  #Endif
+		  JVDebugger.debuglog("Changing node "+node.keyPathString+" @ indexpath "+node.indexPathString)
 		  
 		  // Find the right sourcetable, sourceField and name of the PK-field
 		  dim database as JVFPProxy = JVFPProxy(backGroundQuery.dataBase)

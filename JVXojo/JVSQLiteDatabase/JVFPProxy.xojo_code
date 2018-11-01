@@ -133,7 +133,8 @@ Implements JVBackgroundTaskDelegate
 		  
 		  if currentMode = MODES.Browse then
 		    
-		    system.debuglog("Changing fields: "+EndOfLine+newValues.description)
+		    JVDebugger.debuglog("Changing fields: "+EndOfLine+newValues.description)
+		    
 		    affectedPKs = updateRecords(currentLayout, mfoundSet, newValues)
 		    
 		  end if

@@ -37,17 +37,25 @@ Inherits JVCell
 
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
+		  listbox.cell(row, column) = cellValue
 		  
-		  if listbox.Cell(row, column) <> fieldValue then
-		    listbox.Cell(row, column) = fieldValue
-		  end if
-		  
+		  // Do nothing special, let Xojo handle the native textField
 		  return False
 		End Function
 	#tag EndMethod
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="nativeType"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="isDirty"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="column"
 			Group="Behavior"

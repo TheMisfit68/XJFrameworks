@@ -72,17 +72,16 @@ Inherits JVCell
 
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
+		  cellValue = menu.textRepresentation(fieldValue)
 		  
-		  dim textRepresentation as String = menu.textRepresentation(fieldValue)
-		  
-		  // And draw it in place
+		  // Draw the cells value in place
 		  dim textXPadding as Integer = 5
 		  dim textYPadding as Integer = 1
 		  
 		  dim textualArea as Graphics = g.clip(activeRange.location+25, 0, g.width-(activeRange.location+25), g.Height)
 		  textualArea = textualArea.clip(textXPadding, textYPadding, textualArea.width-(2*TextXPadding), textualArea.Height-(2*TextYPadding))
 		  textualArea.ForeColor = NSColor.Black
-		  textualArea.DrawString(textRepresentation, 0, textualArea.TextAscent)
+		  textualArea.DrawString(cellValue, 0, textualArea.TextAscent)
 		  
 		  return True
 		  
@@ -100,6 +99,11 @@ Inherits JVCell
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="isDirty"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="nativeType"
 			Group="Behavior"

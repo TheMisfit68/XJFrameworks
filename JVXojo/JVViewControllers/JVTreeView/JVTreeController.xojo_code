@@ -239,7 +239,8 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  
 		  if (row >= 0) and (row < sender.ListCount) then
 		    selectedNode = sender.rowTag(row)
-		    system.DebugLog("Selecting node "+selectedNode.keyPathString+" @ indexpath "+selectedNode.indexPathString)
+		    
+		    JVDebugger.debuglog("Selecting node "+selectedNode.keyPathString+" @ indexpath "+selectedNode.indexPathString)
 		  else
 		    selectedNode = nil
 		  end if
