@@ -4,7 +4,7 @@ Protected Module JVDictionaryExtensions
 		Function description(extends baseDict as Dictionary) As String
 		  dim description as String = "{"+EndOfLine
 		  
-		  For each key as String in baseDict.keys
+		  For each key as Variant in baseDict.keys
 		    dim value as Variant = baseDict.value(key)
 		    
 		    Select Case value

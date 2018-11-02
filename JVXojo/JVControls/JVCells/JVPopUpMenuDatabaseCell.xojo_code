@@ -9,7 +9,7 @@ Inherits JVPopUpMenuCell
 		  me.branchFields = branchFields
 		  me.keypathField = TextAndValueField.right
 		  
-		  menu = new JVMenuItem(treenode, TextAndValueField.left)
+		  menu = new JVMenuItem(nil, treenode, TextAndValueField.left)
 		  
 		End Sub
 	#tag EndMethod
@@ -50,34 +50,25 @@ Inherits JVPopUpMenuCell
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="AutoEnable"
+			Name="nativeType"
 			Group="Behavior"
-			InitialValue="0"
-			Type="Boolean"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Checked"
+			Name="column"
 			Group="Behavior"
-			InitialValue="0"
-			Type="Boolean"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="CommandKey"
+			Name="row"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="fieldName"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Enabled"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Icon"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Picture"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -85,12 +76,6 @@ Inherits JVPopUpMenuCell
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="KeyboardShortcut"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -112,35 +97,11 @@ Inherits JVPopUpMenuCell
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Text"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Visible"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="_mIndex"
-			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="_mName"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

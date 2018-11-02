@@ -24,7 +24,10 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Sub constructor(node as NSTreeNode, textColumn as String)
 		  
-		  menu = new JVMenuItem(node, textColumn)
+		  menu = new JVMenuItem(nil, node, textColumn)
+		  
+		  system.debuglog(menu.textualRepresentations.description)
+		  
 		End Sub
 	#tag EndMethod
 
@@ -73,6 +76,7 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  cellValue = menu.textRepresentation(fieldValue)
+		  System.debuglog(menu.textualRepresentations.description)
 		  
 		  // Draw the cells value in place
 		  dim textXPadding as Integer = 5
@@ -99,11 +103,6 @@ Inherits JVCell
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="isDirty"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="nativeType"
 			Group="Behavior"

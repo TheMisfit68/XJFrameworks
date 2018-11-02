@@ -23,7 +23,7 @@ Inherits JVMenuItem
 		  // Constructor(copy as MenuItem) -- From MenuItem
 		  // Constructor(Text As String, Tag As Variant = Nil) -- From MenuItem
 		  
-		  Super.Constructor(FileMenu, "Voorkeuren…", 0)
+		  Super.Constructor(JVmenuItem(FileMenu), "Voorkeuren…", 0)
 		  owner = JVPrefsWindowController.sharedPrefsWindowController
 		  JVPrefsMenuItem.isInstalled =  TRUE
 		  

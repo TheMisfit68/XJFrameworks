@@ -352,6 +352,15 @@ Implements JVCustomStringConvertable
 		isLeaf As Boolean
 	#tag EndComputedProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return (parent = nil)
+			End Get
+		#tag EndGetter
+		isRoot As Boolean
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h0
 		keyPath() As Integer
 	#tag EndProperty

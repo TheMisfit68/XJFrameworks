@@ -2,6 +2,69 @@
 Protected Class JVMenuItem
 Inherits menuItem
 	#tag Method, Flags = &h0
+		Sub constructor(parentMenu as MenuItem, node as NSTreeNode, textColumn as String)
+		  
+		  dim  thisMenuItem as JVMenuItem = me
+		  thisMenuItem.parentMenu = parentMenu
+		  
+		  textualRepresentations = new Dictionary
+		  
+		  if node <> nil then
+		    
+		    // Proces the individual fields
+		    if node.representedObject isa Dictionary then // When its a Dictionary
+		      dim representedObject as Dictionary = node.representedObject
+		      
+		      thisMenuItem.tag = node.finalKey 
+		      
+		      if representedObject.HasKey(textColumn) then
+		        thisMenuItem.Text = representedObject.value(textColumn)
+		      else
+		        // Use the value of the first field if there is no explicit textfield
+		        dim key as String = representedObject.key(0)
+		        thisMenuItem.Text = representedObject.value(key)
+		      end if
+		      
+		    elseif node.representedObject isa DatabaseRecord then  // When its a DatabaseRecord
+		      dim representedObject as DatabaseRecord = node.representedObject
+		      
+		      thisMenuItem.tag = node.finalKey
+		      
+		      if not representedObject.hasColumn(textColumn) then
+		        textColumn = representedObject.FieldName(0)
+		      end if
+		      thisMenuItem.Text = representedObject.Column(textColumn)
+		      
+		    end if
+		    
+		    if node.isLeaf then
+		      
+		      textSegments = array(Text)
+		      dim parentItem as JVMenuItem = JVMenuItem(parentMenu)
+		      while not parentItem.isMainMenu
+		        textSegments.insert(0, parentItem.text)
+		        parentItem = JVMenuItem(parentItem.parentMenu)
+		      wend
+		      parentItem.textualRepresentations.value(tag) =  join(textSegments, " > ")
+		      
+		    else
+		      
+		      for each childNode as NSTreeNode in node.children
+		        dim childMenu as new JVMenuItem(me, childNode, textColumn)
+		      next childNode
+		      
+		    end if
+		    
+		  end if
+		  
+		  if parentMenu <> nil then
+		    parentMenu.Append(thisMenuItem)
+		  end if
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub constructor(parentMenu as MenuItem, name as String, index as Integer)
 		  // Calling the overridden superclass constructor.
 		  // Note that this may need modifications if there are multiple constructor choices.
@@ -14,78 +77,6 @@ Inherits menuItem
 		  me.parentMenu = parentMenu
 		  me.index = index
 		  Insert
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub constructor(node as NSTreeNode, textColumn as String)
-		  
-		  dim  thisMenuItem as JVMenuItem = me
-		  textualRepresentations = new Dictionary
-		  dim currentValue as Variant = nil
-		  
-		  if node <> nil then
-		    
-		    // Proces the individual fields
-		    if node.representedObject isa Dictionary then
-		      dim representedObject as Dictionary = node.representedObject
-		      
-		      thisMenuItem.tag = node.finalKey
-		      
-		      if representedObject.HasKey(textColumn) then
-		        thisMenuItem.Text = representedObject.value(textColumn)
-		      else
-		        dim key as String = representedObject.key(0)
-		        thisMenuItem.Text = representedObject.value(key)
-		      end if
-		      
-		    elseif node.representedObject isa DatabaseRecord then
-		      dim representedObject as DatabaseRecord = node.representedObject
-		      
-		      thisMenuItem.tag = node.finalKey
-		      
-		      if representedObject.hasColumn(textColumn) then
-		        thisMenuItem.Text = representedObject.Column(textColumn)
-		      else
-		        dim columName as String = representedObject.FieldName(0)
-		        thisMenuItem.Text = representedObject.Column(columName)
-		      end if
-		      
-		    end if
-		    
-		    if not node.isLeaf then
-		      
-		      for each childNode as NSTreeNode in node.children
-		        
-		        dim childMenu as new JVMenuItem(ChildNode, textColumn)
-		        Append(childMenu)
-		        
-		        // Copy the textualRepresentations from the lower level menu's to the current level
-		        for each key as Variant in childMenu.textualRepresentations.Keys
-		          textualRepresentations.Value(key) = childMenu.textualRepresentations.value(key)
-		        next key
-		        
-		      next childNode
-		      
-		    else
-		      
-		      // Store them together for future reference
-		      dim textSegments() as String
-		      textSegments.Append(thisMenuItem.Text)
-		      dim parent as JVMenuItem = JVMenuItem(thisMenuItem.parentMenu)
-		      while parent <> nil
-		        textSegments.Insert(0, parentMenu.Text)
-		        parent = JVMenuItem(parent.parentMenu)
-		      wend
-		      textualRepresentations.Value(node.finalKey) = join(textSegments, " > ")
-		      
-		    end if
-		    
-		    
-		    
-		  end if
-		  
 		  
 		End Sub
 	#tag EndMethod
@@ -148,6 +139,15 @@ Inherits menuItem
 	#tag EndMethod
 
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return (parentMenu = nil)
+			End Get
+		#tag EndGetter
+		isMainMenu As Boolean
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h0
 		owner As Object
 	#tag EndProperty
@@ -156,8 +156,12 @@ Inherits menuItem
 		parentMenu As MenuItem
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private textualRepresentations As Dictionary
+	#tag Property, Flags = &h0
+		textSegments() As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		textualRepresentations As Dictionary
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
