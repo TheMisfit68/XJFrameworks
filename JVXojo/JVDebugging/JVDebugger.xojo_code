@@ -11,8 +11,26 @@ Protected Module JVDebugger
 	#tag EndMethod
 
 
-	#tag Property, Flags = &h0
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return mloggingIsEnabled
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  
+			  mloggingIsEnabled = value
+			  
+			  debugLog("DebugLogging for this application is now turned on") // This wil not show if logging was in fact turned of
+			  
+			End Set
+		#tag EndSetter
 		loggingIsEnabled As Boolean
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mloggingIsEnabled As Boolean
 	#tag EndProperty
 
 
@@ -49,6 +67,11 @@ Protected Module JVDebugger
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="mloggingIsEnabled"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Module
