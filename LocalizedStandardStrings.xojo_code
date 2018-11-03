@@ -6,6 +6,12 @@ Protected Module LocalizedStandardStrings
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Over"
 	#tag EndConstant
 
+	#tag Constant, Name = kAdd, Type = String, Dynamic = True, Default = \"add", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Add"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Add"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Voeg toe"
+	#tag EndConstant
+
 	#tag Constant, Name = kBackend, Type = String, Dynamic = True, Default = \"Backend", Scope = Public
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Backend"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Backend"
@@ -18,10 +24,22 @@ Protected Module LocalizedStandardStrings
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Betatesten"
 	#tag EndConstant
 
+	#tag Constant, Name = kCancel, Type = String, Dynamic = True, Default = \"Cancel", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Cancel"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Cancel"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Annuleer"
+	#tag EndConstant
+
 	#tag Constant, Name = kDelete, Type = String, Dynamic = True, Default = \"Delete", Scope = Public
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Delete"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Delete"
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Wis"
+	#tag EndConstant
+
+	#tag Constant, Name = kDemoHasExpiredMessage, Type = String, Dynamic = True, Default = \"The Demo period for this version of the application has expired !", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"The Demo period for this version of the application has expired !"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"The Demo period for this version of the application has expired!"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"De Demo-periode voor deze versie van de applicatie is verlopen!"
 	#tag EndConstant
 
 	#tag Constant, Name = kDeselectAll, Type = String, Dynamic = True, Default = \"Deselect all", Scope = Public
@@ -105,6 +123,12 @@ Protected Module LocalizedStandardStrings
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Import"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Import"
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Importeer"
+	#tag EndConstant
+
+	#tag Constant, Name = kOK, Type = String, Dynamic = True, Default = \"OK", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"OK"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"OK"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"OK"
 	#tag EndConstant
 
 	#tag Constant, Name = kProject, Type = String, Dynamic = True, Default = \"Project", Scope = Public

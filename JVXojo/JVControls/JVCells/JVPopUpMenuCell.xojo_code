@@ -26,7 +26,6 @@ Inherits JVCell
 		  
 		  menu = new JVMenuItem(nil, node, textColumn)
 		  
-		  system.debuglog(menu.textualRepresentations.description)
 		  
 		End Sub
 	#tag EndMethod
@@ -76,7 +75,6 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  cellValue = menu.textRepresentation(fieldValue)
-		  System.debuglog(menu.textualRepresentations.description)
 		  
 		  // Draw the cells value in place
 		  dim textXPadding as Integer = 5
