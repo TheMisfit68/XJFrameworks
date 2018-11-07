@@ -102,12 +102,12 @@ Inherits JVCell
 		  dim textXPadding as Integer = 5
 		  dim textYPadding as Integer = 1
 		  
-		  dim tekstLength as Double = g.StringWidth(cellValue)
+		  dim tekstLength as Double = g.StringWidth(Value)
 		  
 		  dim textualArea as Graphics = g.clip(0, 0, activeRange.location, g.Height)
 		  textualArea = textualArea.clip(textXPadding, textYPadding, textualArea.width-(2*TextXPadding), textualArea.Height-(2*TextYPadding))
 		  textualArea.ForeColor = NSColor.Black
-		  textualArea.DrawString(cellValue, textualArea.Width-tekstLength, textualArea.TextAscent) // Right-align the path to display the most relevant part in a small column
+		  textualArea.DrawString(Value, textualArea.Width-tekstLength, textualArea.TextAscent) // Right-align the path to display the most relevant part in a small column
 		  
 		  
 		  return True
@@ -126,11 +126,6 @@ Inherits JVCell
 			Name="nativeType"
 			Group="Behavior"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="isDirty"
-			Group="Behavior"
-			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="column"

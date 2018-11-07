@@ -445,6 +445,11 @@ Implements JVCustomStringConvertable
 			InitialValue="0"
 			Type="Integer"
 		#tag EndViewProperty
+		#tag ViewProperty
+			Name="isRoot"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass

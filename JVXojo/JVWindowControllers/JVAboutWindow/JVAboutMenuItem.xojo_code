@@ -48,6 +48,11 @@ Inherits JVMenuItem
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="isMainMenu"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="AutoEnable"
 			Group="Behavior"
 			InitialValue="0"

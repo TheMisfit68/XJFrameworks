@@ -13,7 +13,7 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Sub constructor()
 		  // Calling the overridden superclass constructor.
-		  Super.Constructor(Listbox.TypeCheckbox)
+		  Super.Constructor(Listbox.TypeCheckbox, new JVCheckBoxTransformer)
 		  
 		End Sub
 	#tag EndMethod
@@ -23,9 +23,11 @@ Inherits JVCell
 		  
 		  resetToNativeType
 		  
-		  dim value as CheckBox.CheckedStates = fieldValue
-		  if ListBox.CellState(row, column) <> value then
-		    ListBox.CellState(row, column) = value
+		  value = valueTransformer.representationFor(fieldValue)
+		  dim newCheckState as CheckBox.CheckedStates = value
+		  
+		  if ListBox.CellState(row, column) <> newCheckState then
+		    ListBox.CellState(row, column) = newCheckState
 		  end if
 		  
 		  // Do nothing special, let Xojo handle the native checkbox
@@ -37,30 +39,10 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  
-		  
 		  // Do nothing special, let Xojo handle the native checkbox
 		  return False
 		End Function
 	#tag EndMethod
-
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  
-			  Select case fieldValue
-			  case 0
-			    return checkBox.CheckedStates.Unchecked
-			  case 1
-			    return checkBox.CheckedStates.Indeterminate
-			  case 2
-			    return checkBox.CheckedStates.Checked
-			  end select
-			  
-			End Get
-		#tag EndGetter
-		cellValue As Variant
-	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
@@ -68,11 +50,6 @@ Inherits JVCell
 			Name="nativeType"
 			Group="Behavior"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="isDirty"
-			Group="Behavior"
-			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="column"

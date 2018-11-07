@@ -47,11 +47,6 @@ Inherits JVCell
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="isDirty"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="fieldName"
 			Group="Behavior"
 			Type="String"

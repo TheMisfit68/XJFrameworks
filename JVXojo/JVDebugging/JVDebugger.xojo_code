@@ -69,7 +69,7 @@ Protected Module JVDebugger
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="mloggingIsEnabled"
+			Name="loggingIsEnabled"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty

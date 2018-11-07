@@ -7,11 +7,11 @@ Inherits Listbox
 		  
 		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
 		    
-		    dim attachedCell as JVCell = cellTag(row, column)
-		    if  attachedCell isa JVCell  then
+		    dim backendCell as JVCell = cellTag(row, column)
+		    if  backendCell isa JVCell  then
 		      
-		      attachedCell.updateRowAndColumn(row : column)
-		      return attachedCell.paintBackground(g)
+		      backendCell.updateRowAndColumn(row : column)
+		      return backendCell.paintBackground(g)
 		      
 		    else
 		      return False
@@ -44,16 +44,17 @@ Inherits Listbox
 		    else
 		      
 		      dim returnValue as Boolean = False
-		      dim attachedCell as JVCell = cellTag(row, column)
-		      if  attachedCell isa JVCell then
+		      dim backendCell as JVCell = cellTag(row, column)
+		      if  backendCell isa JVCell then
 		        
-		        attachedCell.updateRowAndColumn(row : column)
-		        returnValue =  attachedCell.activate(x, y)
+		        backendCell.updateRowAndColumn(row : column)
+		        returnValue =  backendCell.activate(x, y)
 		        
-		        if (attachedCell isa JVPopUpMenuCell)  or (attachedCell isa JVFilePathCell)  then
+		        if (backendCell isa JVPopUpMenuCell)  or (backendCell isa JVFilePathCell)  then
 		          
 		          // Call a custom method to notify the changes in the background to the delegate
-		          RaiseEvent CellTagAction(row, column)
+		          RaiseEvent backendCellAction(row, column)
+		          
 		          return returnValue
 		          
 		        else 
@@ -110,11 +111,11 @@ Inherits Listbox
 		    
 		    tableViewDataSource.formatCell(row, column)
 		    
-		    dim attachedCell as JVCell = cellTag(row, column)
-		    if  (attachedCell isa JVCell) then
+		    dim backendCell as JVCell = cellTag(row, column)
+		    if  (backendCell isa JVCell) then
 		      
-		      attachedCell.updateRowAndColumn(row : column)
-		      return attachedCell.paintText(g, x, y)
+		      backendCell.updateRowAndColumn(row : column)
+		      return backendCell.paintText(g, x, y)
 		      
 		    else
 		      return False
@@ -131,7 +132,7 @@ Inherits Listbox
 
 
 	#tag Hook, Flags = &h0
-		Event CellTagAction(row as Integer, column as Integer)
+		Event backendCellAction(row as Integer, column as Integer)
 	#tag EndHook
 
 
@@ -162,7 +163,7 @@ Inherits Listbox
 			    RemoveHandler Open, AddressOf mTableViewDelegate.onListOpen
 			    RemoveHandler Change, AddressOf mTableViewDelegate.onListSelectionDidChange
 			    RemoveHandler CellAction, AddressOf mTableViewDelegate.onCellAction
-			    RemoveHandler CellTagAction, AddressOf mTableViewDelegate.onCellTagAction
+			    RemoveHandler backendCellAction, AddressOf mTableViewDelegate.onBackendCellAction
 			    
 			  end if
 			  
@@ -175,7 +176,7 @@ Inherits Listbox
 			    AddHandler Open, AddressOf mTableViewDelegate.onListOpen
 			    AddHandler Change, AddressOf mTableViewDelegate.onListSelectionDidChange
 			    AddHandler CellAction, AddressOf mTableViewDelegate.onCellAction
-			    AddHandler CellTagAction, AddressOf mTableViewDelegate.onCellTagAction
+			    AddHandler backendCellAction, AddressOf mTableViewDelegate.onBackendCellAction
 			    
 			  end if
 			  

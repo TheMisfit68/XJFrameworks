@@ -9,7 +9,7 @@ Inherits JVPopUpMenuCell
 		  me.branchFields = branchFields
 		  me.keypathField = TextAndValueField.right
 		  
-		  menu = new JVMenuItem(nil, treenode, TextAndValueField.left)
+		  super.constructor(treenode, TextAndValueField.left)
 		  
 		End Sub
 	#tag EndMethod

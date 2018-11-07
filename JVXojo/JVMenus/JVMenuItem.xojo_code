@@ -2,12 +2,12 @@
 Protected Class JVMenuItem
 Inherits menuItem
 	#tag Method, Flags = &h0
-		Sub constructor(parentMenu as MenuItem, node as NSTreeNode, textColumn as String)
+		Sub constructor(parentMenu as MenuItem, node as NSTreeNode, textColumn as String, optional showFullTextPath as Boolean = True)
 		  
 		  dim  thisMenuItem as JVMenuItem = me
 		  thisMenuItem.parentMenu = parentMenu
-		  
-		  textualRepresentations = new Dictionary
+		  me.valueTransformer = new JVMenuItemTransformer
+		  dim fullTextPath() as String
 		  
 		  if node <> nil then
 		    
@@ -39,13 +39,17 @@ Inherits menuItem
 		    
 		    if node.isLeaf then
 		      
-		      textSegments = array(Text)
+		      fullTextPath = array(Text)
 		      dim parentItem as JVMenuItem = JVMenuItem(parentMenu)
-		      while not parentItem.isMainMenu
-		        textSegments.insert(0, parentItem.text)
-		        parentItem = JVMenuItem(parentItem.parentMenu)
-		      wend
-		      parentItem.textualRepresentations.value(tag) =  join(textSegments, " > ")
+		      
+		      if showFullTextPath then
+		        while not parentItem.isMainMenu
+		          fullTextPath.insert(0, parentItem.text)
+		          parentItem = JVMenuItem(parentItem.parentMenu)
+		        wend
+		      end if
+		      
+		      parentItem.valueTransformer.textRepresentations.value(tag) = join(fullTextPath, " > ")
 		      
 		    else
 		      
@@ -84,6 +88,7 @@ Inherits menuItem
 	#tag Method, Flags = &h0
 		Sub constructor(items() as String)
 		  dim  thisMenuItem as JVMenuItem = me
+		  me.valueTransformer = new JVMenuItemTransformer
 		  
 		  dim index as Integer = 0
 		  for each textItem as String in items
@@ -95,7 +100,7 @@ Inherits menuItem
 		    childItem.tag = index
 		    
 		    // Store them togeter for future reference
-		    textualRepresentations.Value(childItem.tag) = childItem.Text
+		    valueTransformer.textRepresentations.Value(childItem.tag) = childItem.Text
 		    
 		    thisMenuItem.Append(childItem)
 		    
@@ -109,33 +114,6 @@ Inherits menuItem
 		Sub insert()
 		  parentMenu.insert(index, me)
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function textRepresentation(value as Variant) As String
-		  
-		  if (value <> nil) then
-		    
-		    if  textualRepresentations.HasKey(value) then
-		      
-		      return textualRepresentations.value(value).StringValue
-		      
-		    elseif  textualRepresentations.HasKey(value.IntegerValue) then
-		      
-		      return textualRepresentations.value(value.IntegerValue).StringValue
-		      
-		    elseif  textualRepresentations.HasKey(value.StringValue) then
-		      
-		      return textualRepresentations.value(value.StringValue).StringValue
-		      
-		    else
-		      
-		      return "Undefined value !"
-		      
-		    end if
-		    
-		  end if
-		End Function
 	#tag EndMethod
 
 
@@ -156,32 +134,22 @@ Inherits menuItem
 		parentMenu As MenuItem
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		textSegments() As String
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		textualRepresentations As Dictionary
-	#tag EndProperty
-
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
 			  
-			  dim value as Variant
-			  if me <> nil then
-			    value = tag
-			  else
-			    value = nil
-			  end if
+			  dim textualRepresentation as String = valueTransformer.representationFor(tag)
 			  
-			  dim textualRepresentation as String = textRepresentation(value)
-			  return  value : textualRepresentation
+			  return  tag : textualRepresentation
 			  
 			End Get
 		#tag EndGetter
 		valueAndText As Pair
 	#tag EndComputedProperty
+
+	#tag Property, Flags = &h0
+		valueTransformer As JVMenuItemTransformer
+	#tag EndProperty
 
 
 	#tag ViewBehavior
@@ -282,6 +250,11 @@ Inherits menuItem
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="isMainMenu"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

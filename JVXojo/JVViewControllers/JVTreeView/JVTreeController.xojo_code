@@ -74,14 +74,14 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		        fieldValue = representedObject.Column(fieldName.StringValue)
 		      end if
 		      
-		      dim attachedCell as JVCell = cellType(fieldName)
-		      if not (attachedCell isa JVHiddenCell) then
+		      dim backendCell as JVCell = cellType(fieldName)
+		      if not (backendCell isa JVHiddenCell) then
 		        
 		        // Prepare the field in the backend
-		        attachedCell.listbox = treeview
-		        attachedCell.fieldName = fieldName
-		        attachedCell.fieldValue = fieldValue
-		        treeView.celltag(newRowNumber, columnNumber) = attachedCell
+		        backendCell.listbox = treeview
+		        backendCell.fieldName = fieldName
+		        backendCell.fieldValue = fieldValue
+		        treeView.celltag(newRowNumber, columnNumber) = backendCell
 		        
 		        // Make the cell redraw itself
 		        treeView.InvalidateCell(newRowNumber, columnNumber)
@@ -193,11 +193,11 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		  
 		  if (row >= 0) and (row < sender.ListCount) and (column >= 0) and (column < sender.ColumnCount) then
 		    
-		    dim attachedCell as JVCell = sender.celltag(row, column)
+		    dim backendCell as JVCell = sender.celltag(row, column)
 		    
-		    if attachedCell <> nil then
+		    if backendCell <> nil then
 		      
-		      dim tooltipText as String = attachedCell.fieldName
+		      dim tooltipText as String = backendCell.fieldName
 		      
 		      dim parentView as Window = sender.Window
 		      dim cursorX as Integer = parentView.left+sender.left+x

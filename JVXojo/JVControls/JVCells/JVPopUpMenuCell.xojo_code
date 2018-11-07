@@ -10,6 +10,7 @@ Inherits JVCell
 		  
 		  // Process the contained popup
 		  dim selectedMenu as JVMenuItem = JVMenuItem(menu.PopUp)
+		  
 		  if selectedMenu <> nil then
 		    
 		    fieldValue =  selectedMenu.valueAndText.left
@@ -23,8 +24,10 @@ Inherits JVCell
 
 	#tag Method, Flags = &h0
 		Sub constructor(node as NSTreeNode, textColumn as String)
+		  super.constructor
 		  
 		  menu = new JVMenuItem(nil, node, textColumn)
+		  me.valueTransformer = menu.valueTransformer
 		  
 		  
 		End Sub
@@ -74,7 +77,7 @@ Inherits JVCell
 
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
-		  cellValue = menu.textRepresentation(fieldValue)
+		  Value = valueTransformer.representationFor(fieldValue)
 		  
 		  // Draw the cells value in place
 		  dim textXPadding as Integer = 5
@@ -83,7 +86,7 @@ Inherits JVCell
 		  dim textualArea as Graphics = g.clip(activeRange.location+25, 0, g.width-(activeRange.location+25), g.Height)
 		  textualArea = textualArea.clip(textXPadding, textYPadding, textualArea.width-(2*TextXPadding), textualArea.Height-(2*TextYPadding))
 		  textualArea.ForeColor = NSColor.Black
-		  textualArea.DrawString(cellValue, 0, textualArea.TextAscent)
+		  textualArea.DrawString(Value, 0, textualArea.TextAscent)
 		  
 		  return True
 		  

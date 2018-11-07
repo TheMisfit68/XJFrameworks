@@ -1,31 +1,25 @@
 #tag Interface
-Protected Interface JVTableViewDelegate
+Protected Interface JVTransFormer
 	#tag Method, Flags = &h0
-		Sub onBackendCellAction(sender as JVTableView, row as Integer, column as Integer)
+		Function representationFor(value as Variant) As Variant
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub onCellAction(sender as JVTableView, row as Integer, column as Integer)
+		Function valueFor(representation as Variant) As Variant
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub onListOpen(sender as JVTableView)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub onListSelectionDidChange(sender as JVTableView)
-		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
@@ -34,23 +28,17 @@ Protected Interface JVTableViewDelegate
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Name"
-			Visible=true
-			Group="ID"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Super"
-			Visible=true
-			Group="ID"
-			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"

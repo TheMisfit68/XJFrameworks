@@ -34,36 +34,28 @@ Implements JVTableViewDataSource,JVTableViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub onCellAction(sender as JVTableView, row as Integer, column as Integer)
+		Sub onBackendCellAction(sender as JVTableView, row as Integer, column as Integer)
 		  
-		  dim attachedCell as JVCell = sender.cellTag(row, column)
-		  dim fieldName as String = attachedCell.fieldName
+		  dim backendCell as JVCell = sender.cellTag(row, column)
 		  
-		  dim backendFieldValue as Variant = attachedCell.fieldValue
-		  dim newFrontFieldValue as Variant = sender.cell(row, column)
-		  if sender.CellType(row, column) = Listbox.TypeCheckbox then
-		    dim rawFrontValue as Integer = Integer(sender.CellState(row, column))
-		    newFrontFieldValue = rawFrontValue
-		  end if
-		  
-		  if newFrontFieldValue <> backendFieldValue then
-		    tableView.tableViewDataSource.editField(row, column, fieldName : newFrontFieldValue)
-		  end if
+		  // if sender.cell(row, column) <> backendCell.Value then
+		  // sender.cell(row, column) = backendCell.value
+		  tableView.tableViewDataSource.editField(row, column, backendCell.fieldName : backendCell.fieldValue)
+		  sender.InvalidateCell(row, column)
+		  // end if
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub onCellTagAction(sender as JVTableView, row as Integer, column as Integer)
+		Sub onCellAction(sender as JVTableView, row as Integer, column as Integer)
 		  
-		  dim attachedCell as JVCell = sender.cellTag(row, column)
-		  dim fieldName as String = attachedCell.fieldName
+		  dim backendCell as JVCell = sender.cellTag(row, column)
 		  
-		  dim newBackendFieldValue as Variant = attachedCell.fieldValue
-		  dim frontFieldValue as Variant = sender.cell(row, column)
-		  
-		  if newBackendFieldValue <> frontFieldValue then
-		    tableView.tableViewDataSource.editField(row, column, fieldName : newBackendFieldValue)
+		  if  sender.cell(row, column) <> backendCell.value then
+		    backendCell.value = sender.cell(row, column)
+		    tableView.tableViewDataSource.editField(row, column, backendCell.fieldName : backendCell.fieldValue)
+		    sender.InvalidateCell(row, column)
 		  end if
 		  
 		End Sub

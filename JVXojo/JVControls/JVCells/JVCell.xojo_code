@@ -8,8 +8,10 @@ Protected Class JVCell
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub constructor(optional nativeType as Integer = listbox.TypeDefault)
+		Sub constructor(optional nativeType as Integer = listbox.TypeDefault, optional valueTransfomer as JVTransformer = nil)
+		  
 		  me.nativeType = nativeType
+		  me.valueTransformer = valueTransformer
 		End Sub
 	#tag EndMethod
 
@@ -49,31 +51,17 @@ Protected Class JVCell
 	#tag Note, Name = Class Description
 		
 		This class gets stored behind a listbox-cell (in the celltag-property).
-		It handles te drawing and activation of custom cell types
+		
+		It handles te drawing and activation of custom cell types.
+		
+		The cells properties 'name' and 'value' are translated by means of a JVtransformer
+		into raw data resp. 'fieldName' and 'fieldValue' that then can be stored in a datamodel
 	#tag EndNote
 
 
 	#tag Property, Flags = &h1
 		Protected activeRange As NSRange
 	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  if mCellValue <> nil then
-			    return mCellValue
-			  else
-			    return fieldValue
-			  end if
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mCellValue = value
-			End Set
-		#tag EndSetter
-		cellValue As Variant
-	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
 		column As Integer
@@ -111,9 +99,19 @@ Protected Class JVCell
 		listbox As Listbox
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private mCellValue As Variant
-	#tag EndProperty
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return fieldName
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  fieldName = value
+			End Set
+		#tag EndSetter
+		name As String
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
 		nativeType As Integer
@@ -121,6 +119,32 @@ Protected Class JVCell
 
 	#tag Property, Flags = &h0
 		row As Integer
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  if valueTransformer <> nil then
+			    return valueTransformer.representationFor(fieldValue)
+			  else
+			    return fieldValue
+			  end if
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  if valueTransformer <> nil then
+			    fieldValue = valueTransformer.valueFor(value)
+			  else
+			    fieldvalue = value
+			  end if
+			End Set
+		#tag EndSetter
+		value As Variant
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h0
+		valueTransformer As JVTransformer
 	#tag EndProperty
 
 
@@ -178,11 +202,6 @@ Protected Class JVCell
 			Name="nativeType"
 			Group="Behavior"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="isDirty"
-			Group="Behavior"
-			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
