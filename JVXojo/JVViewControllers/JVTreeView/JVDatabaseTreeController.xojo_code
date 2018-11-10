@@ -71,21 +71,15 @@ Implements JVBackgroundTaskDelegate
 		  dim sourceField as String = sourceInfo.Value("field")
 		  dim pkFieldName as String = app.dataModel.pkForTable(sourceTable)
 		  
-		  // Find the record with the right PK in the right sourcetable
-		  dataBase.goToLayoutOrView(sourceTable)
-		  dataBase.enterMode(JVFPProxy.MODES.Find)
-		  dim request as new JVDatabaseRequest
-		  dim primaryKeyValue as Integer = node.finalKey
-		  request.IntegerColumn(pkFieldName) = primaryKeyValue
-		  dataBase.addRequest(request)
-		  dataBase.executeFind
-		  
 		  // And perform the update
-		  dim record as new DatabaseRecord
-		  record.Column(sourceField) = newfieldValue
-		  call dataBase.editRecord(record)
-		  
-		  reloadData
+		  dim recordtoChange as DatabaseRecord = database.findRecordwithPK(sourceTable, node.finalKey)
+		  if recordtoChange <> nil then
+		    dim record as new DatabaseRecord
+		    record.Column(sourceField) = newfieldValue
+		    call dataBase.editRecord(record)
+		    
+		    reloadData
+		  end if
 		  
 		End Sub
 	#tag EndMethod

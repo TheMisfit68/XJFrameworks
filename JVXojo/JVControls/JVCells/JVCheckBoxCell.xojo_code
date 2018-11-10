@@ -14,7 +14,10 @@ Inherits JVCell
 		Sub constructor()
 		  
 		  // Calling the overridden superclass constructor.
-		  Super.Constructor(Listbox.TypeCheckbox, new JVCheckBoxTransformer)
+		  // Super.Constructor(Listbox.TypeCheckbox, new JVCheckBoxTransformer)
+		  
+		  Super.Constructor(Listbox.TypeCheckbox, nil)
+		  
 		  
 		End Sub
 	#tag EndMethod
@@ -41,12 +44,6 @@ Inherits JVCell
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="representation"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="column"
 			Group="Behavior"
