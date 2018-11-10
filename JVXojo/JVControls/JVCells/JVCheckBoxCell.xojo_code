@@ -24,6 +24,8 @@ Inherits JVCell
 		  
 		  resetToNativeType
 		  
+		  listbox.CellCheck(row, column) = representation
+		  
 		  // Do nothing special, let Xojo handle the native checkbox
 		  return False
 		  
@@ -33,7 +35,6 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
 		  
-		  // Do nothing special, let Xojo handle the native checkbox
 		  return False
 		End Function
 	#tag EndMethod
@@ -41,22 +42,10 @@ Inherits JVCell
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="fieldName"
-			Visible=true
-			Group="ID"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="representation"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="nativeType"
-			Group="Behavior"
-			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="column"

@@ -178,13 +178,13 @@ Protected Class JVCell
 			Set
 			  
 			  if valueTransformer <> nil Then
-			    value = valueTransformer.valueFor(value)
+			    me.value = valueTransformer.valueFor(value)
 			  else
-			     value = value
+			    me.value = value
 			  end if
 			End Set
 		#tag EndSetter
-		representation As String
+		representation As Variant
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
@@ -224,7 +224,6 @@ Protected Class JVCell
 			Visible=true
 			Group="ID"
 			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -265,11 +264,6 @@ Protected Class JVCell
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="row"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="nativeType"
 			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty

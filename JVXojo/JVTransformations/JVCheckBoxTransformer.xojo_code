@@ -9,9 +9,9 @@ Implements JVTransFormer
 		  case 0
 		    return checkBox.CheckedStates.Unchecked
 		  case 1
-		    return checkBox.CheckedStates.Indeterminate
-		  case 2
 		    return checkBox.CheckedStates.Checked
+		  case 2
+		    return checkBox.CheckedStates.Indeterminate
 		  end select
 		End Function
 	#tag EndMethod
@@ -23,9 +23,9 @@ Implements JVTransFormer
 		  Select case representation
 		  case checkBox.CheckedStates.Unchecked
 		    return 0
-		  case checkBox.CheckedStates.Indeterminate
-		    return 1
 		  case checkBox.CheckedStates.Checked
+		    return 1
+		  case checkBox.CheckedStates.Indeterminate
 		    return 2
 		  end select
 		  
@@ -65,11 +65,6 @@ Implements JVTransFormer
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="rawValue"
-			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior

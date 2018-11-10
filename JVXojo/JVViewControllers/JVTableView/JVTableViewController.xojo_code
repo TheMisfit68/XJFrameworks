@@ -1,6 +1,6 @@
 #tag Class
 Protected Class JVTableViewController
-Implements JVTableViewDataSource,JVTableViewDelegate, JVCellDelegate
+Implements JVTableViewDataSource,JVTableViewDelegate,JVCellDelegate
 	#tag Method, Flags = &h0
 		Function cellType(fieldName as String) As JVCell
 		  // Part of the JVTableViewDataSource interface.
@@ -38,7 +38,11 @@ Implements JVTableViewDataSource,JVTableViewDelegate, JVCellDelegate
 		  
 		  dim backendCell as JVCell = sender.cellTag(row, column)
 		  
-		  backendCell.representation = sender.cell(row, column)
+		  If backendCell isa JVCheckBoxCell then
+		    backendCell.representation = sender.CellState(row, column)
+		  else
+		    backendCell.representation = sender.cell(row, column)
+		  end if
 		  
 		End Sub
 	#tag EndMethod
@@ -86,6 +90,7 @@ Implements JVTableViewDataSource,JVTableViewDelegate, JVCellDelegate
 		  
 		  dim changedCell as JVcell = sender
 		  tableView.tableViewDataSource.editField(changedCell.row, changedCell.column, changedCell.name : newValue)
+		  
 		  tableView.InvalidateCell(changedCell.row, changedCell.column)
 		  
 		End Sub

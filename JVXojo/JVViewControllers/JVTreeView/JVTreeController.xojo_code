@@ -92,8 +92,6 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 		    treeView.ColumnCount = Max(columnNumber, treeView.ColumnCount)
 		    
 		  end  if
-		  
-		  
 		End Sub
 	#tag EndMethod
 

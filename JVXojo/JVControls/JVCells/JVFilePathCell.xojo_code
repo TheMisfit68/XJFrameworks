@@ -4,49 +4,49 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Function activate(x as Integer, y as Integer) As Boolean
 		  
-		  
-		  if (listbox.ListIndex <> row) then
+		  if (x >= activeRange.location) and (x <= activeRange.location+activeRange.length) then
 		    
-		    // On the first click just make sure the row gets selected
-		    listbox.ListIndex = row
+		    // The button was clicked
+		    // Present the dialog and
+		    dim choosenFile as FolderItem
+		    if customDialog <> nil then
+		      
+		      choosenFile = customDialog.ShowModal()
+		      
+		    else
+		      
+		      choosenFile = GetFolderItem("")
+		      
+		    end if
+		    
+		    // Handle the reponse
+		    if (choosenFile <> nil) and (choosenFile.Exists) Then
+		      value = choosenFile.NativePath
+		    end if
+		    
 		    return True
 		    
 		  else
 		    
-		    if (x >= activeRange.location) and (x <= activeRange.location+activeRange.length) then
+		    // Text was Clicked
+		    
+		    if (listbox.ListIndex <> row) then
 		      
-		      // The button was clicked
-		      // Present the dialog and
-		      dim choosenFile as FolderItem
-		      if customDialog <> nil then
-		        
-		        choosenFile = customDialog.ShowModal()
-		        
-		      else
-		        
-		        choosenFile = GetFolderItem("")
-		        
-		      end if
-		      
-		      // Handle the reponse
-		      if (choosenFile <> nil) and (choosenFile.Exists) Then
-		        value = choosenFile.NativePath
-		      end if
-		      
-		      return True
+		      // On the first click just make sure the row gets selected
+		      listbox.ListIndex = row
 		      
 		    else
 		      
-		      // Text was Clicked
 		      // Once selected, rows and cells become editable
 		      listbox.CellType(row, column) = listbox.TypeEditableTextField
 		      listbox.EditCell(row, column)
 		      
-		      return False
-		      
 		    end if
 		    
+		    return True
+		    
 		  end if
+		  
 		  
 		  
 		End Function
@@ -105,12 +105,13 @@ Inherits JVCell
 		  dim textXPadding as Integer = 5
 		  dim textYPadding as Integer = 1
 		  
-		  dim tekstLength as Double = g.StringWidth(Value)
+		  listbox.cell(row, column) = representation
+		  dim tekstLength as Double = g.StringWidth(representation)
 		  
 		  dim textualArea as Graphics = g.clip(0, 0, activeRange.location, g.Height)
 		  textualArea = textualArea.clip(textXPadding, textYPadding, textualArea.width-(2*TextXPadding), textualArea.Height-(2*TextYPadding))
 		  textualArea.ForeColor = NSColor.Black
-		  textualArea.DrawString(Value, textualArea.Width-tekstLength, textualArea.TextAscent) // Right-align the path to display the most relevant part in a small column
+		  textualArea.DrawString(representation, textualArea.Width-tekstLength, textualArea.TextAscent) // Right-align the path to display the most relevant part in a small column
 		  
 		  
 		  return True
@@ -132,11 +133,6 @@ Inherits JVCell
 			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="nativeType"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="column"
 			Group="Behavior"
 			Type="Integer"
@@ -145,12 +141,6 @@ Inherits JVCell
 			Name="row"
 			Group="Behavior"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="fieldName"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
