@@ -173,6 +173,12 @@ Protected Module LocalizedStandardStrings
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Versie"
 	#tag EndConstant
 
+	#tag Constant, Name = kView, Type = String, Dynamic = True, Default = \"View", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"View"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"View"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Beeld"
+	#tag EndConstant
+
 	#tag Constant, Name = kWarning, Type = String, Dynamic = True, Default = \"Warning", Scope = Public
 		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Warning"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Warning"

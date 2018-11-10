@@ -14,9 +14,8 @@ Inherits JVCell
 		Sub constructor()
 		  
 		  // Calling the overridden superclass constructor.
-		  // Super.Constructor(Listbox.TypeCheckbox, new JVCheckBoxTransformer)
 		  
-		  Super.Constructor(Listbox.TypeCheckbox, nil)
+		  Super.Constructor(Listbox.TypeCheckbox)
 		  
 		  
 		End Sub
