@@ -12,6 +12,20 @@ Protected Class JVCell
 		  
 		  me.nativeType = nativeType
 		  me.valueTransformer = valueTransformer
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub fill(nameAndValue as Pair)
+		  
+		  // This method is used to provide the initial value to the cell,
+		  // without triggering any changes to the dbase and thus causing a dataloop
+		  // (It is used when reading cells from the dbase following a reload)
+		  
+		  me.name = nameAndValue.left
+		  me.mValue = nameAndValue.right
 		End Sub
 	#tag EndMethod
 
@@ -42,10 +56,16 @@ Protected Class JVCell
 
 	#tag Method, Flags = &h0
 		Sub updateRowAndColumn(rowAndColumn as pair)
+		  
 		  row = rowAndColumn.left
 		  column = rowAndColumn.right
 		End Sub
 	#tag EndMethod
+
+
+	#tag Hook, Flags = &h0
+		Event valueHasChanged(newValue as Variant)
+	#tag EndHook
 
 
 	#tag Note, Name = Class Description
@@ -54,14 +74,50 @@ Protected Class JVCell
 		
 		It handles te drawing and activation of custom cell types.
 		
-		The cells properties 'name' and 'value' are translated by means of a JVtransformer
-		into raw data resp. 'fieldName' and 'fieldValue' that then can be stored in a datamodel
+		The cells 'value' can be transforformed into a readable representation by means of a JVtransformer
+		
 	#tag EndNote
 
 
 	#tag Property, Flags = &h1
 		Protected activeRange As NSRange
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mCellDelegate
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  
+			  if mCellDelegate <> nil then
+			    
+			    // Remove any previously set delegate
+			    RemoveHandler valueHasChanged, AddressOf mCellDelegate.onCellValueHasChanged
+			    
+			  end if
+			  
+			  // Set the delegate
+			  mCellDelegate = value
+			  
+			  if mCellDelegate <> nil then
+			    
+			    // Redirect all events to the delegate
+			    AddHandler valueHasChanged, AddressOf mCellDelegate.onCellValueHasChanged
+			    
+			  end if
+			  
+			  
+			  
+			  
+			  
+			  
+			End Set
+		#tag EndSetter
+		cellDelegate As JVCellDelegate
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
 		column As Integer
@@ -88,34 +144,48 @@ Protected Class JVCell
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
-		fieldName As String
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		fieldValue As Variant
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		listbox As Listbox
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected mCellDelegate As JVCellDelegate
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected mValue As Variant
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		name As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected nativeType As Integer
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return fieldName
+			  
+			  if valueTransformer <> nil Then
+			    return valueTransformer.representationFor(value)
+			  else
+			    return value
+			  end if
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  fieldName = value
+			  
+			  if valueTransformer <> nil Then
+			    value = valueTransformer.valueFor(value)
+			  else
+			     value = value
+			  end if
 			End Set
 		#tag EndSetter
-		name As String
+		representation As String
 	#tag EndComputedProperty
-
-	#tag Property, Flags = &h0
-		nativeType As Integer
-	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		row As Integer
@@ -124,36 +194,37 @@ Protected Class JVCell
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  if valueTransformer <> nil then
-			    return valueTransformer.representationFor(fieldValue)
-			  else
-			    return fieldValue
-			  end if
+			  return mValue
 			End Get
 		#tag EndGetter
 		#tag Setter
 			Set
-			  if valueTransformer <> nil then
-			    fieldValue = valueTransformer.valueFor(value)
-			  else
-			    fieldvalue = value
+			  
+			  // This method simulates a computed property but has an extra argument in its setter
+			  if value <> mValue then
+			    
+			    mValue = value
+			    
+			    RaiseEvent valueHasChanged(mValue)
 			  end if
+			  
 			End Set
 		#tag EndSetter
 		value As Variant
 	#tag EndComputedProperty
 
-	#tag Property, Flags = &h0
-		valueTransformer As JVTransformer
+	#tag Property, Flags = &h1
+		Protected valueTransformer As JVTransformer
 	#tag EndProperty
 
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="Name"
+			Name="name"
 			Visible=true
 			Group="ID"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -183,10 +254,9 @@ Protected Class JVCell
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="fieldName"
+			Name="name"
 			Group="Behavior"
 			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="column"
@@ -202,6 +272,12 @@ Protected Class JVCell
 			Name="nativeType"
 			Group="Behavior"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="representation"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

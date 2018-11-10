@@ -12,6 +12,7 @@ Inherits JVCell
 
 	#tag Method, Flags = &h0
 		Sub constructor()
+		  
 		  // Calling the overridden superclass constructor.
 		  Super.Constructor(Listbox.TypeCheckbox, new JVCheckBoxTransformer)
 		  
@@ -22,13 +23,6 @@ Inherits JVCell
 		Function paintBackground(g as graphics) As Boolean
 		  
 		  resetToNativeType
-		  
-		  value = valueTransformer.representationFor(fieldValue)
-		  dim newCheckState as CheckBox.CheckedStates = value
-		  
-		  if ListBox.CellState(row, column) <> newCheckState then
-		    ListBox.CellState(row, column) = newCheckState
-		  end if
 		  
 		  // Do nothing special, let Xojo handle the native checkbox
 		  return False
@@ -47,6 +41,19 @@ Inherits JVCell
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="fieldName"
+			Visible=true
+			Group="ID"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="representation"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="nativeType"
 			Group="Behavior"
 			Type="Integer"
@@ -60,12 +67,6 @@ Inherits JVCell
 			Name="row"
 			Group="Behavior"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="fieldName"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"

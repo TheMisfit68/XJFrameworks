@@ -9,6 +9,7 @@ Inherits JVCell
 		    
 		    // On the first click just make sure the row gets selected
 		    listbox.ListIndex = row
+		    return True
 		    
 		  else
 		    
@@ -28,23 +29,25 @@ Inherits JVCell
 		      end if
 		      
 		      // Handle the reponse
-		      if (choosenFile <> Nil) and (choosenFile.Exists) Then
-		        
-		        fieldValue = choosenFile.NativePath
-		        
+		      if (choosenFile <> nil) and (choosenFile.Exists) Then
+		        value = choosenFile.NativePath
 		      end if
 		      
+		      return True
+		      
 		    else
+		      
 		      // Text was Clicked
 		      // Once selected, rows and cells become editable
 		      listbox.CellType(row, column) = listbox.TypeEditableTextField
 		      listbox.EditCell(row, column)
 		      
+		      return False
+		      
 		    end if
 		    
 		  end if
 		  
-		  return True
 		  
 		End Function
 	#tag EndMethod
@@ -52,7 +55,7 @@ Inherits JVCell
 	#tag Method, Flags = &h0
 		Sub constructor(optional customizedOpenDialog as OpenDialog = nil)
 		  // Calling the overridden superclass constructor.
-		  Super.Constructor
+		  Super.Constructor(Listbox.TypeDefault, nil)
 		  
 		  customDialog = customizedOpenDialog
 		  
@@ -122,6 +125,12 @@ Inherits JVCell
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="representation"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="nativeType"
 			Group="Behavior"

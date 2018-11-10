@@ -1,6 +1,6 @@
 #tag Class
 Protected Class JVTableViewController
-Implements JVTableViewDataSource,JVTableViewDelegate
+Implements JVTableViewDataSource,JVTableViewDelegate, JVCellDelegate
 	#tag Method, Flags = &h0
 		Function cellType(fieldName as String) As JVCell
 		  // Part of the JVTableViewDataSource interface.
@@ -34,29 +34,59 @@ Implements JVTableViewDataSource,JVTableViewDelegate
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub onBackendCellAction(sender as JVTableView, row as Integer, column as Integer)
+		Sub onCellAction(sender as JVTableView, row as Integer, column as Integer)
 		  
 		  dim backendCell as JVCell = sender.cellTag(row, column)
 		  
-		  // if sender.cell(row, column) <> backendCell.Value then
-		  // sender.cell(row, column) = backendCell.value
-		  tableView.tableViewDataSource.editField(row, column, backendCell.fieldName : backendCell.fieldValue)
-		  sender.InvalidateCell(row, column)
-		  // end if
+		  backendCell.representation = sender.cell(row, column)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub onCellAction(sender as JVTableView, row as Integer, column as Integer)
-		  
-		  dim backendCell as JVCell = sender.cellTag(row, column)
-		  
-		  if  sender.cell(row, column) <> backendCell.value then
-		    backendCell.value = sender.cell(row, column)
-		    tableView.tableViewDataSource.editField(row, column, backendCell.fieldName : backendCell.fieldValue)
-		    sender.InvalidateCell(row, column)
+		Function onCellClick(sender as JVTableView, row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
+		  if (row >= 0 ) and (row < sender.listCount) and (column >=0) and (column < sender.ColumnCount) then
+		    
+		    // In an hiërarchical cell leave some extra space for the disclosure triangle
+		    if sender.Hierarchical and (column = 0)  and sender.RowIsFolder(row) and (x < (sender.rowdepth(row)+1)*15) then
+		      
+		      return False
+		      
+		    elseif sender.Hierarchical and (column = 0)  and not sender.RowIsFolder(row) and (x < (sender.rowdepth(row))*15) then
+		      
+		      return False
+		      
+		    else
+		      
+		      dim backendCell as JVCell = sender.cellTag(row, column)
+		      if  backendCell isa JVCell then
+		        
+		        backendCell.updateRowAndColumn(row : column)
+		        return backendCell.activate(x, y)
+		        
+		      else
+		        
+		        return False
+		        
+		      end if
+		      
+		      
+		    end if
+		    
 		  end if
+		  
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub onCellValueHasChanged(sender as JVCell, newValue as Variant)
+		  // Part of the JVCellDelegate interface.
+		  
+		  dim changedCell as JVcell = sender
+		  tableView.tableViewDataSource.editField(changedCell.row, changedCell.column, changedCell.name : newValue)
+		  tableView.InvalidateCell(changedCell.row, changedCell.column)
 		  
 		End Sub
 	#tag EndMethod

@@ -32,6 +32,12 @@ Inherits JVCell
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="representation"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="column"
 			Group="Behavior"
 			Type="Integer"

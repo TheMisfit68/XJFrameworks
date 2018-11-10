@@ -13,7 +13,7 @@ Inherits JVCell
 		  
 		  if selectedMenu <> nil then
 		    
-		    fieldValue =  selectedMenu.valueAndText.left
+		    value =  selectedMenu.valueAndText.left
 		    
 		  end if
 		  
@@ -35,7 +35,8 @@ Inherits JVCell
 
 	#tag Method, Flags = &h0
 		Function paintBackground(g as graphics) As Boolean
-		  // Part of the JVCell interface.
+		  
+		  resetToNativeType
 		  
 		  // Calculate all dimensions and
 		  dim outerXPadding as Integer = 2
@@ -77,7 +78,6 @@ Inherits JVCell
 
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
-		  Value = valueTransformer.representationFor(fieldValue)
 		  
 		  // Draw the cells value in place
 		  dim textXPadding as Integer = 5
@@ -86,7 +86,7 @@ Inherits JVCell
 		  dim textualArea as Graphics = g.clip(activeRange.location+25, 0, g.width-(activeRange.location+25), g.Height)
 		  textualArea = textualArea.clip(textXPadding, textYPadding, textualArea.width-(2*TextXPadding), textualArea.Height-(2*TextYPadding))
 		  textualArea.ForeColor = NSColor.Black
-		  textualArea.DrawString(Value, 0, textualArea.TextAscent)
+		  textualArea.DrawString(representation, 0, textualArea.TextAscent)
 		  
 		  return True
 		  
@@ -105,6 +105,19 @@ Inherits JVCell
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="fieldName"
+			Visible=true
+			Group="ID"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="representation"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="nativeType"
 			Group="Behavior"
 			Type="Integer"
@@ -118,12 +131,6 @@ Inherits JVCell
 			Name="row"
 			Group="Behavior"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="fieldName"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"

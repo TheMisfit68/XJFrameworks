@@ -22,15 +22,21 @@ Inherits JVCell
 
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
-		  // Not yet implemented
+		  // Part of the JVCell interface.
 		  
-		  // A hidden cell has no text
-		  return True
+		  // Not yet implemented !!!
+		  return False
 		End Function
 	#tag EndMethod
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="representation"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="column"
 			Group="Behavior"

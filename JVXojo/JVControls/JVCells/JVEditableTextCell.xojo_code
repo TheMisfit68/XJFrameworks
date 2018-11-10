@@ -8,7 +8,7 @@ Inherits JVCell
 		    // On the first click just make sure the row gets selected
 		    listbox.ListIndex = row
 		  else
-		    // Once selected, rows and cells become editable
+		    // Once selected, when clicked, rows and cells become editable
 		    listbox.CellType(row, column) = listbox.TypeEditableTextField
 		    listbox.EditCell(row, column)
 		  end if
@@ -37,7 +37,8 @@ Inherits JVCell
 
 	#tag Method, Flags = &h0
 		Function paintText(g as graphics, x as Integer, y as Integer) As Boolean
-		  listbox.cell(row, column) = Value
+		  
+		  listbox.cell(row, column) = representation
 		  
 		  // Do nothing special, let Xojo handle the native textField
 		  return False
@@ -46,6 +47,12 @@ Inherits JVCell
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="representation"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="nativeType"
 			Group="Behavior"

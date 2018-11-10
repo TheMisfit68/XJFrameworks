@@ -1,15 +1,15 @@
 #tag Interface
 Protected Interface JVTableViewDelegate
 	#tag Method, Flags = &h0
-		Sub onBackendCellAction(sender as JVTableView, row as Integer, column as Integer)
+		Sub onCellAction(sender as JVTableView, row as Integer, column as Integer)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub onCellAction(sender as JVTableView, row as Integer, column as Integer)
+		Function onCellClick(sender as JVTableView, row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
 		  
-		End Sub
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

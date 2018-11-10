@@ -28,65 +28,6 @@ Inherits Listbox
 	#tag EndEvent
 
 	#tag Event
-		Function CellClick(row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
-		  
-		  if (row >= 0 ) and (row < listCount) and (column >=0) and (column < ColumnCount) then
-		    
-		    // In an hiërarchical cell leave some extra space for the disclosure triangle
-		    if Hierarchical and (column = 0)  and RowIsFolder(row) and (x < (rowdepth(row)+1)*15) then
-		      
-		      return False
-		      
-		    elseif Hierarchical and (column = 0)  and not RowIsFolder(row) and (x < (rowdepth(row))*15) then
-		      
-		      return False
-		      
-		    else
-		      
-		      dim returnValue as Boolean = False
-		      dim backendCell as JVCell = cellTag(row, column)
-		      if  backendCell isa JVCell then
-		        
-		        backendCell.updateRowAndColumn(row : column)
-		        returnValue =  backendCell.activate(x, y)
-		        
-		        if (backendCell isa JVPopUpMenuCell)  or (backendCell isa JVFilePathCell)  then
-		          
-		          // Call a custom method to notify the changes in the background to the delegate
-		          RaiseEvent backendCellAction(row, column)
-		          
-		          return returnValue
-		          
-		        else 
-		          
-		          // Depend on standard events (that get delageted to the JVTreeController/JVTreeViewDelegate)
-		          return False
-		          
-		        end if
-		        
-		        
-		      else
-		        
-		        return False
-		        
-		      end if
-		      
-		      
-		    end if
-		    
-		  end if
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		End Function
-	#tag EndEvent
-
-	#tag Event
 		Sub CellGotFocus(row as Integer, column as Integer)
 		  cellHasFocus = TRUE
 		End Sub
@@ -163,7 +104,7 @@ Inherits Listbox
 			    RemoveHandler Open, AddressOf mTableViewDelegate.onListOpen
 			    RemoveHandler Change, AddressOf mTableViewDelegate.onListSelectionDidChange
 			    RemoveHandler CellAction, AddressOf mTableViewDelegate.onCellAction
-			    RemoveHandler backendCellAction, AddressOf mTableViewDelegate.onBackendCellAction
+			    RemoveHandler CellClick, AddressOf mTableViewDelegate.onCellClick
 			    
 			  end if
 			  
@@ -176,7 +117,7 @@ Inherits Listbox
 			    AddHandler Open, AddressOf mTableViewDelegate.onListOpen
 			    AddHandler Change, AddressOf mTableViewDelegate.onListSelectionDidChange
 			    AddHandler CellAction, AddressOf mTableViewDelegate.onCellAction
-			    AddHandler backendCellAction, AddressOf mTableViewDelegate.onBackendCellAction
+			    AddHandler CellClick, AddressOf mTableViewDelegate.onCellClick
 			    
 			  end if
 			  

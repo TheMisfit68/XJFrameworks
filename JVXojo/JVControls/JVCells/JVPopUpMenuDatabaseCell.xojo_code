@@ -2,14 +2,14 @@
 Protected Class JVPopUpMenuDatabaseCell
 Inherits JVPopUpMenuCell
 	#tag Method, Flags = &h0
-		Sub constructor(database as SQLIteDatabase, sqlString as String, branchFields() as String, TextAndValueField as Pair)
+		Sub constructor(database as SQLIteDatabase, sqlString as String, branchFields() as String, TextAndValueFields as Pair)
 		  // Calling the overridden superclass constructor.
 		  
 		  preparedStatement = database.Prepare(sqlString)
 		  me.branchFields = branchFields
-		  me.keypathField = TextAndValueField.right
+		  me.keypathField = TextAndValueFields.right
 		  
-		  super.constructor(treenode, TextAndValueField.left)
+		  super.constructor(treenode, TextAndValueFields.left)
 		  
 		End Sub
 	#tag EndMethod
@@ -49,6 +49,12 @@ Inherits JVPopUpMenuCell
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="representation"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="nativeType"
 			Group="Behavior"
