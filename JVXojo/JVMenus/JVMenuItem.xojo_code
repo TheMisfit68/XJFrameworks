@@ -1,12 +1,14 @@
 #tag Class
 Protected Class JVMenuItem
 Inherits menuItem
+Implements JVTransFormer
 	#tag Method, Flags = &h0
 		Sub constructor(parentMenu as MenuItem, node as NSTreeNode, textColumn as String, optional showFullTextPath as Boolean = True)
 		  
 		  dim  thisMenuItem as JVMenuItem = me
 		  thisMenuItem.parentMenu = parentMenu
-		  me.valueTransformer = new JVMenuItemTransformer
+		  
+		  me.valueTransformer = me
 		  dim fullTextPath() as String
 		  
 		  if node <> nil then
@@ -49,7 +51,7 @@ Inherits menuItem
 		        wend
 		      end if
 		      
-		      parentItem.valueTransformer.textRepresentations.value(tag) = join(fullTextPath, " > ")
+		      parentItem.textRepresentations.value(tag) = join(fullTextPath, " > ")
 		      
 		    else
 		      
@@ -88,7 +90,7 @@ Inherits menuItem
 	#tag Method, Flags = &h0
 		Sub constructor(items() as String)
 		  dim  thisMenuItem as JVMenuItem = me
-		  me.valueTransformer = new JVMenuItemTransformer
+		  me.valueTransformer = me
 		  
 		  dim index as Integer = 0
 		  for each textItem as String in items
@@ -100,7 +102,7 @@ Inherits menuItem
 		    childItem.tag = index
 		    
 		    // Store them togeter for future reference
-		    valueTransformer.textRepresentations.Value(childItem.tag) = childItem.Text
+		    textRepresentations.Value(childItem.tag) = childItem.Text
 		    
 		    thisMenuItem.Append(childItem)
 		    
@@ -116,6 +118,55 @@ Inherits menuItem
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function representationFor(value as Variant) As Variant
+		  
+		  if (value <> nil) then
+		    
+		    if  textRepresentations.HasKey(value) then
+		      
+		      return textRepresentations.value(value).StringValue
+		      
+		    elseif  textRepresentations.HasKey(value.IntegerValue) then
+		      
+		      return textRepresentations.value(value.IntegerValue).StringValue
+		      
+		    elseif  textRepresentations.HasKey(value.StringValue) then
+		      
+		      return textRepresentations.value(value.StringValue).StringValue
+		      
+		    else
+		      
+		      return "Undefined value !"
+		      
+		    end if
+		    
+		  end if
+		  
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function valueFor(representation as Variant) As Variant
+		  // Part of the JVTransFormer interface.
+		  
+		  if (representation <> nil) and not representation.StringValue.contains("Undefined") then
+		    
+		    dim values() as Variant = textRepresentations.Values
+		    dim position as Integer = values.IndexOf(representation)
+		    
+		    return textRepresentations.Key(position)
+		    
+		  else
+		    
+		    return nil
+		    
+		  end if
+		End Function
+	#tag EndMethod
+
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -126,6 +177,10 @@ Inherits menuItem
 		isMainMenu As Boolean
 	#tag EndComputedProperty
 
+	#tag Property, Flags = &h21
+		Private mTextRepresentations As Dictionary
+	#tag EndProperty
+
 	#tag Property, Flags = &h0
 		owner As Object
 	#tag EndProperty
@@ -133,6 +188,19 @@ Inherits menuItem
 	#tag Property, Flags = &h0
 		parentMenu As MenuItem
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  if mTextRepresentations = nil then
+			    mTextRepresentations = new Dictionary // Lazy loading
+			  end if
+			  
+			  return mTextRepresentations
+			End Get
+		#tag EndGetter
+		textRepresentations As Dictionary
+	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -148,7 +216,7 @@ Inherits menuItem
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
-		valueTransformer As JVMenuItemTransformer
+		valueTransformer As JVTransformer
 	#tag EndProperty
 
 
