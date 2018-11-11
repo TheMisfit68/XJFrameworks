@@ -105,24 +105,6 @@ Inherits JVCell
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="fieldName"
-			Visible=true
-			Group="ID"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="representation"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="nativeType"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="column"
 			Group="Behavior"
 			Type="Integer"
