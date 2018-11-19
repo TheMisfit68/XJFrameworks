@@ -50,17 +50,6 @@ Inherits JVPopUpMenuCell
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="representation"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="nativeType"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="column"
 			Group="Behavior"
 			Type="Integer"
@@ -69,12 +58,6 @@ Inherits JVPopUpMenuCell
 			Name="row"
 			Group="Behavior"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="fieldName"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
