@@ -85,6 +85,12 @@ Inherits regex
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Shared Function lookAhead(expression as String) As String
+		  return "(?="+expression+")"
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Shared Function passiveGroup(uncapturedExpression as String) As String
 		  return "(?:"+uncapturedExpression+")"
 		End Function
