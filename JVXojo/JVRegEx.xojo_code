@@ -2,7 +2,7 @@
 Protected Class JVRegEx
 Inherits regex
 	#tag Method, Flags = &h0
-		Shared Function capture(uncapturedExpression as String) As String
+		Shared Function Capture(uncapturedExpression as String) As String
 		  return "("+uncapturedExpression+")"
 		End Function
 	#tag EndMethod
@@ -31,10 +31,10 @@ Inherits regex
 		    dim numberOfClosingBrackets as Integer = split(searchPattern, ")").ubound
 		    
 		    // taking into account other sort of groups
-		    dim numberOfBracketsForpassiveGroups as Integer = split(searchPattern, "(?").ubound
-		    if numberOfBracketsForpassiveGroups > 0 then
-		      numberofOpeningBrackets = numberOfOpeningBrackets-numberOfBracketsForpassiveGroups
-		      numberofClosingBrackets = numberOfClosingBrackets-numberOfBracketsForpassiveGroups
+		    dim numberOfBracketsForPassiveGroups as Integer = split(searchPattern, "(?").ubound
+		    if numberOfBracketsForPassiveGroups > 0 then
+		      numberofOpeningBrackets = numberOfOpeningBrackets-numberOfBracketsForPassiveGroups
+		      numberofClosingBrackets = numberOfClosingBrackets-numberOfBracketsForPassiveGroups
 		    end if
 		    
 		    dim numberOfEscapedOpeningBrackets as Integer = split(searchPattern, "\(").ubound
@@ -85,13 +85,19 @@ Inherits regex
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function lookAhead(expression as String) As String
+		Shared Function LookAhead(expression as String) As String
 		  return "(?="+expression+")"
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function passiveGroup(uncapturedExpression as String) As String
+		Shared Function LookBehind(expression as String) As String
+		  return expression+"\K"
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Shared Function PassiveGroup(uncapturedExpression as String) As String
 		  return "(?:"+uncapturedExpression+")"
 		End Function
 	#tag EndMethod
@@ -127,7 +133,7 @@ Inherits regex
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function stringToExpression(nonRegexString as String) As String
+		Shared Function StringToExpression(nonRegexString as String) As String
 		  // Replace any special character with its Regex equivalent
 		  
 		  dim regexString as String = nonRegexString
@@ -153,7 +159,7 @@ Inherits regex
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return passiveGroup(".*"+NewLinePattern)+"*?"
+			  return PassiveGroup(".*"+NewLinePattern)+"*?"
 			End Get
 		#tag EndGetter
 		Shared MultipleLinesPattern As String
