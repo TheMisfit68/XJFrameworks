@@ -19,7 +19,7 @@ Protected Class JVEnumerator
 		  dim nextValues() as Integer
 		  dim enumerationNumber as Integer = 0
 		  for each address as Integer in currentAddresses
-		    dim nextValue as integer = Max(minValues(enumerationNumber), address)+offsets(enumerationNumber) // Apply lower limit and offset
+		    dim nextValue as integer = Max(minValues(enumerationNumber), address +offsets(enumerationNumber)) // Apply lower limit and offset
 		    
 		    if (limits <> nil)  and (limits(enumerationNumber) <> nil) then
 		      
