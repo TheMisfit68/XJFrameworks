@@ -14,13 +14,17 @@ Protected Class JVEnumerator
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function nextValues(currentAddresses() as Integer, optional limits() as Pair = nil) As Integer()
+		Function nextValues(existingValues() as Integer, optional limits() as Pair = nil) As Integer()
 		  
 		  dim nextValues() as Integer
 		  dim enumerationNumber as Integer = 0
-		  for each address as Integer in currentAddresses
-		    dim nextValue as integer = Max(minValues(enumerationNumber), address +offsets(enumerationNumber)) // Apply lower limit and offset
+		  for each existingValue as Integer in existingValues
 		    
+		    dim nextValue as integer =  existingValue+offsets(enumerationNumber))// Apply a new offset
+		    
+		    nextValue = Max(minValues(enumerationNumber), nextValue) // but make sure it doesn't go below the minimum value of the enumerator
+		    
+		    // If any extra limits where provided apply them as well
 		    if (limits <> nil)  and (limits(enumerationNumber) <> nil) then
 		      
 		      dim extraLimits as Pair = limits(enumerationNumber)
@@ -34,15 +38,16 @@ Protected Class JVEnumerator
 		    nextValues.Append(nextValue)
 		    
 		    enumerationNumber = enumerationNumber+1
-		  next address
+		  next existingValue
 		  
-		  return nextValues
+		  currentValues = nextValues
+		  return currentValues
 		End Function
 	#tag EndMethod
 
 
 	#tag Property, Flags = &h0
-		addresses() As Integer
+		currentValues() As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
