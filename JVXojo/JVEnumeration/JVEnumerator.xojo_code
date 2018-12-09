@@ -7,10 +7,49 @@ Protected Class JVEnumerator
 		    minValues.append(minValuesAndOffset.left)
 		    offsets.append(minValuesAndOffset.right)
 		    
-		    addresses.append(minValuesAndOffset.left)
+		    currentValues.append(minValuesAndOffset.left)
 		    
 		  next minValuesAndOffset
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function nextBitValues(existingValues() as Pair, numberOfBits as Integer, optional limits() as Pair = nil) As Pair()
+		  
+		  
+		  dim nextValues() as Pair
+		  dim enumerationNumber as Integer = 0
+		  for each existingValue as Pair in existingValues
+		    
+		    dim existingIntegerDigits as Integer = existingValue.left
+		    dim existingDecimalDigits as Integer = existingValue.right
+		    
+		    // Apply a new offset
+		    dim nextIntegerDigits as Integer = existingIntegerDigits+((existingDecimalDigits+1)\numberOfBits)
+		    dim nextDecimalDigits as Integer = ((existingDecimalDigits+1) Mod numberOfBits)
+		    
+		    nextIntegerDigits = Max(minValues(enumerationNumber), nextIntegerDigits) // but make sure it doesn't go below the minimum value of the enumerator
+		    
+		    // If any extra limits where provided apply them as well
+		    if (limits <> nil)  and (limits(enumerationNumber) <> nil) then
+		      
+		      dim extraLimits as Pair = limits(enumerationNumber)
+		      dim lowerLimit as Integer = extraLimits.left
+		      dim upperLimit as Integer = extraLimits.right
+		      
+		      nextIntegerDigits = Max(lowerLimit, nextIntegerDigits)
+		      nextIntegerDigits = Min(nextIntegerDigits, upperLimit)
+		    end if
+		    
+		    nextValues.Append(nextIntegerDigits : nextDecimalDigits )
+		    
+		    enumerationNumber = enumerationNumber+1
+		    
+		  next existingValue
+		  
+		  currentBitValues = nextValues
+		  return currentBitValues
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -20,7 +59,7 @@ Protected Class JVEnumerator
 		  dim enumerationNumber as Integer = 0
 		  for each existingValue as Integer in existingValues
 		    
-		    dim nextValue as integer =  existingValue+offsets(enumerationNumber))// Apply a new offset
+		    dim nextValue as integer =  existingValue+offsets(enumerationNumber) // Apply a new offset
 		    
 		    nextValue = Max(minValues(enumerationNumber), nextValue) // but make sure it doesn't go below the minimum value of the enumerator
 		    
@@ -38,6 +77,7 @@ Protected Class JVEnumerator
 		    nextValues.Append(nextValue)
 		    
 		    enumerationNumber = enumerationNumber+1
+		    
 		  next existingValue
 		  
 		  currentValues = nextValues
@@ -45,6 +85,10 @@ Protected Class JVEnumerator
 		End Function
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h0
+		currentBitValues() As Pair
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		currentValues() As Integer

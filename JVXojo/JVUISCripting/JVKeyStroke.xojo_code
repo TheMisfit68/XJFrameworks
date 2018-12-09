@@ -36,7 +36,7 @@ Protected Class JVKeyStroke
 		#tag ViewProperty
 			Name="keyString"
 			Group="Behavior"
-			InitialValue=""""""
+			InitialValue=""""""""""
 			Type="String"
 			EditorType="MultiLineEditor"
 		#tag EndViewProperty
