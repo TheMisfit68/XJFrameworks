@@ -3,11 +3,9 @@ Protected Class JVDatabaseTreeController
 Inherits JVTreeController
 Implements JVBackgroundTaskDelegate
 	#tag Method, Flags = &h0
-		Sub constructor(treeView as JVTreeView, backGroundQuery as JVbackGroundQuery, paramarray branchfields as string)
+		Sub constructor(treeView as JVTreeView, backGroundQuery as JVbackGroundQuery)
 		  // Calling the overridden superclass constructor.
 		  Super.Constructor(treeView, nil)
-		  
-		  me.branchfields = branchfields
 		  
 		  me.backGroundQuery = backGroundQuery
 		  me.backGroundQuery.backgroundTaskDelegate =  me
@@ -87,17 +85,8 @@ Implements JVBackgroundTaskDelegate
 	#tag Method, Flags = &h0
 		Sub onTaskFinished(sender as JVBackgroundTask)
 		  // Part of the JVBackgroundTaskDelegate interface.
-		  dim records as recordSet = backGroundQuery.foundRecords
 		  
-		  if (records <> nil)  and (records.RecordCount > 0) then
-		    
-		    arrangedObjects = new NSTreeNode(records, branchfields)
-		    
-		  else
-		    
-		    arrangedObjects = nil
-		    
-		  end if
+		  arrangedObjects = JVbackGroundQuery(sender).treenNode
 		  
 		  syncInterface(True)
 		  reloadBusy = False

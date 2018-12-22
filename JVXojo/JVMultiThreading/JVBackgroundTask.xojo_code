@@ -8,6 +8,10 @@ Inherits Thread
 		  
 		  super.run
 		  
+		  while State = Thread.Running
+		    app.YieldToNextThread
+		  wend
+		  
 		  RaiseEvent finished
 		  
 		  

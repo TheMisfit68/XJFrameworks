@@ -4,6 +4,13 @@ Inherits JVBackgroundTask
 	#tag Event
 		Sub Run()
 		  foundRecords = preparedStatement.SQLSelect
+		  
+		  if (foundRecords <> nil)  and (foundRecords.RecordCount > 0)  and (branchfields <> nil) then
+		    
+		    me.treenNode = new NSTreeNode(foundRecords, branchfields)
+		    
+		  end if
+		  
 		End Sub
 	#tag EndEvent
 
@@ -17,16 +24,20 @@ Inherits JVBackgroundTask
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(database as JVSQLiteDatabase , statementString as String)
-		  
+		Sub Constructor(database as JVSQLiteDatabase, statementString as String, optional branchFields() as String = nil, optional ID as String)
+		  me.debugIdentifier = ID
 		  me.database = database
 		  me.sqlString = statementString
 		  me.preparedStatement = database.Prepare(statementString)
 		  
-		  
+		  me.branchFields = branchFields
 		End Sub
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h0
+		branchFields() As String
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		database As JVSQLiteDatabase
@@ -42,6 +53,10 @@ Inherits JVBackgroundTask
 
 	#tag Property, Flags = &h0
 		sqlString As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		treenNode As NSTreeNode
 	#tag EndProperty
 
 

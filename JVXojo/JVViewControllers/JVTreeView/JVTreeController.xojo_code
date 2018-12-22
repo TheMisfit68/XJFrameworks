@@ -330,10 +330,6 @@ Implements JVTreeViewDelegate,JVTreeViewDataSource
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		branchfields() As String
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		destinationRow As Integer
 	#tag EndProperty
 
