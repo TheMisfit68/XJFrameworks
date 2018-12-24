@@ -34,7 +34,7 @@ Inherits JVPopUpMenuCell
 	#tag ComputedProperty, Flags = &h21
 		#tag Getter
 			Get
-			  if mTreenode = nil then  //Lazy loading of records from the dbase
+			  if mTreenode = nil then  // Lazy loading of records from the dbase
 			    
 			    dim records as Recordset = preparedStatement.SQLSelect
 			    mTreenode = new NStreeNode(records, branchFields, keypathField)

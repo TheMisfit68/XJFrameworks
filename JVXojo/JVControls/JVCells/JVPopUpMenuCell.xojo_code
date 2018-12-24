@@ -9,6 +9,7 @@ Inherits JVCell
 		  listbox.Selected(row) = True
 		  
 		  // Process the contained popup
+		  menu.Enable
 		  dim selectedMenu as JVMenuItem = JVMenuItem(menu.PopUp)
 		  
 		  if selectedMenu <> nil then
@@ -26,7 +27,19 @@ Inherits JVCell
 		Sub constructor(node as NSTreeNode, textColumn as String)
 		  super.constructor
 		  
-		  menu = new JVMenuItem(nil, node, textColumn)
+		  
+		  dim className as String = me.className
+		  
+		  if menusBySubclass = nil then
+		    menusBySubclass = new Dictionary
+		  end if
+		  if menusBySubclass.HasKey(className) then
+		    menu = menusBySubclass.Value(className)
+		  else
+		    menu = new JVMenuItem(nil, node, textColumn)
+		    menusBySubclass.Value(className) = menu
+		  end if
+		  
 		  me.valueTransformer = menu.valueTransformer
 		  
 		  
@@ -100,6 +113,10 @@ Inherits JVCell
 
 	#tag Property, Flags = &h0
 		menu As JVMenuItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Shared menusBySubclass As Dictionary
 	#tag EndProperty
 
 
