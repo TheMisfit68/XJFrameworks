@@ -1,7 +1,7 @@
 #tag Class
 Protected Class JVEnumerator
 	#tag Method, Flags = &h0
-		Sub constructor(ParamArray minValuesAndOffsets as pair)
+		Sub constructor(minValuesAndOffsets() as pair)
 		  for each minValuesAndOffset as Pair in minValuesAndOffsets
 		    
 		    minValues.append(minValuesAndOffset.left)
@@ -10,6 +10,12 @@ Protected Class JVEnumerator
 		    currentValues.append(minValuesAndOffset.left)
 		    
 		  next minValuesAndOffset
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub constructor(ParamArray minValuesAndOffsets as pair)
+		  constructor(minValuesAndOffsets)
 		End Sub
 	#tag EndMethod
 
