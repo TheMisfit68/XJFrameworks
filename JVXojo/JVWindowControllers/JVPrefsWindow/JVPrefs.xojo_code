@@ -1,6 +1,12 @@
 #tag Class
 Protected Class JVPrefs
 Inherits JSONItem
+	#tag Note, Name = Class description
+		
+		JVprefs is a mere Class alias for JSONItem
+	#tag EndNote
+
+
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Compact"

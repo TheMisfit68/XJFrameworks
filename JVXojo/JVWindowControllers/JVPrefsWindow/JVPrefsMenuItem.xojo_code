@@ -3,6 +3,7 @@ Protected Class JVPrefsMenuItem
 Inherits JVMenuItem
 	#tag Event
 		Function Action() As Boolean
+		  JVPrefsWindowController.sharedPrefsWindowController.prefsViewController.openPrefsFile
 		  JVPrefsWindowController.sharedPrefsWindowController.showModalWindow
 		End Function
 	#tag EndEvent

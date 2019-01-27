@@ -109,7 +109,8 @@ End
 #tag Events prefsOkButton
 	#tag Event
 		Sub Action()
-		  prefsWindowController.save
+		  
+		  prefsWindowController.confirm
 		End Sub
 	#tag EndEvent
 #tag EndEvents
