@@ -72,10 +72,10 @@ Inherits ExcelApplication
 		    
 		    if skipEmptyLines then
 		      // Like Ctrl+Left-arrow but starting at the far right of the sheet
-		      lastUsedColumn = startRange.Worksheet.cells(firstRow, finalColumn).End_(Office.xlleft).row
+		      lastUsedColumn = startRange.Worksheet.cells(firstRow, finalColumn).End_(Office.xlToLeft).row
 		    else
 		      // Like Ctrl+Right-arrow
-		      lastUsedColumn = StartRange.End_(Office.xlRight).Column
+		      lastUsedColumn = StartRange.End_(Office.xlToRight).Column
 		    end if
 		    
 		    expandedRange = startRange .resize(startRange.rows.count,lastUsedColumn-startRange.Column+1)
