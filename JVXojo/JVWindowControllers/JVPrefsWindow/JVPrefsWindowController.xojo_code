@@ -15,6 +15,8 @@ Implements NSWindowDelegate
 		  
 		  prefsViewController.syncInterface() // Write to model
 		  prefsViewController.savePrefsFile
+		  prefsViewController.notifyObservers
+		  
 		  hideWindow
 		End Sub
 	#tag EndMethod
@@ -43,7 +45,9 @@ Implements NSWindowDelegate
 		  // Part of the NSWindowDelegate interface.
 		  prefsViewController.syncInterface(True)
 		  syncInterface(True)
-		  prefsViewController.view.EmbedWithin(window, 0, 0, window.Width, window.Height-40)
+		  
+		  prefsViewController.view.EmbedWithin(prefsWindow, 0, 0, window.Width, window.Height-40)
+		  
 		End Sub
 	#tag EndMethod
 
@@ -61,14 +65,7 @@ Implements NSWindowDelegate
 		  // Calling the overridden superclass method.
 		  if up then
 		    
-		    system.DebugLog("Newprefs: "+prefsViewController.newPrefs.ToString)
-		    system.DebugLog("Prefs: "+prefsViewController.prefs.ToString)
-		    
-		    prefsWindow.prefsOkButton.Enabled = (prefsViewController.newPrefs.tostring <> prefsViewController.prefs.tostring)
-		    
-		    if(prefsViewController.newPrefs <> prefsViewController.prefs) then
-		      system.DebugLog("Must enable")
-		    end if
+		    prefsWindow.prefsOkButton.Enabled = (prefsViewController.newPrefs.tostring <> prefsViewController.activePrefs.tostring)
 		    
 		  else
 		    

@@ -2,7 +2,7 @@
 Protected Interface JVPrefsChangedObserver
 Implements JVObserver
 	#tag Method, Flags = &h0
-		Sub onPrefsChanged(prefs as JVPrefs)
+		Sub onPrefsChanged(sender as JVPrefsChangedNotifier, oldPrefs as JVPrefs, newPrefs as JVPrefs)
 		  
 		End Sub
 	#tag EndMethod

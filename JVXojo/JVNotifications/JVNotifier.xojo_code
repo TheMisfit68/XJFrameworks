@@ -1,7 +1,7 @@
 #tag Interface
 Protected Interface JVNotifier
 	#tag Method, Flags = &h0
-		Sub notifyObservers(sender as JVNotifier)
+		Sub notifyObservers()
 		  
 		End Sub
 	#tag EndMethod

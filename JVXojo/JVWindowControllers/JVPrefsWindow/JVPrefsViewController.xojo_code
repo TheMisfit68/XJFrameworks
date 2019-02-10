@@ -10,11 +10,12 @@ Implements JVPrefsChangedNotifier
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub notifyObservers(sender as JVNotifier)
+		Sub notifyObservers()
 		  // Part of the JVNotifier interface.
 		  
+		  
 		  For Each observer As JVObserver In prefsChangedObservers
-		    JVPrefsChangedObserver(observer).onPrefsChanged(prefs)
+		    JVPrefsChangedObserver(observer).onPrefsChanged(me, oldPrefs, newPrefs)
 		  Next
 		End Sub
 	#tag EndMethod
@@ -48,7 +49,7 @@ Implements JVPrefsChangedNotifier
 		    Try
 		      t = TextInputStream.Open(prefsFile)
 		      // t.Encoding = Encodings.MacRoman
-		      prefs.Load(t.ReadAll)
+		      activePrefs.Load(t.ReadAll)
 		      
 		    Catch e As IOException
 		      t.Close
@@ -80,7 +81,6 @@ Implements JVPrefsChangedNotifier
 
 	#tag Method, Flags = &h0
 		Sub savePrefsFile()
-		  syncInterface // adjust the model
 		  
 		  // And save it to disk
 		  If prefsFile <> Nil then
@@ -88,7 +88,7 @@ Implements JVPrefsChangedNotifier
 		    Dim t as TextOutputStream
 		    try
 		      t  = TextOutputStream.create(prefsFile)
-		      t.Write(prefs.ToString)
+		      t.Write(activePrefs.ToString)
 		      t.Close
 		      
 		    Catch e As IOException
@@ -98,7 +98,8 @@ Implements JVPrefsChangedNotifier
 		    
 		  End If
 		  
-		  notifyObservers(me)
+		  notifyObservers
+		  
 		End Sub
 	#tag EndMethod
 
@@ -106,11 +107,12 @@ Implements JVPrefsChangedNotifier
 		Sub syncInterface(optional up as Boolean = False)
 		  if up then
 		    
-		    newPrefs = prefs
+		    newPrefs = activePrefs
 		    
 		  else
 		    
-		    prefs = newPrefs
+		    oldPrefs = activePrefs
+		    activePrefs = newPrefs
 		    
 		  end if
 		End Sub
@@ -123,6 +125,20 @@ Implements JVPrefsChangedNotifier
 		know how to save every element in its view to disk and read it back as a JVPrefs (subclas of JSONItem)
 	#tag EndNote
 
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  Return JVPrefs(representedObject)
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  representedObject = value
+			End Set
+		#tag EndSetter
+		activePrefs As JVPrefs
+	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
@@ -227,19 +243,9 @@ Implements JVPrefsChangedNotifier
 		newPrefs As JVPrefs
 	#tag EndComputedProperty
 
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  Return JVPrefs(representedObject)
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  representedObject = value
-			End Set
-		#tag EndSetter
-		prefs As JVPrefs
-	#tag EndComputedProperty
+	#tag Property, Flags = &h0
+		oldPrefs As JVPrefs
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		prefsChangedObservers() As JVObserver
