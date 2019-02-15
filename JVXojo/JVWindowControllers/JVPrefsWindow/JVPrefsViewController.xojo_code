@@ -13,7 +13,6 @@ Implements JVPrefsChangedNotifier
 		Sub notifyObservers()
 		  // Part of the JVNotifier interface.
 		  
-		  
 		  For Each observer As JVObserver In prefsChangedObservers
 		    JVPrefsChangedObserver(observer).onPrefsChanged(me, oldPrefs, newPrefs)
 		  Next
@@ -97,8 +96,6 @@ Implements JVPrefsChangedNotifier
 		    End Try
 		    
 		  End If
-		  
-		  notifyObservers
 		  
 		End Sub
 	#tag EndMethod

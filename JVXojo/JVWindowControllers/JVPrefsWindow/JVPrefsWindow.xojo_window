@@ -23,7 +23,7 @@ Begin NSWindow JVPrefsWindow
    MinWidth        =   600
    Placement       =   0
    Resizeable      =   False
-   Title           =   "Voorkeuren"
+   Title           =   "#kPreferences"
    Visible         =   False
    Width           =   600
    Begin PushButton prefsOkButton
@@ -31,7 +31,7 @@ Begin NSWindow JVPrefsWindow
       Bold            =   False
       ButtonStyle     =   "0"
       Cancel          =   False
-      Caption         =   "OK"
+      Caption         =   "#kOK"
       Default         =   True
       Enabled         =   False
       Height          =   20
@@ -63,7 +63,7 @@ Begin NSWindow JVPrefsWindow
       Bold            =   False
       ButtonStyle     =   "0"
       Cancel          =   True
-      Caption         =   "Cancel"
+      Caption         =   "#KCancel"
       Default         =   False
       Enabled         =   True
       Height          =   20

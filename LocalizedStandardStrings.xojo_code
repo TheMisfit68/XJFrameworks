@@ -102,13 +102,19 @@ Protected Module LocalizedStandardStrings
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Exporteer\t"
 	#tag EndConstant
 
-	#tag Constant, Name = kFileQuit, Type = String, Dynamic = False, Default = \"&Quit", Scope = Public
+	#tag Constant, Name = kFile, Type = String, Dynamic = True, Default = \"File", Scope = Public
+		#Tag Instance, Platform = Any, Language = en, Definition  = \"File"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"File"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Archief"
+	#tag EndConstant
+
+	#tag Constant, Name = kFileQuit, Type = String, Dynamic = True, Default = \"&Quit", Scope = Public
 		#Tag Instance, Platform = Windows, Language = en, Definition  = \"E&xit"
 		#Tag Instance, Platform = Windows, Language = en-GB, Definition  = \"E&xit"
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Stop UnityExtreme"
 	#tag EndConstant
 
-	#tag Constant, Name = kFileQuitShortcut, Type = String, Dynamic = False, Default = \"", Scope = Public
+	#tag Constant, Name = kFileQuitShortcut, Type = String, Dynamic = True, Default = \"", Scope = Public
 		#Tag Instance, Platform = Mac OS, Language = Default, Definition  = \"Cmd+Q"
 		#Tag Instance, Platform = Linux, Language = Default, Definition  = \"Ctrl+Q"
 	#tag EndConstant
@@ -129,6 +135,12 @@ Protected Module LocalizedStandardStrings
 		#Tag Instance, Platform = Any, Language = Default, Definition  = \"OK"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"OK"
 		#Tag Instance, Platform = Any, Language = nl, Definition  = \"OK"
+	#tag EndConstant
+
+	#tag Constant, Name = kPreferences, Type = String, Dynamic = True, Default = \"Preferences", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Preferences"
+		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Preferences"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Voorkeuren"
 	#tag EndConstant
 
 	#tag Constant, Name = kProject, Type = String, Dynamic = True, Default = \"Project", Scope = Public
