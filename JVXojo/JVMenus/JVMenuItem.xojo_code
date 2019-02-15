@@ -42,16 +42,17 @@ Implements JVTransFormer
 		    if node.isLeaf then
 		      
 		      fullTextPath = array(Text)
-		      dim parentItem as JVMenuItem = JVMenuItem(parentMenu)
 		      
-		      if showFullTextPath then
+		      // When this item has a childmenu, travers every childtext up the mainmenu if needed
+		      dim parentItem as JVMenuItem = JVMenuItem(parentMenu)
+		      if  (parentItem <> nil) and showFullTextPath then
 		        while not parentItem.isMainMenu
 		          fullTextPath.insert(0, parentItem.text)
 		          parentItem = JVMenuItem(parentItem.parentMenu)
 		        wend
+		        
+		        parentItem.textRepresentations.value(tag) = join(fullTextPath, " > ")
 		      end if
-		      
-		      parentItem.textRepresentations.value(tag) = join(fullTextPath, " > ")
 		      
 		    else
 		      

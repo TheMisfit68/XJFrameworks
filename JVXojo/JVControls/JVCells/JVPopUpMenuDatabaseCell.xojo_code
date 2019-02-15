@@ -41,7 +41,15 @@ Inherits JVPopUpMenuCell
 			    
 			  end if
 			  
-			  Return mTreenode
+			  if mTreenode <> nil then
+			    
+			    Return mTreenode
+			    
+			  else
+			    
+			    return new NSTreeNode // Just an empty node
+			    
+			  end if
 			End Get
 		#tag EndGetter
 		Private treenode As NSTreeNode

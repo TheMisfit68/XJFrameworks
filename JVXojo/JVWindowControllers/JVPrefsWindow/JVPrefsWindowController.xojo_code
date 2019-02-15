@@ -46,7 +46,9 @@ Implements NSWindowDelegate
 		  prefsViewController.syncInterface(True)
 		  syncInterface(True)
 		  
-		  prefsViewController.view.EmbedWithin(prefsWindow, 0, 0, window.Width, window.Height-40)
+		  if (prefsViewController.view <> nil) then
+		    prefsViewController.view.EmbedWithin(prefsWindow, 0, 0, window.Width, window.Height-40)
+		  end if
 		  
 		End Sub
 	#tag EndMethod
