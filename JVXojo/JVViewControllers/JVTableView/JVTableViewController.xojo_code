@@ -92,7 +92,6 @@ Implements JVTableViewDataSource,JVTableViewDelegate,JVCellDelegate
 		  tableView.tableViewDataSource.editField(changedCell.row, changedCell.column, changedCell.name : newValue)
 		  
 		  tableView.InvalidateCell(changedCell.row, changedCell.column)
-		  
 		End Sub
 	#tag EndMethod
 

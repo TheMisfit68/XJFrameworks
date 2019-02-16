@@ -3,6 +3,7 @@ Protected Class NSTreeNode
 Implements JVCustomStringConvertable
 	#tag Method, Flags = &h0
 		Function addChild(child as NStreeNode) As NSTreeNode
+		  
 		  //Set the childs properties based on the parent
 		  child.parent = me
 		  for each component as Integer in indexPath

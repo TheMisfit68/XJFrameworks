@@ -455,7 +455,7 @@ Inherits SQLiteDatabase
 			              
 			              if fieldsWithAlias.right(7) <> "keyPath" then
 			                
-			                dim fieldsWithAliasPattern as String = "(.*)\s(?:AS\s)?(.*)?"
+			                dim fieldsWithAliasPattern as String = "(.+?)\s+(?:AS\s+)?(.+)"
 			                fieldName = fieldsWithAlias.replace(fieldsWithAliasPattern,"$1", True)
 			                
 			                dim aliasName as String
