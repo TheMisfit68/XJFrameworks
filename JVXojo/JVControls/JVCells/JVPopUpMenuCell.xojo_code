@@ -27,7 +27,6 @@ Inherits JVCell
 		Sub constructor(node as NSTreeNode, textColumn as String)
 		  super.constructor
 		  
-		  
 		  dim className as String = me.className
 		  
 		  if menusBySubclass = nil then
@@ -41,6 +40,31 @@ Inherits JVCell
 		  end if
 		  
 		  me.valueTransformer = menu.valueTransformer
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub constructor(menuItems() as String, textColumn as String)
+		  // Calling the designated constructor.
+		  
+		  // Transform the array to a singel level NSTreeNode
+		  dim treenode as new NSTreeNode
+		  dim key as Integer = 0
+		  for each menuItem as String in menuItems
+		    
+		    dim representedObject as new DatabaseRecord
+		    representedObject.Column(textColumn)=menuItem
+		    
+		    dim childNode as new NSTreeNode(representedObject)
+		    childNode.keyPath=Array(key)
+		    call treenode.addChild(childNode)
+		    
+		    key= key+ 1
+		  next menuItem
+		  
+		  constructor(treenode, textColumn)
 		  
 		  
 		End Sub

@@ -46,7 +46,7 @@ Implements NSWindowDelegate
 		  prefsViewController.syncInterface(True)
 		  syncInterface(True)
 		  
-		  if prefsViewController.view.Window = nil  then // Make sure to embed only once or strange things might happen
+		  if prefsViewController.view.window = nil  then // Make sure to embed only once or strange things might happen
 		    prefsViewController.view.EmbedWithin(prefsWindow, 0, 0, window.Width, window.Height-40)
 		  end if
 		End Sub
