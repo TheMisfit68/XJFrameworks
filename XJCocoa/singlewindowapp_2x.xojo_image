@@ -1,0 +1,40 @@
+#tag MultiImage
+Image singlewindowapp_2x
+	#tag ImageRepresentation
+		SaveInfo = APHRcwECAQAAAAKEAAAAAAKEAAIAAAxNYWNpbnRvc2ggSEQAAAAAAAAAAAAAAAAAAAAAAAAAQkQAAf////8Yc2luZ2xlLXdpbmRvdy1hcHBfMngucG5nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wAAAAAAAAAAAAAAAP////8AAAogY3UAAAAAAAAAAAAAAAAAH1hKQ29jb2Eub2Jzb2xldGVfMjAxOTAzMDFfIzkxOTUAAAIAry86VXNlcnM6amFudmVycmVwdDpEb2N1bWVudHM6RGV2ZWxvcG1lbnQ6UHJvamVjdHM6UGVyc29uYWw6WG9qbzpBcXVhRmluOml4aXByb206WEpGcmFtZXdvcmtzLm9ic29sZXRlXzIwMTkwMzAxXzEwMjcyODpYSkNvY29hLm9ic29sZXRlXzIwMTkwMzAxXzEwMjcyODpzaW5nbGUtd2luZG93LWFwcF8yeC5wbmcAAA4AMgAYAHMAaQBuAGcAbABlAC0AdwBpAG4AZABvAHcALQBhAHAAcABfADIAeAAuAHAAbgBnAA8AGgAMAE0AYQBjAGkAbgB0AG8AcwBoACAASABEABIArVVzZXJzL2phbnZlcnJlcHQvRG9jdW1lbnRzL0RldmVsb3BtZW50L1Byb2plY3RzL1BlcnNvbmFsL1hvam8vQXF1YUZpbi9peGlwcm9tL1hKRnJhbWV3b3Jrcy5vYnNvbGV0ZV8yMDE5MDMwMV8xMDI3MjgvWEpDb2NvYS5vYnNvbGV0ZV8yMDE5MDMwMV8xMDI3Mjgvc2luZ2xlLXdpbmRvdy1hcHBfMngucG5nAAATAAEvAAAVAAIAEf//AAAAAAAAAAA=
+		FullPath = /Users/janverrept/Documents/Development/Projects/Personal/Xojo/AquaFin/ixiprom/XJFrameworks.obsolete_20190301_102728/XJCocoa.obsolete_20190301_102728/single-window-app_2x.png
+		PartialPath = XJFrameworks.obsolete_20190301_102728\XJCocoa.obsolete_20190301_102728\single-window-app_2x.png
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = 1077.00
+			Orientation = Any
+			Platform = 15
+			PPI = 72
+			VSize = 898.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = 1077.00
+			Orientation = Any
+			Platform = 15
+			PPI = 144
+			VSize = 898.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = 1077.00
+			Orientation = Any
+			Platform = 15
+			PPI = 216
+			VSize = 898.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+End Image
+#tag EndMultiImage

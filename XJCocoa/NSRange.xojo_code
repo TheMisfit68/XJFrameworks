@@ -2,7 +2,7 @@
 Protected Class NSRange
 	#tag Method, Flags = &h0
 		Shared Function NSMakeRange(location as Integer, length as Integer) As NSRange
-		  dim newRange as new NSRange
+		  dim newRange as NSRange = new NSRange
 		  newRange.location = location
 		  newRange.length = length
 		  
@@ -28,11 +28,23 @@ Protected Class NSRange
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -42,8 +54,10 @@ Protected Class NSRange
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="length"
-			Group="Behavior"
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -52,22 +66,8 @@ Protected Class NSRange
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Name"
-			Visible=true
-			Group="ID"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Super"
-			Visible=true
-			Group="ID"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Top"
-			Visible=true
-			Group="Position"
-			InitialValue="0"
+			Name="length"
+			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior

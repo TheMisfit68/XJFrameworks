@@ -29,52 +29,11 @@ Inherits PopupMenu
 			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="AutoDeactivate"
+			Name="Name"
 			Visible=true
-			Group="Appearance"
-			InitialValue="True"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Bold"
-			Visible=true
-			Group="Font"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DataField"
-			Visible=true
-			Group="Database Binding"
+			Group="ID"
 			Type="String"
-			EditorType="DataField"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DataSource"
-			Visible=true
-			Group="Database Binding"
-			Type="String"
-			EditorType="DataSource"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Enabled"
-			Visible=true
-			Group="Appearance"
-			InitialValue="True"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Height"
-			Visible=true
-			Group="Position"
-			InitialValue="20"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="HelpTag"
-			Visible=true
-			Group="Appearance"
-			Type="String"
-			EditorType="MultiLineEditor"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -84,21 +43,11 @@ Inherits PopupMenu
 			EditorType="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="InitialParent"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="InitialValue"
+			Name="Super"
 			Visible=true
-			Group="Appearance"
+			Group="ID"
 			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Italic"
-			Visible=true
-			Group="Font"
-			Type="Boolean"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -107,26 +56,27 @@ Inherits PopupMenu
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="ListIndex"
+			Name="Top"
 			Visible=true
-			Group="Appearance"
-			InitialValue="0"
+			Group="Position"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="LockBottom"
+			Name="Width"
 			Visible=true
 			Group="Position"
-			Type="Boolean"
+			InitialValue="80"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Height"
+			Visible=true
+			Group="Position"
+			InitialValue="20"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockLeft"
-			Visible=true
-			Group="Position"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="LockRight"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
@@ -138,18 +88,22 @@ Inherits PopupMenu
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Name"
+			Name="LockRight"
 			Visible=true
-			Group="ID"
-			Type="String"
-			EditorType="String"
+			Group="Position"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Super"
+			Name="LockBottom"
 			Visible=true
-			Group="ID"
-			Type="String"
-			EditorType="String"
+			Group="Position"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TabPanelIndex"
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TabIndex"
@@ -159,15 +113,51 @@ Inherits PopupMenu
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="TabPanelIndex"
+			Name="TabStop"
+			Visible=true
 			Group="Position"
+			InitialValue="True"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Enabled"
+			Visible=true
+			Group="Appearance"
+			InitialValue="True"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="InitialValue"
+			Visible=true
+			Group="Appearance"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ListIndex"
+			Visible=true
+			Group="Appearance"
 			InitialValue="0"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="TabStop"
+			Name="Visible"
 			Visible=true
-			Group="Position"
+			Group="Appearance"
+			InitialValue="True"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HelpTag"
+			Visible=true
+			Group="Appearance"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AutoDeactivate"
+			Visible=true
+			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
 		#tag EndViewProperty
@@ -201,10 +191,16 @@ Inherits PopupMenu
 			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Top"
+			Name="Bold"
 			Visible=true
-			Group="Position"
-			Type="Integer"
+			Group="Font"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Italic"
+			Visible=true
+			Group="Font"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Underline"
@@ -213,18 +209,22 @@ Inherits PopupMenu
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Visible"
+			Name="DataSource"
 			Visible=true
-			Group="Appearance"
-			InitialValue="True"
-			Type="Boolean"
+			Group="Database Binding"
+			Type="String"
+			EditorType="DataSource"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Width"
+			Name="DataField"
 			Visible=true
-			Group="Position"
-			InitialValue="80"
-			Type="Integer"
+			Group="Database Binding"
+			Type="String"
+			EditorType="DataField"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="InitialParent"
+			Type="String"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

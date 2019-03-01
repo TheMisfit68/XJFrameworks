@@ -6,12 +6,7 @@ Inherits TabPanel
 		  
 		  
 		  dim subViewsLeft as Integer = 0
-		  #if TargetMacOS then
-		    dim subViewsTop as Integer = 30 // keep some space for the tabs
-		  #else
-		    dim subViewsTop as Integer = 20 // These tabs are smaller on the windows platform
-		  #Endif
-		  
+		  dim subViewsTop as Integer = 20 // keep some space for the tabs
 		  dim subViewsWidth as Integer = me.Width
 		  dim subViewsHeight as Integer = me.Height-subViewsTop
 		  
@@ -33,38 +28,11 @@ Inherits TabPanel
 			EditorType="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="AutoDeactivate"
+			Name="Name"
 			Visible=true
-			Group="Appearance"
-			InitialValue="True"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Bold"
-			Visible=true
-			Group="Font"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Enabled"
-			Visible=true
-			Group="Appearance"
-			InitialValue="True"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Height"
-			Visible=true
-			Group="Position"
-			InitialValue="100"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="HelpTag"
-			Visible=true
-			Group="Appearance"
+			Group="ID"
 			Type="String"
-			EditorType="MultiLineEditor"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -74,14 +42,11 @@ Inherits TabPanel
 			EditorType="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="InitialParent"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Italic"
+			Name="Super"
 			Visible=true
-			Group="Font"
-			Type="Boolean"
+			Group="ID"
+			Type="String"
+			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -90,19 +55,27 @@ Inherits TabPanel
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="LockBottom"
+			Name="Top"
 			Visible=true
 			Group="Position"
-			Type="Boolean"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Width"
+			Visible=true
+			Group="Position"
+			InitialValue="200"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Height"
+			Visible=true
+			Group="Position"
+			InitialValue="100"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LockLeft"
-			Visible=true
-			Group="Position"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="LockRight"
 			Visible=true
 			Group="Position"
 			Type="Boolean"
@@ -114,11 +87,42 @@ Inherits TabPanel
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Name"
+			Name="LockRight"
 			Visible=true
-			Group="ID"
+			Group="Position"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="LockBottom"
+			Visible=true
+			Group="Position"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TabPanelIndex"
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TabIndex"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TabStop"
+			Visible=true
+			Group="Position"
+			InitialValue="True"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TabDefinition"
+			Group="Appearance"
+			InitialValue="Tab 0\rTab 1"
 			Type="String"
-			EditorType="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Panels"
@@ -134,35 +138,36 @@ Inherits TabPanel
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Super"
-			Visible=true
-			Group="ID"
-			Type="String"
-			EditorType="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="TabDefinition"
+			Name="Value"
 			Group="Appearance"
-			InitialValue="Tab 0\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\rTab 1"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Visible"
+			Visible=true
+			Group="Appearance"
+			InitialValue="True"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="HelpTag"
+			Visible=true
+			Group="Appearance"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="TabIndex"
+			Name="AutoDeactivate"
 			Visible=true
-			Group="Position"
-			InitialValue="0"
-			Type="Integer"
+			Group="Appearance"
+			InitialValue="True"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="TabPanelIndex"
-			Group="Position"
-			InitialValue="0"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="TabStop"
+			Name="Enabled"
 			Visible=true
-			Group="Position"
+			Group="Appearance"
 			InitialValue="True"
 			Type="Boolean"
 		#tag EndViewProperty
@@ -196,10 +201,16 @@ Inherits TabPanel
 			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Top"
+			Name="Bold"
 			Visible=true
-			Group="Position"
-			Type="Integer"
+			Group="Font"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Italic"
+			Visible=true
+			Group="Font"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Underline"
@@ -208,24 +219,8 @@ Inherits TabPanel
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Value"
-			Group="Appearance"
-			InitialValue="0"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Visible"
-			Visible=true
-			Group="Appearance"
-			InitialValue="True"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Width"
-			Visible=true
-			Group="Position"
-			InitialValue="200"
-			Type="Integer"
+			Name="InitialParent"
+			Type="String"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

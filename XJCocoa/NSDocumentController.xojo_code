@@ -34,7 +34,7 @@ Protected Class NSDocumentController
 		  // and use its contents
 		  if newDocument.file <> nil then
 		    
-		    newDocument.node = NSKeyedUnarchiver(newDocument.file)
+		    newDocument.representedObject = NSKeyedUnarchiver(newDocument.file)
 		    newDocument.windowController.window.title = newDocument.file.DisplayName
 		    
 		    documents.Insert 0, newdocument
@@ -64,7 +64,7 @@ Protected Class NSDocumentController
 
 	#tag Method, Flags = &h0
 		Shared Function saveDialog(existingFile as FolderItem) As FolderItem
-		  // Propose current filename and type if it exist
+		   // Propose current filename and type if it exist
 		  //  or default to "Untitled"
 		  
 		  dim fileName  as String = "Untitled"
@@ -152,6 +152,12 @@ Protected Class NSDocumentController
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -159,23 +165,17 @@ Protected Class NSDocumentController
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Name"
-			Visible=true
-			Group="ID"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Super"
-			Visible=true
-			Group="ID"
-			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"

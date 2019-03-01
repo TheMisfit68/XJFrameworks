@@ -28,9 +28,10 @@ Protected Class NSSize
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="height"
-			Group="Behavior"
-			Type="Integer"
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -40,23 +41,17 @@ Protected Class NSSize
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Name"
-			Visible=true
-			Group="ID"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Super"
-			Visible=true
-			Group="ID"
-			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"
@@ -67,6 +62,11 @@ Protected Class NSSize
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="width"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="height"
 			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty

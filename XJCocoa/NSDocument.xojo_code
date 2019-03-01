@@ -14,7 +14,7 @@ Protected Class NSDocument
 		  
 		  file = nil
 		  
-		  node = nil
+		  representedObject = nil
 		  
 		  windowController = nil
 		  
@@ -28,7 +28,7 @@ Protected Class NSDocument
 
 	#tag Method, Flags = &h0
 		Sub loadData()
-		  node = NSKeyedUnarchiver.unarchiveObject(file)
+		  representedObject = NSKeyedUnarchiver.unarchiveObject(file)
 		  
 		End Sub
 	#tag EndMethod
@@ -41,7 +41,7 @@ Protected Class NSDocument
 		  
 		  if file <> nil then
 		    
-		    NSKeyedArchiver.archiveObject(node, file)
+		    NSKeyedArchiver.archiveObject(representedObject, file)
 		    
 		    if isSaved then
 		      windowController.window.title = file.DisplayName
@@ -59,14 +59,14 @@ Protected Class NSDocument
 		  
 		  if file <> nil then
 		    
-		    NSKeyedArchiver.archiveObject(node, file)
+		    NSKeyedArchiver.archiveObject(representedObject, file)
 		    
 		    if isSaved then
 		      windowController.window.title = file.DisplayName
 		    end if
 		    
 		  end if
-		  
+		   
 		End Sub
 	#tag EndMethod
 
@@ -98,7 +98,7 @@ Protected Class NSDocument
 			Get
 			  Dim e As RuntimeException = New RuntimeException
 			  e.ErrorNumber = -1
-			  e.Message = "[NSDocument] You must override the fileType-property"
+			  e.Message = "You must overide the fileType-property for te NSDocument-class"
 			  Raise e
 			End Get
 		#tag EndGetter
@@ -110,7 +110,7 @@ Protected Class NSDocument
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		node As Variant
+		representedObject As Variant
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -124,9 +124,10 @@ Protected Class NSDocument
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="documentEdited"
-			Group="Behavior"
-			Type="Boolean"
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
@@ -136,9 +137,10 @@ Protected Class NSDocument
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="isSaved"
-			Group="Behavior"
-			Type="Boolean"
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Left"
@@ -148,23 +150,21 @@ Protected Class NSDocument
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Name"
-			Visible=true
-			Group="ID"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Super"
-			Visible=true
-			Group="ID"
-			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Top"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="isSaved"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="documentEdited"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
