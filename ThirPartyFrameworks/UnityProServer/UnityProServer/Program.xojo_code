@@ -22,14 +22,18 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Sub Destructor()
-		  If ObjectMap <> Nil And ObjectMap.HasKey(Handle) Then ObjectMap.Remove(Handle)
-		  
+		  #if TargetWin32
+		    If ObjectMap <> Nil And ObjectMap.HasKey(Handle) Then ObjectMap.Remove(Handle)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Shared Function IID() As MemoryBlock
-		  Return COM.IIDFromString("{13639205-C7A6-11D4-A251-0006290515BB}")
+		  #if TargetWin32
+		    Return COM.IIDFromString("{13639205-C7A6-11D4-A251-0006290515BB}")
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -39,13 +43,15 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(rhs As COM.IUnknown)
-		  If rhs.Handle = Nil Then Return
-		  Dim p As Ptr
-		  If 0 = rhs.QueryInterface( UnityProServer.IProgram.IID, p ) Then
-		    mThis = p
-		  Else
-		    Raise New IllegalCastException
-		  End If
+		  #if TargetWin32
+		    If rhs.Handle = Nil Then Return
+		    Dim p As Ptr
+		    If 0 = rhs.QueryInterface( UnityProServer.IProgram.IID, p ) Then
+		      mThis = p
+		    Else
+		      Raise New IllegalCastException
+		    End If
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -61,17 +67,19 @@ Inherits COM.IDispatch
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mThis = Nil Then Raise New NilObjectException
-			  Dim ppIOEvents_Param As Ptr
-			  Dim func As New IOEvents_Get_Func1( mThis.Ptr( 0 ).Ptr( 28 ) )
-			  Dim resultCode As Integer = func.Invoke( mThis, ppIOEvents_Param )
-			  If 0 = resultCode Then
-			    If Nil <> ppIOEvents_Param Then
-			      Return New UnityProServer.IIOEvents( ppIOEvents_Param )
+			  #if TargetWindows
+			    If mThis = Nil Then Raise New NilObjectException
+			    Dim ppIOEvents_Param As Ptr
+			    Dim func As New IOEvents_Get_Func1( mThis.Ptr( 0 ).Ptr( 7 * COM.SIZEOF_PTR ) )
+			    Dim resultCode As Integer = func.Invoke( mThis, ppIOEvents_Param )
+			    If 0 = resultCode Then
+			      If Nil <> ppIOEvents_Param Then
+			        Return New UnityProServer.IIOEvents( ppIOEvents_Param )
+			      End If
+			    Else
+			      Raise New COM.COMException("Failed on IOEvents", resultCode )
 			    End If
-			  Else
-			    Raise New COM.COMException("Failed on IOEvents", resultCode )
-			  End If
+			  #endif
 			  
 			End Get
 		#tag EndGetter
@@ -97,17 +105,19 @@ Inherits COM.IDispatch
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mThis = Nil Then Raise New NilObjectException
-			  Dim ppITasks_Param As Ptr
-			  Dim func As New Tasks_Get_Func1( mThis.Ptr( 0 ).Ptr( 36 ) )
-			  Dim resultCode As Integer = func.Invoke( mThis, ppITasks_Param )
-			  If 0 = resultCode Then
-			    If Nil <> ppITasks_Param Then
-			      Return New UnityProServer.ITasks( ppITasks_Param )
+			  #if TargetWindows
+			    If mThis = Nil Then Raise New NilObjectException
+			    Dim ppITasks_Param As Ptr
+			    Dim func As New Tasks_Get_Func1( mThis.Ptr( 0 ).Ptr( 9 * COM.SIZEOF_PTR ) )
+			    Dim resultCode As Integer = func.Invoke( mThis, ppITasks_Param )
+			    If 0 = resultCode Then
+			      If Nil <> ppITasks_Param Then
+			        Return New UnityProServer.ITasks( ppITasks_Param )
+			      End If
+			    Else
+			      Raise New COM.COMException("Failed on Tasks", resultCode )
 			    End If
-			  Else
-			    Raise New COM.COMException("Failed on Tasks", resultCode )
-			  End If
+			  #endif
 			  
 			End Get
 		#tag EndGetter
@@ -117,17 +127,19 @@ Inherits COM.IDispatch
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mThis = Nil Then Raise New NilObjectException
-			  Dim ppITimerEvents_Param As Ptr
-			  Dim func As New TimerEvents_Get_Func1( mThis.Ptr( 0 ).Ptr( 32 ) )
-			  Dim resultCode As Integer = func.Invoke( mThis, ppITimerEvents_Param )
-			  If 0 = resultCode Then
-			    If Nil <> ppITimerEvents_Param Then
-			      Return New UnityProServer.ITimerEvents( ppITimerEvents_Param )
+			  #if TargetWindows
+			    If mThis = Nil Then Raise New NilObjectException
+			    Dim ppITimerEvents_Param As Ptr
+			    Dim func As New TimerEvents_Get_Func1( mThis.Ptr( 0 ).Ptr( 8 * COM.SIZEOF_PTR ) )
+			    Dim resultCode As Integer = func.Invoke( mThis, ppITimerEvents_Param )
+			    If 0 = resultCode Then
+			      If Nil <> ppITimerEvents_Param Then
+			        Return New UnityProServer.ITimerEvents( ppITimerEvents_Param )
+			      End If
+			    Else
+			      Raise New COM.COMException("Failed on TimerEvents", resultCode )
 			    End If
-			  Else
-			    Raise New COM.COMException("Failed on TimerEvents", resultCode )
-			  End If
+			  #endif
 			  
 			End Get
 		#tag EndGetter

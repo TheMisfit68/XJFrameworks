@@ -3,21 +3,23 @@ Protected Class IConfiguration
 Inherits COM.IDispatch
 	#tag Method, Flags = &h0
 		Sub Change(NewPartNumber_Param As String, NewVersion_Param As String)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New Change_Func2(mThis.Ptr( 0 ).Ptr(40 ))
-		  Dim resultCode As Integer
-		  Dim Local_NewPartNumber_Param As Ptr
-		  Local_NewPartNumber_Param = COM.SysAllocString( NewPartNumber_Param )
-		  Dim Local_NewVersion_Param As Ptr
-		  Local_NewVersion_Param = COM.SysAllocString( NewVersion_Param )
-		  resultCode = func.Invoke(mThis, Local_NewPartNumber_Param, Local_NewVersion_Param)
-		  COM.SysFreeString(Local_NewPartNumber_Param)
-		  COM.SysFreeString(Local_NewVersion_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on Change", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New Change_Func2(mThis.Ptr( 0 ).Ptr(10 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_NewPartNumber_Param As Ptr
+		    Local_NewPartNumber_Param = COM.SysAllocString( NewPartNumber_Param )
+		    Dim Local_NewVersion_Param As Ptr
+		    Local_NewVersion_Param = COM.SysAllocString( NewVersion_Param )
+		    resultCode = func.Invoke(mThis, Local_NewPartNumber_Param, Local_NewVersion_Param)
+		    COM.SysFreeString(Local_NewPartNumber_Param)
+		    COM.SysFreeString(Local_NewVersion_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on Change", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -36,19 +38,21 @@ Inherits COM.IDispatch
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
-		Sub Export(FileNameToExport_Param As String, ExportOption_Param As Integer = 0)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New Export_Func2(mThis.Ptr( 0 ).Ptr(32 ))
-		  Dim resultCode As Integer
-		  Dim Local_FileNameToExport_Param As Ptr
-		  Local_FileNameToExport_Param = COM.SysAllocString( FileNameToExport_Param )
-		  resultCode = func.Invoke(mThis, Local_FileNameToExport_Param, ExportOption_Param)
-		  COM.SysFreeString(Local_FileNameToExport_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on Export", resultCode)
-		  End If
-		  
+		Sub Export(FileNameToExport_Param As String, ExportOption_Param As Integer)
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New Export_Func2(mThis.Ptr( 0 ).Ptr(8 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_FileNameToExport_Param As Ptr
+		    Local_FileNameToExport_Param = COM.SysAllocString( FileNameToExport_Param )
+		    resultCode = func.Invoke(mThis, Local_FileNameToExport_Param, ExportOption_Param)
+		    COM.SysFreeString(Local_FileNameToExport_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on Export", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -58,24 +62,28 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Shared Function IID() As MemoryBlock
-		  Return COM.IIDFromString("{D07185B1-00D0-11D5-A242-0006296240B1}")
+		  #if TargetWin32
+		    Return COM.IIDFromString("{D07185B1-00D0-11D5-A242-0006296240B1}")
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Import(FileNameToImport_Param As String)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New Import_Func1(mThis.Ptr( 0 ).Ptr(28 ))
-		  Dim resultCode As Integer
-		  Dim Local_FileNameToImport_Param As Ptr
-		  Local_FileNameToImport_Param = COM.SysAllocString( FileNameToImport_Param )
-		  resultCode = func.Invoke(mThis, Local_FileNameToImport_Param)
-		  COM.SysFreeString(Local_FileNameToImport_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on Import", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New Import_Func1(mThis.Ptr( 0 ).Ptr(7 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_FileNameToImport_Param As Ptr
+		    Local_FileNameToImport_Param = COM.SysAllocString( FileNameToImport_Param )
+		    resultCode = func.Invoke(mThis, Local_FileNameToImport_Param)
+		    COM.SysFreeString(Local_FileNameToImport_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on Import", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -85,13 +93,15 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(rhs As COM.IUnknown)
-		  If rhs.Handle = Nil Then Return
-		  Dim p As Ptr
-		  If 0 = rhs.QueryInterface( UnityProServer.IConfiguration.IID, p ) Then
-		    mThis = p
-		  Else
-		    Raise New IllegalCastException
-		  End If
+		  #if TargetWin32
+		    If rhs.Handle = Nil Then Return
+		    Dim p As Ptr
+		    If 0 = rhs.QueryInterface( UnityProServer.IConfiguration.IID, p ) Then
+		      mThis = p
+		    Else
+		      Raise New IllegalCastException
+		    End If
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -99,17 +109,19 @@ Inherits COM.IDispatch
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mThis = Nil Then Raise New NilObjectException
-			  Dim ppCpu_Param As Ptr
-			  Dim func As New Cpu_Get_Func1( mThis.Ptr( 0 ).Ptr( 36 ) )
-			  Dim resultCode As Integer = func.Invoke( mThis, ppCpu_Param )
-			  If 0 = resultCode Then
-			    If Nil <> ppCpu_Param Then
-			      Return New UnityProServer.ICpu( ppCpu_Param )
+			  #if TargetWindows
+			    If mThis = Nil Then Raise New NilObjectException
+			    Dim ppCpu_Param As Ptr
+			    Dim func As New Cpu_Get_Func1( mThis.Ptr( 0 ).Ptr( 9 * COM.SIZEOF_PTR ) )
+			    Dim resultCode As Integer = func.Invoke( mThis, ppCpu_Param )
+			    If 0 = resultCode Then
+			      If Nil <> ppCpu_Param Then
+			        Return New UnityProServer.ICpu( ppCpu_Param )
+			      End If
+			    Else
+			      Raise New COM.COMException("Failed on Cpu", resultCode )
 			    End If
-			  Else
-			    Raise New COM.COMException("Failed on Cpu", resultCode )
-			  End If
+			  #endif
 			  
 			End Get
 		#tag EndGetter

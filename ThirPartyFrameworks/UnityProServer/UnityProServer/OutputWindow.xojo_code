@@ -3,27 +3,31 @@ Protected Class OutputWindow
 Inherits COM.IDispatch
 	#tag Method, Flags = &h0
 		Sub CloseEditor()
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New CloseEditor_Func0(mThis.Ptr( 0 ).Ptr(32 ))
-		  Call func.Invoke(mThis)
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New CloseEditor_Func0(mThis.Ptr( 0 ).Ptr(8 * COM.SIZEOF_PTR ))
+		    Call func.Invoke(mThis)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub CloseEditorControl(bstrHMIRWPasswrd_Param As String)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New CloseEditorControl_Func1(mThis.Ptr( 0 ).Ptr(44 ))
-		  Dim resultCode As Integer
-		  Dim Local_bstrHMIRWPasswrd_Param As Ptr
-		  Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
-		  resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
-		  COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on CloseEditorControl", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New CloseEditorControl_Func1(mThis.Ptr( 0 ).Ptr(11 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_bstrHMIRWPasswrd_Param As Ptr
+		    Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
+		    resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
+		    COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on CloseEditorControl", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -56,34 +60,40 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Sub Destructor()
-		  If ObjectMap <> Nil And ObjectMap.HasKey(Handle) Then ObjectMap.Remove(Handle)
-		  
+		  #if TargetWin32
+		    If ObjectMap <> Nil And ObjectMap.HasKey(Handle) Then ObjectMap.Remove(Handle)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub DisplayEditor()
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New DisplayEditor_Func0(mThis.Ptr( 0 ).Ptr(28 ))
-		  Call func.Invoke(mThis)
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New DisplayEditor_Func0(mThis.Ptr( 0 ).Ptr(7 * COM.SIZEOF_PTR ))
+		    Call func.Invoke(mThis)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub DisplayEditorControl(bstrHMIRWPasswrd_Param As String)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New DisplayEditorControl_Func1(mThis.Ptr( 0 ).Ptr(40 ))
-		  Dim resultCode As Integer
-		  Dim Local_bstrHMIRWPasswrd_Param As Ptr
-		  Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
-		  resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
-		  COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on DisplayEditorControl", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New DisplayEditorControl_Func1(mThis.Ptr( 0 ).Ptr(10 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_bstrHMIRWPasswrd_Param As Ptr
+		    Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
+		    resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
+		    COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on DisplayEditorControl", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -97,17 +107,19 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Sub GetContentsAsArray(pContentAsArray_Param As Variant)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New GetContentsAsArray_Func1(mThis.Ptr( 0 ).Ptr(48 ))
-		  Dim resultCode As Integer
-		  Dim Local_pContentAsArray_Param As MemoryBlock = COM.RBVariantToVARIANT(pContentAsArray_Param)
-		  resultCode = func.Invoke(mThis, Local_pContentAsArray_Param)
-		  COM.FreeVARIANT(Local_pContentAsArray_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on GetContentsAsArray", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New GetContentsAsArray_Func1(mThis.Ptr( 0 ).Ptr(12 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_pContentAsArray_Param As MemoryBlock = COM.RBVariantToVARIANT(pContentAsArray_Param)
+		    resultCode = func.Invoke(mThis, Local_pContentAsArray_Param)
+		    COM.FreeVARIANT(Local_pContentAsArray_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on GetContentsAsArray", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -117,24 +129,26 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Function GetContentsAsString(Tab_Param As String) As Variant
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New GetContentsAsString_Func2(mThis.Ptr( 0 ).Ptr(36 ))
-		  Dim resultCode As Integer
-		  Dim Local_Tab_Param As Ptr
-		  Local_Tab_Param = COM.SysAllocString( Tab_Param )
-		  Dim Return_pArrayOfStrings_Param As Ptr
-		  Dim pArrayOfStrings_Param_MB As New MemoryBlock(16)
-		  Return_pArrayOfStrings_Param = pArrayOfStrings_Param_MB
-		  resultCode = func.Invoke(mThis, Local_Tab_Param, Return_pArrayOfStrings_Param)
-		  COM.SysFreeString(Local_Tab_Param)
-		  If resultCode = 0 Then
-		    Dim retVal As Variant = COM.VARIANTToRBVariant(Return_pArrayOfStrings_Param)
-		    COM.FreeVARIANT(Return_pArrayOfStrings_Param)
-		    Return retVal
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on GetContentsAsString", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New GetContentsAsString_Func2(mThis.Ptr( 0 ).Ptr(9 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_Tab_Param As Ptr
+		    Local_Tab_Param = COM.SysAllocString( Tab_Param )
+		    Dim Return_pArrayOfStrings_Param As Ptr
+		    Dim pArrayOfStrings_Param_MB As New MemoryBlock(16)
+		    Return_pArrayOfStrings_Param = pArrayOfStrings_Param_MB
+		    resultCode = func.Invoke(mThis, Local_Tab_Param, Return_pArrayOfStrings_Param)
+		    COM.SysFreeString(Local_Tab_Param)
+		    If resultCode = 0 Then
+		      Dim retVal As Variant = COM.VARIANTToRBVariant(Return_pArrayOfStrings_Param)
+		      COM.FreeVARIANT(Return_pArrayOfStrings_Param)
+		      Return retVal
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on GetContentsAsString", resultCode)
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -144,19 +158,23 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Shared Function IID() As MemoryBlock
-		  Return COM.IIDFromString("{5FBA2353-37FE-11D5-88E8-00062926BB4F}")
+		  #if TargetWin32
+		    Return COM.IIDFromString("{5FBA2353-37FE-11D5-88E8-00062926BB4F}")
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(rhs As COM.IUnknown)
-		  If rhs.Handle = Nil Then Return
-		  Dim p As Ptr
-		  If 0 = rhs.QueryInterface( UnityProServer.IOutputWindow.IID, p ) Then
-		    mThis = p
-		  Else
-		    Raise New IllegalCastException
-		  End If
+		  #if TargetWin32
+		    If rhs.Handle = Nil Then Return
+		    Dim p As Ptr
+		    If 0 = rhs.QueryInterface( UnityProServer.IOutputWindow.IID, p ) Then
+		      mThis = p
+		    Else
+		      Raise New IllegalCastException
+		    End If
+		  #endif
 		End Sub
 	#tag EndMethod
 

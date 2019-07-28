@@ -3,27 +3,31 @@ Protected Class IContext
 Inherits COM.IDispatch
 	#tag Method, Flags = &h0
 		Sub CloseEditor()
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New CloseEditor_Func0(mThis.Ptr( 0 ).Ptr(40 ))
-		  Call func.Invoke(mThis)
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New CloseEditor_Func0(mThis.Ptr( 0 ).Ptr(10 * COM.SIZEOF_PTR ))
+		    Call func.Invoke(mThis)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub CloseEditorControl(bstrHMIRWPasswrd_Param As String)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New CloseEditorControl_Func1(mThis.Ptr( 0 ).Ptr(48 ))
-		  Dim resultCode As Integer
-		  Dim Local_bstrHMIRWPasswrd_Param As Ptr
-		  Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
-		  resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
-		  COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on CloseEditorControl", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New CloseEditorControl_Func1(mThis.Ptr( 0 ).Ptr(12 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_bstrHMIRWPasswrd_Param As Ptr
+		    Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
+		    resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
+		    COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on CloseEditorControl", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -43,27 +47,31 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Sub DisplayEditor()
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New DisplayEditor_Func0(mThis.Ptr( 0 ).Ptr(36 ))
-		  Call func.Invoke(mThis)
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New DisplayEditor_Func0(mThis.Ptr( 0 ).Ptr(9 * COM.SIZEOF_PTR ))
+		    Call func.Invoke(mThis)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub DisplayEditorControl(bstrHMIRWPasswrd_Param As String)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New DisplayEditorControl_Func1(mThis.Ptr( 0 ).Ptr(44 ))
-		  Dim resultCode As Integer
-		  Dim Local_bstrHMIRWPasswrd_Param As Ptr
-		  Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
-		  resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
-		  COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on DisplayEditorControl", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New DisplayEditorControl_Func1(mThis.Ptr( 0 ).Ptr(11 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_bstrHMIRWPasswrd_Param As Ptr
+		    Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
+		    resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
+		    COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on DisplayEditorControl", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -77,7 +85,9 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Shared Function IID() As MemoryBlock
-		  Return COM.IIDFromString("{4D09F15C-D306-4DF6-A421-BC8B583CBD6D}")
+		  #if TargetWin32
+		    Return COM.IIDFromString("{4D09F15C-D306-4DF6-A421-BC8B583CBD6D}")
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -87,13 +97,15 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(rhs As COM.IUnknown)
-		  If rhs.Handle = Nil Then Return
-		  Dim p As Ptr
-		  If 0 = rhs.QueryInterface( UnityProServer.IContext.IID, p ) Then
-		    mThis = p
-		  Else
-		    Raise New IllegalCastException
-		  End If
+		  #if TargetWin32
+		    If rhs.Handle = Nil Then Return
+		    Dim p As Ptr
+		    If 0 = rhs.QueryInterface( UnityProServer.IContext.IID, p ) Then
+		      mThis = p
+		    Else
+		      Raise New IllegalCastException
+		    End If
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -105,15 +117,17 @@ Inherits COM.IDispatch
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mThis = Nil Then Raise New NilObjectException
-			  Dim pLocalization_Param As Ptr
-			  Dim func As New Localization_Get_Func1( mThis.Ptr( 0 ).Ptr( 28 ) )
-			  Dim resultCode As Integer = func.Invoke( mThis, pLocalization_Param )
-			  If 0 = resultCode Then
-			    Return COM.BSTRToRBString( pLocalization_Param )
-			  Else
-			    Raise New COM.COMException("Failed on Localization", resultCode )
-			  End If
+			  #if TargetWindows
+			    If mThis = Nil Then Raise New NilObjectException
+			    Dim pLocalization_Param As Ptr
+			    Dim func As New Localization_Get_Func1( mThis.Ptr( 0 ).Ptr( 7 * COM.SIZEOF_PTR ) )
+			    Dim resultCode As Integer = func.Invoke( mThis, pLocalization_Param )
+			    If 0 = resultCode Then
+			      Return COM.BSTRToRBString( pLocalization_Param )
+			    Else
+			      Raise New COM.COMException("Failed on Localization", resultCode )
+			    End If
+			  #endif
 			  
 			End Get
 		#tag EndGetter
@@ -123,15 +137,17 @@ Inherits COM.IDispatch
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mThis = Nil Then Raise New NilObjectException
-			  Dim pPathDescription_Param As Ptr
-			  Dim func As New PathDescription_Get_Func1( mThis.Ptr( 0 ).Ptr( 32 ) )
-			  Dim resultCode As Integer = func.Invoke( mThis, pPathDescription_Param )
-			  If 0 = resultCode Then
-			    Return COM.BSTRToRBString( pPathDescription_Param )
-			  Else
-			    Raise New COM.COMException("Failed on PathDescription", resultCode )
-			  End If
+			  #if TargetWindows
+			    If mThis = Nil Then Raise New NilObjectException
+			    Dim pPathDescription_Param As Ptr
+			    Dim func As New PathDescription_Get_Func1( mThis.Ptr( 0 ).Ptr( 8 * COM.SIZEOF_PTR ) )
+			    Dim resultCode As Integer = func.Invoke( mThis, pPathDescription_Param )
+			    If 0 = resultCode Then
+			      Return COM.BSTRToRBString( pPathDescription_Param )
+			    Else
+			      Raise New COM.COMException("Failed on PathDescription", resultCode )
+			    End If
+			  #endif
 			  
 			End Get
 		#tag EndGetter
@@ -155,22 +171,10 @@ Inherits COM.IDispatch
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Localization"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="PathDescription"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
@@ -184,6 +188,16 @@ Inherits COM.IDispatch
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Localization"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PathDescription"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

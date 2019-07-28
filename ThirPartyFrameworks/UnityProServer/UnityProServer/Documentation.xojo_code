@@ -3,27 +3,31 @@ Protected Class Documentation
 Inherits COM.IDispatch
 	#tag Method, Flags = &h0
 		Sub CloseEditor()
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New CloseEditor_Func0(mThis.Ptr( 0 ).Ptr(40 ))
-		  Call func.Invoke(mThis)
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New CloseEditor_Func0(mThis.Ptr( 0 ).Ptr(10 * COM.SIZEOF_PTR ))
+		    Call func.Invoke(mThis)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub CloseEditorControl(bstrHMIRWPasswrd_Param As String)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New CloseEditorControl_Func1(mThis.Ptr( 0 ).Ptr(56 ))
-		  Dim resultCode As Integer
-		  Dim Local_bstrHMIRWPasswrd_Param As Ptr
-		  Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
-		  resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
-		  COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on CloseEditorControl", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New CloseEditorControl_Func1(mThis.Ptr( 0 ).Ptr(14 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_bstrHMIRWPasswrd_Param As Ptr
+		    Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
+		    resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
+		    COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on CloseEditorControl", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -56,34 +60,40 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Sub Destructor()
-		  If ObjectMap <> Nil And ObjectMap.HasKey(Handle) Then ObjectMap.Remove(Handle)
-		  
+		  #if TargetWin32
+		    If ObjectMap <> Nil And ObjectMap.HasKey(Handle) Then ObjectMap.Remove(Handle)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub DisplayEditor()
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New DisplayEditor_Func0(mThis.Ptr( 0 ).Ptr(36 ))
-		  Call func.Invoke(mThis)
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New DisplayEditor_Func0(mThis.Ptr( 0 ).Ptr(9 * COM.SIZEOF_PTR ))
+		    Call func.Invoke(mThis)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub DisplayEditorControl(bstrHMIRWPasswrd_Param As String)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New DisplayEditorControl_Func1(mThis.Ptr( 0 ).Ptr(52 ))
-		  Dim resultCode As Integer
-		  Dim Local_bstrHMIRWPasswrd_Param As Ptr
-		  Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
-		  resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
-		  COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on DisplayEditorControl", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New DisplayEditorControl_Func1(mThis.Ptr( 0 ).Ptr(13 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_bstrHMIRWPasswrd_Param As Ptr
+		    Local_bstrHMIRWPasswrd_Param = COM.SysAllocString( bstrHMIRWPasswrd_Param )
+		    resultCode = func.Invoke(mThis, Local_bstrHMIRWPasswrd_Param)
+		    COM.SysFreeString(Local_bstrHMIRWPasswrd_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on DisplayEditorControl", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -97,10 +107,12 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Sub Generate()
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New Generate_Func0(mThis.Ptr( 0 ).Ptr(28 ))
-		  Call func.Invoke(mThis)
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New Generate_Func0(mThis.Ptr( 0 ).Ptr(7 * COM.SIZEOF_PTR ))
+		    Call func.Invoke(mThis)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -110,19 +122,23 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Shared Function IID() As MemoryBlock
-		  Return COM.IIDFromString("{7CE218B2-21E4-11D5-B23C-0002553484A6}")
+		  #if TargetWin32
+		    Return COM.IIDFromString("{7CE218B2-21E4-11D5-B23C-0002553484A6}")
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(rhs As COM.IUnknown)
-		  If rhs.Handle = Nil Then Return
-		  Dim p As Ptr
-		  If 0 = rhs.QueryInterface( UnityProServer.IDocumentation.IID, p ) Then
-		    mThis = p
-		  Else
-		    Raise New IllegalCastException
-		  End If
+		  #if TargetWin32
+		    If rhs.Handle = Nil Then Return
+		    Dim p As Ptr
+		    If 0 = rhs.QueryInterface( UnityProServer.IDocumentation.IID, p ) Then
+		      mThis = p
+		    Else
+		      Raise New IllegalCastException
+		    End If
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -132,18 +148,20 @@ Inherits COM.IDispatch
 
 	#tag Method, Flags = &h0
 		Sub SelectPrinter(Printer_Param As String)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New SelectPrinter_Func1(mThis.Ptr( 0 ).Ptr(44 ))
-		  Dim resultCode As Integer
-		  Dim Local_Printer_Param As Ptr
-		  Local_Printer_Param = COM.SysAllocString( Printer_Param )
-		  resultCode = func.Invoke(mThis, Local_Printer_Param)
-		  COM.SysFreeString(Local_Printer_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on SelectPrinter", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New SelectPrinter_Func1(mThis.Ptr( 0 ).Ptr(11 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    Dim Local_Printer_Param As Ptr
+		    Local_Printer_Param = COM.SysAllocString( Printer_Param )
+		    resultCode = func.Invoke(mThis, Local_Printer_Param)
+		    COM.SysFreeString(Local_Printer_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on SelectPrinter", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -152,16 +170,18 @@ Inherits COM.IDispatch
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
-		Sub StartPrint(BeginPage_Param As Integer = 0, EndPage_Param As Integer = 0)
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim func As New StartPrint_Func2(mThis.Ptr( 0 ).Ptr(32 ))
-		  Dim resultCode As Integer
-		  resultCode = func.Invoke(mThis, BeginPage_Param, EndPage_Param)
-		  If resultCode = 0 Then
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on StartPrint", resultCode)
-		  End If
-		  
+		Sub StartPrint(BeginPage_Param As Integer, EndPage_Param As Integer)
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim func As New StartPrint_Func2(mThis.Ptr( 0 ).Ptr(8 * COM.SIZEOF_PTR ))
+		    Dim resultCode As Integer
+		    resultCode = func.Invoke(mThis, BeginPage_Param, EndPage_Param)
+		    If resultCode = 0 Then
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on StartPrint", resultCode)
+		    End If
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -189,15 +209,17 @@ Inherits COM.IDispatch
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  If mThis = Nil Then Raise New NilObjectException
-			  Dim Printer_Param As Ptr
-			  Dim func As New Printer_Get_Func1( mThis.Ptr( 0 ).Ptr( 48 ) )
-			  Dim resultCode As Integer = func.Invoke( mThis, Printer_Param )
-			  If 0 = resultCode Then
-			    Return COM.BSTRToRBString( Printer_Param )
-			  Else
-			    Raise New COM.COMException("Failed on Printer", resultCode )
-			  End If
+			  #if TargetWindows
+			    If mThis = Nil Then Raise New NilObjectException
+			    Dim Printer_Param As Ptr
+			    Dim func As New Printer_Get_Func1( mThis.Ptr( 0 ).Ptr( 12 * COM.SIZEOF_PTR ) )
+			    Dim resultCode As Integer = func.Invoke( mThis, Printer_Param )
+			    If 0 = resultCode Then
+			      Return COM.BSTRToRBString( Printer_Param )
+			    Else
+			      Raise New COM.COMException("Failed on Printer", resultCode )
+			    End If
+			  #endif
 			  
 			End Get
 		#tag EndGetter
@@ -227,12 +249,6 @@ Inherits COM.IDispatch
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Printer"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="Super"
 			Visible=true
 			Group="ID"
@@ -244,6 +260,11 @@ Inherits COM.IDispatch
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Printer"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

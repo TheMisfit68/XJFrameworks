@@ -3,26 +3,28 @@ Protected Class PSRApplicationRef
 Inherits COM.IUnknown
 	#tag Method, Flags = &h0
 		Function AddExternalClientConnected() As Integer
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim disp As New COM.IDispatch(mThis)
-		  Call disp.AddRef
-		  Dim memID As Integer = 4
-		  If memID = -1Then Raise New COM.COMException("Failed on AddExternalClientConnected", -1)
-		  Dim params As COM.DISPPARAMS
-		  Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
-		  params.rgvarg = mbParams
-		  Dim resultCode As Integer
-		  Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
-		  Dim err As UInt32
-		  resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
-		  If resultCode = COM.S_OK Then
-		    Dim retVal As Variant = COM.VARIANTToRBVariant(result)
-		    COM.FreeVARIANT(result)
-		    Return retVal
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on AddExternalClientConnected", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim disp As New COM.IDispatch(mThis)
+		    Call disp.AddRef
+		    Dim memID As Integer = 4
+		    If memID = -1Then Raise New COM.COMException("Failed on AddExternalClientConnected", -1)
+		    Dim params As COM.DISPPARAMS
+		    Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
+		    params.rgvarg = mbParams
+		    Dim resultCode As Integer
+		    Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
+		    Dim err As UInt32
+		    resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
+		    If resultCode = COM.S_OK Then
+		      Dim retVal As Variant = COM.VARIANTToRBVariant(result)
+		      COM.FreeVARIANT(result)
+		      Return retVal
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on AddExternalClientConnected", resultCode)
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -88,41 +90,47 @@ Inherits COM.IUnknown
 
 	#tag Method, Flags = &h1
 		Protected Shared Function Callback_IUnknown_AddRef(this As Ptr) As UInt32
-		  #pragma X86CallingConvention StdCall
-		  If ObjectMap.HasKey( this ) Then
-		    Dim instance As UnityProServer.PSRApplicationRef = ObjectMap.Value( this )
-		    If instance <> Nil Then Return instance.AddRef
-		  End If
-		  
+		  #if TargetWin32
+		    #pragma X86CallingConvention StdCall
+		    If ObjectMap.HasKey( this ) Then
+		      Dim instance As UnityProServer.PSRApplicationRef = ObjectMap.Value( this )
+		      If instance <> Nil Then Return instance.AddRef
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Shared Function Callback_IUnknown_QueryInterface(this As Ptr, riid As Ptr, Byref out As Ptr) As Integer
-		  #pragma X86CallingConvention StdCall
-		  // Check if riid matches the events interface that this class implements
-		  Select Case COM.StringFromIID( riid )
-		  Case COM.StringFromIID( IPSRApplicationRefEvents.IID ), COM.StringFromIID( COM.IUnknown.IID )
-		    out = this
-		    // We must add a reference before we return
-		    If ObjectMap.HasKey( this ) Then
-		      Dim instance As UnityProServer.PSRApplicationRef = ObjectMap.Value( this )
-		      If instance <> Nil Then Call instance.AddRef
-		    End If
-		    Return COM.S_OK
-		  End Select
-		  Return &h80004002 // E_NOINTERFACE
+		  #if TargetWin32
+		    #pragma X86CallingConvention StdCall
+		    // Check if riid matches the events interface that this class implements
+		    Select Case COM.StringFromIID( riid )
+		    Case COM.StringFromIID( IPSRApplicationRefEvents.IID ), COM.StringFromIID( COM.IUnknown.IID )
+		      out = this
+		      // We must add a reference before we return
+		      If ObjectMap.HasKey( this ) Then
+		        Dim instance As UnityProServer.PSRApplicationRef = ObjectMap.Value( this )
+		        If instance <> Nil Then Call instance.AddRef
+		      End If
+		      Return COM.S_OK
+		    End Select
+		    Return &h80004002 // E_NOINTERFACE
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Shared Function Callback_IUnknown_Release(this As Ptr) As UInt32
-		  #pragma X86CallingConvention StdCall
-		  If ObjectMap.HasKey( this ) Then
-		    Dim instance As UnityProServer.PSRApplicationRef = ObjectMap.Value( this )
-		    If instance <> Nil Then Return instance.Release
-		  End If
-		  
+		  #if TargetWin32
+		    #pragma X86CallingConvention StdCall
+		    If ObjectMap.HasKey( this ) Then
+		      Dim instance As UnityProServer.PSRApplicationRef = ObjectMap.Value( this )
+		      If instance <> Nil Then Return instance.Release
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -180,24 +188,24 @@ Inherits COM.IUnknown
 		        // The default source interface (i.e. the events interface) is IPSRApplicationRefEvents and inherits from IUnknown
 		        If 0 = connPtContainer.FindConnectionPoint( IPSRApplicationRefEvents.IID, p ) Then
 		          Dim connPt As New COM.IConnectionPoint(p)
-		          mVTable = New MemoryBlock(64)
+		          mVTable = New MemoryBlock(16 * COM.SIZEOF_PTR)
 		          mVTable.Ptr(0) = AddressOf Callback_IUnknown_QueryInterface
-		          mVTable.Ptr(4) = AddressOf Callback_IUnknown_AddRef
-		          mVTable.Ptr(8) = AddressOf Callback_IUnknown_Release
-		          mVTable.Ptr(12) = AddressOf Callback_NoMoreClients
-		          mVTable.Ptr(16) = AddressOf Callback_ShowHMI
-		          mVTable.Ptr(20) = AddressOf Callback_CloseProject
-		          mVTable.Ptr(24) = AddressOf Callback_SetDisplayPosition
-		          mVTable.Ptr(28) = AddressOf Callback_GetDisplayPosition
-		          mVTable.Ptr(32) = AddressOf Callback_Build
-		          mVTable.Ptr(36) = AddressOf Callback_ReBuildAll
-		          mVTable.Ptr(40) = AddressOf Callback_Analyze
-		          mVTable.Ptr(44) = AddressOf Callback_CloseEditor
-		          mVTable.Ptr(48) = AddressOf Callback_DisplayEditor
-		          mVTable.Ptr(52) = AddressOf Callback_GetOutpuSheetContentsAsString
-		          mVTable.Ptr(56) = AddressOf Callback_ShowHMIForMultiWriter
-		          mVTable.Ptr(60) = AddressOf Callback_HideHMI
-		          mPtrToVTable = New MemoryBlock(4)
+		          mVTable.Ptr(1 * COM.SIZEOF_PTR) = AddressOf Callback_IUnknown_AddRef
+		          mVTable.Ptr(2 * COM.SIZEOF_PTR) = AddressOf Callback_IUnknown_Release
+		          mVTable.Ptr(3 * COM.SIZEOF_PTR) = AddressOf Callback_NoMoreClients
+		          mVTable.Ptr(4 * COM.SIZEOF_PTR) = AddressOf Callback_ShowHMI
+		          mVTable.Ptr(5 * COM.SIZEOF_PTR) = AddressOf Callback_CloseProject
+		          mVTable.Ptr(6 * COM.SIZEOF_PTR) = AddressOf Callback_SetDisplayPosition
+		          mVTable.Ptr(7 * COM.SIZEOF_PTR) = AddressOf Callback_GetDisplayPosition
+		          mVTable.Ptr(8 * COM.SIZEOF_PTR) = AddressOf Callback_Build
+		          mVTable.Ptr(9 * COM.SIZEOF_PTR) = AddressOf Callback_ReBuildAll
+		          mVTable.Ptr(10 * COM.SIZEOF_PTR) = AddressOf Callback_Analyze
+		          mVTable.Ptr(11 * COM.SIZEOF_PTR) = AddressOf Callback_CloseEditor
+		          mVTable.Ptr(12 * COM.SIZEOF_PTR) = AddressOf Callback_DisplayEditor
+		          mVTable.Ptr(13 * COM.SIZEOF_PTR) = AddressOf Callback_GetOutpuSheetContentsAsString
+		          mVTable.Ptr(14 * COM.SIZEOF_PTR) = AddressOf Callback_ShowHMIForMultiWriter
+		          mVTable.Ptr(15 * COM.SIZEOF_PTR) = AddressOf Callback_HideHMI
+		          mPtrToVTable = New MemoryBlock(COM.SIZEOF_PTR)
 		          mPtrToVTable.Ptr(0) = mVTable
 		          Dim ptrMB As Ptr = mPtrToVTable
 		          ObjectMap.Value( ptrMB ) = Me
@@ -211,33 +219,37 @@ Inherits COM.IUnknown
 
 	#tag Method, Flags = &h0
 		Sub Destructor()
-		  If ObjectMap <> Nil And ObjectMap.HasKey(Handle) Then ObjectMap.Remove(Handle)
-		  
+		  #if TargetWin32
+		    If ObjectMap <> Nil And ObjectMap.HasKey(Handle) Then ObjectMap.Remove(Handle)
+		    
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function ExternalViewDead() As Integer
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim disp As New COM.IDispatch(mThis)
-		  Call disp.AddRef
-		  Dim memID As Integer = 5
-		  If memID = -1Then Raise New COM.COMException("Failed on ExternalViewDead", -1)
-		  Dim params As COM.DISPPARAMS
-		  Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
-		  params.rgvarg = mbParams
-		  Dim resultCode As Integer
-		  Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
-		  Dim err As UInt32
-		  resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
-		  If resultCode = COM.S_OK Then
-		    Dim retVal As Variant = COM.VARIANTToRBVariant(result)
-		    COM.FreeVARIANT(result)
-		    Return retVal
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on ExternalViewDead", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim disp As New COM.IDispatch(mThis)
+		    Call disp.AddRef
+		    Dim memID As Integer = 5
+		    If memID = -1Then Raise New COM.COMException("Failed on ExternalViewDead", -1)
+		    Dim params As COM.DISPPARAMS
+		    Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
+		    params.rgvarg = mbParams
+		    Dim resultCode As Integer
+		    Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
+		    Dim err As UInt32
+		    resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
+		    If resultCode = COM.S_OK Then
+		      Dim retVal As Variant = COM.VARIANTToRBVariant(result)
+		      COM.FreeVARIANT(result)
+		      Return retVal
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on ExternalViewDead", resultCode)
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -247,26 +259,28 @@ Inherits COM.IUnknown
 
 	#tag Method, Flags = &h0
 		Function FileName() As String
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim disp As New COM.IDispatch(mThis)
-		  Call disp.AddRef
-		  Dim memID As Integer = 2
-		  If memID = -1Then Raise New COM.COMException("Failed on FileName", -1)
-		  Dim params As COM.DISPPARAMS
-		  Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
-		  params.rgvarg = mbParams
-		  Dim resultCode As Integer
-		  Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
-		  Dim err As UInt32
-		  resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
-		  If resultCode = COM.S_OK Then
-		    Dim retVal As Variant = COM.VARIANTToRBVariant(result)
-		    COM.FreeVARIANT(result)
-		    Return retVal
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on FileName", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim disp As New COM.IDispatch(mThis)
+		    Call disp.AddRef
+		    Dim memID As Integer = 2
+		    If memID = -1Then Raise New COM.COMException("Failed on FileName", -1)
+		    Dim params As COM.DISPPARAMS
+		    Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
+		    params.rgvarg = mbParams
+		    Dim resultCode As Integer
+		    Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
+		    Dim err As UInt32
+		    resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
+		    If resultCode = COM.S_OK Then
+		      Dim retVal As Variant = COM.VARIANTToRBVariant(result)
+		      COM.FreeVARIANT(result)
+		      Return retVal
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on FileName", resultCode)
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -276,26 +290,28 @@ Inherits COM.IUnknown
 
 	#tag Method, Flags = &h0
 		Function GetApp() As UnityProServer.IApplication
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim disp As New COM.IDispatch(mThis)
-		  Call disp.AddRef
-		  Dim memID As Integer = 1
-		  If memID = -1Then Raise New COM.COMException("Failed on GetApp", -1)
-		  Dim params As COM.DISPPARAMS
-		  Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
-		  params.rgvarg = mbParams
-		  Dim resultCode As Integer
-		  Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
-		  Dim err As UInt32
-		  resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
-		  If resultCode = COM.S_OK Then
-		    Dim retVal As Variant = COM.VARIANTToRBVariant(result)
-		    COM.FreeVARIANT(result)
-		    Return retVal
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on GetApp", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim disp As New COM.IDispatch(mThis)
+		    Call disp.AddRef
+		    Dim memID As Integer = 1
+		    If memID = -1Then Raise New COM.COMException("Failed on GetApp", -1)
+		    Dim params As COM.DISPPARAMS
+		    Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
+		    params.rgvarg = mbParams
+		    Dim resultCode As Integer
+		    Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
+		    Dim err As UInt32
+		    resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
+		    If resultCode = COM.S_OK Then
+		      Dim retVal As Variant = COM.VARIANTToRBVariant(result)
+		      COM.FreeVARIANT(result)
+		      Return retVal
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on GetApp", resultCode)
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -305,30 +321,32 @@ Inherits COM.IUnknown
 
 	#tag Method, Flags = &h0
 		Function GetInternalApp(bstrPassWord_Param As String) As UnityProServer.IApplication
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim disp As New COM.IDispatch(mThis)
-		  Call disp.AddRef
-		  Dim memID As Integer = 8
-		  If memID = -1Then Raise New COM.COMException("Failed on GetInternalApp", -1)
-		  Dim params As COM.DISPPARAMS
-		  Dim Local_bstrPassWord_Param As MemoryBlock = COM.RBVariantToVARIANT(bstrPassWord_Param)
-		  params.cArgs = params.cArgs + 1
-		  Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
-		  params.rgvarg = mbParams
-		  If Local_bstrPassWord_Param <> Nil Then mbParams.StringValue(0 * COM.SIZEOF_VARIANT, COM.SIZEOF_VARIANT) = Local_bstrPassWord_Param.StringValue(0, COM.SIZEOF_VARIANT)
-		  Dim resultCode As Integer
-		  Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
-		  Dim err As UInt32
-		  resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
-		  COM.FreeVARIANT(Local_bstrPassWord_Param)
-		  If resultCode = COM.S_OK Then
-		    Dim retVal As Variant = COM.VARIANTToRBVariant(result)
-		    COM.FreeVARIANT(result)
-		    Return retVal
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on GetInternalApp", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim disp As New COM.IDispatch(mThis)
+		    Call disp.AddRef
+		    Dim memID As Integer = 8
+		    If memID = -1Then Raise New COM.COMException("Failed on GetInternalApp", -1)
+		    Dim params As COM.DISPPARAMS
+		    Dim Local_bstrPassWord_Param As MemoryBlock = COM.RBVariantToVARIANT(bstrPassWord_Param)
+		    params.cArgs = params.cArgs + 1
+		    Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
+		    params.rgvarg = mbParams
+		    If Local_bstrPassWord_Param <> Nil Then mbParams.StringValue(0 * COM.SIZEOF_VARIANT, COM.SIZEOF_VARIANT) = Local_bstrPassWord_Param.StringValue(0, COM.SIZEOF_VARIANT)
+		    Dim resultCode As Integer
+		    Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
+		    Dim err As UInt32
+		    resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
+		    COM.FreeVARIANT(Local_bstrPassWord_Param)
+		    If resultCode = COM.S_OK Then
+		      Dim retVal As Variant = COM.VARIANTToRBVariant(result)
+		      COM.FreeVARIANT(result)
+		      Return retVal
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on GetInternalApp", resultCode)
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -338,32 +356,36 @@ Inherits COM.IUnknown
 
 	#tag Method, Flags = &h0
 		Shared Function IID() As MemoryBlock
-		  Return COM.IIDFromString("{C48B8101-FE7A-11D3-A1D0-000629A2F326}")
+		  #if TargetWin32
+		    Return COM.IIDFromString("{C48B8101-FE7A-11D3-A1D0-000629A2F326}")
+		  #endif
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function IsInteractivePServerWriteAccessHMIFree() As Integer
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim disp As New COM.IDispatch(mThis)
-		  Call disp.AddRef
-		  Dim memID As Integer = 7
-		  If memID = -1Then Raise New COM.COMException("Failed on IsInteractivePServerWriteAccessHMIFree", -1)
-		  Dim params As COM.DISPPARAMS
-		  Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
-		  params.rgvarg = mbParams
-		  Dim resultCode As Integer
-		  Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
-		  Dim err As UInt32
-		  resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
-		  If resultCode = COM.S_OK Then
-		    Dim retVal As Variant = COM.VARIANTToRBVariant(result)
-		    COM.FreeVARIANT(result)
-		    Return retVal
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on IsInteractivePServerWriteAccessHMIFree", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim disp As New COM.IDispatch(mThis)
+		    Call disp.AddRef
+		    Dim memID As Integer = 7
+		    If memID = -1Then Raise New COM.COMException("Failed on IsInteractivePServerWriteAccessHMIFree", -1)
+		    Dim params As COM.DISPPARAMS
+		    Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
+		    params.rgvarg = mbParams
+		    Dim resultCode As Integer
+		    Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
+		    Dim err As UInt32
+		    resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
+		    If resultCode = COM.S_OK Then
+		      Dim retVal As Variant = COM.VARIANTToRBVariant(result)
+		      COM.FreeVARIANT(result)
+		      Return retVal
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on IsInteractivePServerWriteAccessHMIFree", resultCode)
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -373,26 +395,28 @@ Inherits COM.IUnknown
 
 	#tag Method, Flags = &h0
 		Function NumberOfClients() As Integer
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim disp As New COM.IDispatch(mThis)
-		  Call disp.AddRef
-		  Dim memID As Integer = 3
-		  If memID = -1Then Raise New COM.COMException("Failed on NumberOfClients", -1)
-		  Dim params As COM.DISPPARAMS
-		  Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
-		  params.rgvarg = mbParams
-		  Dim resultCode As Integer
-		  Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
-		  Dim err As UInt32
-		  resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
-		  If resultCode = COM.S_OK Then
-		    Dim retVal As Variant = COM.VARIANTToRBVariant(result)
-		    COM.FreeVARIANT(result)
-		    Return retVal
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on NumberOfClients", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim disp As New COM.IDispatch(mThis)
+		    Call disp.AddRef
+		    Dim memID As Integer = 3
+		    If memID = -1Then Raise New COM.COMException("Failed on NumberOfClients", -1)
+		    Dim params As COM.DISPPARAMS
+		    Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
+		    params.rgvarg = mbParams
+		    Dim resultCode As Integer
+		    Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
+		    Dim err As UInt32
+		    resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
+		    If resultCode = COM.S_OK Then
+		      Dim retVal As Variant = COM.VARIANTToRBVariant(result)
+		      COM.FreeVARIANT(result)
+		      Return retVal
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on NumberOfClients", resultCode)
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
@@ -402,38 +426,42 @@ Inherits COM.IUnknown
 
 	#tag Method, Flags = &h0
 		Sub Operator_Convert(rhs As COM.IUnknown)
-		  If rhs.Handle = Nil Then Return
-		  Dim p As Ptr
-		  If 0 = rhs.QueryInterface( UnityProServer.IPSRApplicationRef.IID, p ) Then
-		    mThis = p
-		  Else
-		    Raise New IllegalCastException
-		  End If
+		  #if TargetWin32
+		    If rhs.Handle = Nil Then Return
+		    Dim p As Ptr
+		    If 0 = rhs.QueryInterface( UnityProServer.IPSRApplicationRef.IID, p ) Then
+		      mThis = p
+		    Else
+		      Raise New IllegalCastException
+		    End If
+		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function ReleaseMapOfDeleteObject() As Integer
-		  If mThis = Nil Then Raise New NilObjectException
-		  Dim disp As New COM.IDispatch(mThis)
-		  Call disp.AddRef
-		  Dim memID As Integer = 6
-		  If memID = -1Then Raise New COM.COMException("Failed on ReleaseMapOfDeleteObject", -1)
-		  Dim params As COM.DISPPARAMS
-		  Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
-		  params.rgvarg = mbParams
-		  Dim resultCode As Integer
-		  Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
-		  Dim err As UInt32
-		  resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
-		  If resultCode = COM.S_OK Then
-		    Dim retVal As Variant = COM.VARIANTToRBVariant(result)
-		    COM.FreeVARIANT(result)
-		    Return retVal
-		  Else // Throw Exception
-		    Raise New COM.COMException("Failed on ReleaseMapOfDeleteObject", resultCode)
-		  End If
-		  
+		  #if TargetWin32
+		    If mThis = Nil Then Raise New NilObjectException
+		    Dim disp As New COM.IDispatch(mThis)
+		    Call disp.AddRef
+		    Dim memID As Integer = 6
+		    If memID = -1Then Raise New COM.COMException("Failed on ReleaseMapOfDeleteObject", -1)
+		    Dim params As COM.DISPPARAMS
+		    Dim mbParams As New MemoryBlock(params.cArgs * COM.SIZEOF_VARIANT)
+		    params.rgvarg = mbParams
+		    Dim resultCode As Integer
+		    Dim result As New MemoryBlock(COM.SIZEOF_VARIANT)
+		    Dim err As UInt32
+		    resultCode = disp.Invoke(memID, COM.IID_NULL, COM.LOCALE_USER_DEFAULT, COM.DISPATCH_METHOD + COM.DISPATCH_PROPERTYGET, params, result, nil, err)
+		    If resultCode = COM.S_OK Then
+		      Dim retVal As Variant = COM.VARIANTToRBVariant(result)
+		      COM.FreeVARIANT(result)
+		      Return retVal
+		    Else // Throw Exception
+		      Raise New COM.COMException("Failed on ReleaseMapOfDeleteObject", resultCode)
+		    End If
+		    
+		  #endif
 		End Function
 	#tag EndMethod
 
