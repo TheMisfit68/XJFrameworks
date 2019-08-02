@@ -111,7 +111,7 @@ Protected Module LocalizedStandardStrings
 	#tag Constant, Name = kFileQuit, Type = String, Dynamic = True, Default = \"&Quit", Scope = Public
 		#Tag Instance, Platform = Windows, Language = en, Definition  = \"E&xit"
 		#Tag Instance, Platform = Windows, Language = en-GB, Definition  = \"E&xit"
-		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Stop UnityExtreme"
+		#Tag Instance, Platform = Any, Language = nl, Definition  = \"Stop"
 	#tag EndConstant
 
 	#tag Constant, Name = kFileQuitShortcut, Type = String, Dynamic = True, Default = \"", Scope = Public

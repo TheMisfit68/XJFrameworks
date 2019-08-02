@@ -9,6 +9,10 @@ Inherits JVBackgroundTask
 		    
 		    me.treenNode = new NSTreeNode(foundRecords, branchfields)
 		    
+		  else
+		    
+		    me.treenNode = new NSTreeNode()
+		    
 		  end if
 		  
 		End Sub
