@@ -19,6 +19,8 @@ Protected Class NSDocumentController
 	#tag Method, Flags = &h0
 		Shared Function openDialog(fileType as FIleType) As FolderItem
 		  dim newFolderitem as folderItem = GetOpenFolderItem(fileType.Name)
+		  app.doevents // Makes sure the file-open dialog gets properly closed even during debugging
+		  
 		  return newFolderitem
 		  
 		  
