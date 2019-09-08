@@ -28,8 +28,8 @@ Inherits JVBackgroundTask
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(database as JVSQLiteDatabase, statementString as String, optional branchFields() as String = nil, optional ID as String)
-		  me.debugIdentifier = ID
+		Sub Constructor(database as JVSQLiteDatabase, statementString as String, optional branchFields() as String = nil, optional identifier as String)
+		  me.debugIdentifier = identifier
 		  me.database = database
 		  me.sqlString = statementString
 		  me.preparedStatement = database.Prepare(statementString)
