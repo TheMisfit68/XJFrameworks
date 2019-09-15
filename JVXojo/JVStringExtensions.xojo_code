@@ -118,7 +118,7 @@ Protected Module JVStringExtensions
 
 	#tag Method, Flags = &h0
 		Function quote(unquotedString as String) As String
-		  return DOUBLEQUOTEMARK+unquotedString +DOUBLEQUOTEMARK
+		  return DOUBLEQUOTEMARK+unquotedString+DOUBLEQUOTEMARK
 		End Function
 	#tag EndMethod
 
