@@ -292,7 +292,7 @@ Implements JVCustomStringConvertable
 
 	#tag Note, Name = Class description
 		
-		An NSTreeNode provides an hiërarchical tree of objects that each contain 
+		An NSTreeNode provides an hiërarchical tree of objects that each contain:
 		an representedObject 
 		an indexpath to describe their place in the tree
 		and a keypath to represent their place in the backend dbase
