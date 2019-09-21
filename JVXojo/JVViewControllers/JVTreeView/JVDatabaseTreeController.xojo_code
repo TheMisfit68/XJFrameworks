@@ -99,7 +99,7 @@ Implements JVBackgroundTaskDelegate
 		Sub onTaskStarting(sender as JVBackgroundTask)
 		  // Part of the JVBackgroundTaskDelegate interface.
 		  
-		  
+		  reloadBusy = True
 		End Sub
 	#tag EndMethod
 
@@ -117,10 +117,11 @@ Implements JVBackgroundTaskDelegate
 
 	#tag Method, Flags = &h0
 		Sub reloadData(optional SQLStatement as String = "")
-		  reloadBusy = True
+		  
 		  if SQLStatement <> "" then
 		    dim previousDataBase as JVSQLiteDatabase = backGroundQuery.database
-		    backGroundQuery = new JVbackGroundQuery(previousDataBase, SQLStatement )
+		    dim previousBranchFields() as String = backGroundQuery.branchFields
+		    backGroundQuery = new JVbackGroundQuery(previousDataBase, SQLStatement, previousBranchFields)
 		  end if
 		  backGroundQuery.backgroundTaskDelegate = me
 		  backGroundQuery.run

@@ -97,6 +97,12 @@ Inherits regex
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Shared Function NegativeLookBehind(expression as String) As String
+		  return "(?<!"+expression+")"
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Shared Function PassiveGroup(uncapturedExpression as String) As String
 		  return "(?:"+uncapturedExpression+")"
 		End Function
