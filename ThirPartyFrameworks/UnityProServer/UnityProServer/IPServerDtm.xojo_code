@@ -515,6 +515,7 @@ Inherits COM.IDispatch
 			Name="AliasName"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Id"
@@ -525,16 +526,26 @@ Inherits COM.IDispatch
 			Name="DtmId"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="SlaveBusAddress"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DtmType"
 			Group="Behavior"
 			Type="epsrDtmType"
+			EditorType="Enum"
+			#tag EnumValues
+				"13792480017252352 - psrDtmType_communication"
+				"29555198972133376 - psrDtmType_gateway"
+				"29555198972133376 - psrDtmType_block"
+				"29555198972133380 - psrDtmType_module"
+				"29555198972133380 - psrDtmType_device"
+			#tag EndEnumValues
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

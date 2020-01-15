@@ -1155,7 +1155,7 @@ Inherits COM.IDispatch
 			    Dim resultCode As Integer = func.Invoke( mThis, pVal_Param )
 			    If 0 = resultCode Then
 			      Dim retVal As Variant = COM.VARIANTToRBVariant( pVal_Param )
-			      COM.FreeVARIANT( pVal_Param ) 
+			      COM.FreeVARIANT( pVal_Param )
 			      Return retVal
 			    Else
 			      Raise New COM.COMException("Failed on TargetSignature", resultCode )
@@ -1246,6 +1246,7 @@ Inherits COM.IDispatch
 			Name="Version"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsProfileSet"
@@ -1271,26 +1272,35 @@ Inherits COM.IDispatch
 			Name="SelectTarget"
 			Group="Behavior"
 			Type="epsrTargetConnection"
+			EditorType="Enum"
+			#tag EnumValues
+				"15199854900805632 - psrConnectToPlc"
+				"14918379924094976 - psrConnectToSimulator"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="PlcConnectionAddress"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="PlcConnectionDriver"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="SimulatorConnectionAddress"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="SimulatorConnectionDriver"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsTargetConnected"
@@ -1306,36 +1316,61 @@ Inherits COM.IDispatch
 			Name="TargetConnectionState"
 			Group="Behavior"
 			Type="epsrConnectionState"
+			EditorType="Enum"
+			#tag EnumValues
+				"13792480017252352 - psrConnectionStateOffline"
+				"14355429970673664 - psrConnectionStateDifferent"
+				"30399778521088000 - psrConnectionStateEqual"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TargetConnectionMode"
 			Group="Behavior"
 			Type="epsrConnectionMode"
+			EditorType="Enum"
+			#tag EnumValues
+				"14355429970673664 - psrConnectionModeUnknown"
+				"15199854900805632 - psrConnectionModePrimary"
+				"27303210179887104 - psrConnectionModeSecondary"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TargetState"
 			Group="Behavior"
 			Type="epsrPlcState"
+			EditorType="Enum"
+			#tag EnumValues
+				"14073954993963008 - psrPlcStateUnknown"
+				"30962724179542016 - psrPlcStateStop"
+				"14355429970673666 - psrPlcStateRun"
+				"30399778521088004 - psrPlcStateDefault"
+				"29555198972133380 - psrPlcStateNoConf"
+				"27303210179887108 - psrPlcStateHalt"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InstallationPath"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ExecutionPath"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LibraryPath"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="CustomLibraryPath"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

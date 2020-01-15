@@ -380,7 +380,7 @@ Inherits COM.IDispatch
 			    Dim resultCode As Integer = func.Invoke( mThis, CurrentValue_Param )
 			    If 0 = resultCode Then
 			      Dim retVal As Variant = COM.VARIANTToRBVariant( CurrentValue_Param )
-			      COM.FreeVARIANT( CurrentValue_Param ) 
+			      COM.FreeVARIANT( CurrentValue_Param )
 			      Return retVal
 			    Else
 			      Raise New COM.COMException("Failed on InitialValue", resultCode )
@@ -395,7 +395,7 @@ Inherits COM.IDispatch
 			    If mThis = Nil Then Raise New NilObjectException
 			    Dim func As New InitialValue_Put_Func1( mThis.Ptr( 0 ).Ptr( 12 * COM.SIZEOF_PTR ) )
 			    Dim Local_rhs_Param As Ptr
-			    Dim mb As MemoryBlock = COM.RBVariantToVARIANT( value ) 
+			    Dim mb As MemoryBlock = COM.RBVariantToVARIANT( value )
 			    Local_rhs_Param = mb
 			    Dim resultCode As Integer = func.Invoke( mThis, Local_rhs_Param)
 			    If 0 = resultCode Then
@@ -474,7 +474,7 @@ Inherits COM.IDispatch
 			    Dim resultCode As Integer = func.Invoke( mThis, CurrentValue_Param )
 			    If 0 = resultCode Then
 			      Dim retVal As Variant = COM.VARIANTToRBVariant( CurrentValue_Param )
-			      COM.FreeVARIANT( CurrentValue_Param ) 
+			      COM.FreeVARIANT( CurrentValue_Param )
 			      Return retVal
 			    Else
 			      Raise New COM.COMException("Failed on TopologicalAddress", resultCode )
@@ -489,7 +489,7 @@ Inherits COM.IDispatch
 			    If mThis = Nil Then Raise New NilObjectException
 			    Dim func As New TopologicalAddress_Put_Func1( mThis.Ptr( 0 ).Ptr( 14 * COM.SIZEOF_PTR ) )
 			    Dim Local_rhs_Param As Ptr
-			    Dim mb As MemoryBlock = COM.RBVariantToVARIANT( value ) 
+			    Dim mb As MemoryBlock = COM.RBVariantToVARIANT( value )
 			    Local_rhs_Param = mb
 			    Dim resultCode As Integer = func.Invoke( mThis, Local_rhs_Param)
 			    If 0 = resultCode Then
@@ -603,21 +603,57 @@ Inherits COM.IDispatch
 			Name="Comment"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TypeName"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TypeCategory"
 			Group="Behavior"
 			Type="epsrTypeCategory"
+			EditorType="Enum"
+			#tag EnumValues
+				"14636904947384320 - PSR_TYPECAT_UNKNOWN"
+				"1 - PSR_TYPECAT_EDT"
+				"27585024459014144 - PSR_TYPECAT_DDT_STRUCT"
+				"29555198972133380 - PSR_TYPECAT_DDT_ARRAY"
+				"29555198972133380 - PSR_TYPECAT_IODDT"
+				"29555198972133380 - PSR_TYPECAT_EFB"
+				"6 - PSR_TYPECAT_DFB"
+				"19703604852031496 - PSR_TYPECAT_ANONYMOUS_ARRAY"
+				"8 - PSR_TYPECAT_ANY_ARRAY"
+				"9 - PSR_TYPECAT_ANY_REF"
+				"10 - PSR_TYPECAT_ANY_DDT_REF"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TypeCode"
 			Group="Behavior"
 			Type="epsrTypeCode"
+			EditorType="Enum"
+			#tag EnumValues
+				"14918379924094976 - PSR_TYPECODE_UNKNOWN"
+				"14636904947384320 - PSR_TYPECODE_INT"
+				"2 - PSR_TYPECODE_DINT"
+				"27585024459014148 - PSR_TYPECODE_BOOL"
+				"29555198972133380 - PSR_TYPECODE_UINT"
+				"29555198972133380 - PSR_TYPECODE_UDINT"
+				"34058832959242248 - PSR_TYPECODE_REAL"
+				"7 - PSR_TYPECODE_TIME"
+				"8 - PSR_TYPECODE_DATE"
+				"9 - PSR_TYPECODE_BYTE"
+				"10 - PSR_TYPECODE_DT"
+				"11 - PSR_TYPECODE_DWORD"
+				"19703604852031500 - PSR_TYPECODE_EBOOL"
+				"13 - PSR_TYPECODE_STRING"
+				"14 - PSR_TYPECODE_WSTRING"
+				"15 - PSR_TYPECODE_TOD"
+				"16 - PSR_TYPECODE_WORD"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Id"

@@ -265,6 +265,7 @@ Inherits COM.IDispatch
 			Name="Printer"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

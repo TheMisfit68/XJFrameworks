@@ -427,7 +427,7 @@ Inherits COM.IDispatch
 			    Dim resultCode As Integer = func.Invoke( mThis, pCurrentDate_Param )
 			    If 0 = resultCode Then
 			      Dim retVal As Variant = COM.VARIANTToRBVariant( pCurrentDate_Param )
-			      COM.FreeVARIANT( pCurrentDate_Param ) 
+			      COM.FreeVARIANT( pCurrentDate_Param )
 			      Return retVal
 			    Else
 			      Raise New COM.COMException("Failed on ValidationDate", resultCode )
@@ -478,6 +478,7 @@ Inherits COM.IDispatch
 			Name="Comment"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Id"
@@ -488,6 +489,7 @@ Inherits COM.IDispatch
 			Name="DescriptiveForm"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InfoSize"
@@ -498,16 +500,32 @@ Inherits COM.IDispatch
 			Name="InfoSignature"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InfoVersion"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="TypeCategory"
 			Group="Behavior"
 			Type="epsrTypeCategory"
+			EditorType="Enum"
+			#tag EnumValues
+				"14636904947384320 - PSR_TYPECAT_UNKNOWN"
+				"1 - PSR_TYPECAT_EDT"
+				"27585024459014144 - PSR_TYPECAT_DDT_STRUCT"
+				"29555198972133380 - PSR_TYPECAT_DDT_ARRAY"
+				"29555198972133380 - PSR_TYPECAT_IODDT"
+				"29555198972133380 - PSR_TYPECAT_EFB"
+				"6 - PSR_TYPECAT_DFB"
+				"19703604852031496 - PSR_TYPECAT_ANONYMOUS_ARRAY"
+				"8 - PSR_TYPECAT_ANY_ARRAY"
+				"9 - PSR_TYPECAT_ANY_REF"
+				"10 - PSR_TYPECAT_ANY_DDT_REF"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsTypeDiagnostic"
@@ -518,6 +536,13 @@ Inherits COM.IDispatch
 			Name="Protection"
 			Group="Behavior"
 			Type="epsrDfbProtection"
+			EditorType="Enum"
+			#tag EnumValues
+				"14073959288930304 - PSR_DFB_PROTECTION_UNKNOWN"
+				"29555198972133376 - PSR_DFB_PROTECTION_NONE"
+				"29555198972133376 - PSR_DFB_PROTECTION_READ_ONLY"
+				"29555198972133380 - PSR_DFB_PROTECTION_NO_READ_WRITE"
+			#tag EndEnumValues
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

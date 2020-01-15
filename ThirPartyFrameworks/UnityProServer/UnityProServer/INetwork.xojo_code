@@ -571,6 +571,7 @@ Inherits COM.IDispatch
 			Name="Comment"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Id"
@@ -581,6 +582,7 @@ Inherits COM.IDispatch
 			Name="TypeName"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="IsAttached"
@@ -591,6 +593,7 @@ Inherits COM.IDispatch
 			Name="FamilyName"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

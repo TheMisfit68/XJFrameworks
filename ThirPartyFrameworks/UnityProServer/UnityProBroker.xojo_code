@@ -1,6 +1,6 @@
 #tag Module
 Protected Module UnityProBroker
-	#tag PathToTypeLibrary = C:\PROGRA~2\SCHNEI~1\UNITYP~1\psbroker.exe
+	#tag PathToTypeLibrary = C : \ PROGRA ~ 2 \ SCHNEI ~ 1 \ UNITYP ~ 1 \ psbroker . exe
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="Name"

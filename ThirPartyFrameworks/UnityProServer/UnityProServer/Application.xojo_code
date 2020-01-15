@@ -1493,7 +1493,7 @@ Inherits COM.IDispatch
 			    Dim resultCode As Integer = func.Invoke( mThis, pVal_Param )
 			    If 0 = resultCode Then
 			      Dim retVal As Variant = COM.VARIANTToRBVariant( pVal_Param )
-			      COM.FreeVARIANT( pVal_Param ) 
+			      COM.FreeVARIANT( pVal_Param )
 			      Return retVal
 			    Else
 			      Raise New COM.COMException("Failed on TargetSignature", resultCode )
@@ -1547,6 +1547,134 @@ Inherits COM.IDispatch
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="2147483648"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="CustomLibraryPath"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ExecutionPath"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="InstallationPath"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsProfileSet"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsProjectOpen"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsTargetConnected"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsTargetConnectedEqual"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsVisible"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsWriteAccessTokenFree"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="LibraryPath"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PlcConnectionAddress"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PlcConnectionDriver"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SelectTarget"
+			Group="Behavior"
+			Type="epsrTargetConnection"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SimulatorConnectionAddress"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SimulatorConnectionDriver"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TargetConnectionMode"
+			Group="Behavior"
+			Type="epsrConnectionMode"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TargetConnectionState"
+			Group="Behavior"
+			Type="epsrConnectionState"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TargetState"
+			Group="Behavior"
+			Type="epsrPlcState"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Version"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass

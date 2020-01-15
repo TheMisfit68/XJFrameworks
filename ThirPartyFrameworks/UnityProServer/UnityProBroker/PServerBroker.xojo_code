@@ -348,6 +348,7 @@ Inherits COM.IDispatch
 			Name="SecurityDatabasePath"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

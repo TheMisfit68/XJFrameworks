@@ -107,6 +107,7 @@ Inherits UnityProServer.IProject
 			Name="Comment"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Id"
@@ -117,11 +118,19 @@ Inherits UnityProServer.IProject
 			Name="ProjectFileName"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="InfoBuildState"
 			Group="Behavior"
 			Type="epsrBuildState"
+			EditorType="Enum"
+			#tag EnumValues
+				"13792480017252352 - psrBuildStateNotBuilt"
+				"29555198972133376 - psrBuildStateBuiltOk"
+				"2 - psrBuildStateAnalyzed"
+				"3 - psrBuildStateUnknown"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="HasProjectFileName"
@@ -132,6 +141,7 @@ Inherits UnityProServer.IProject
 			Name="PrivateInfo"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

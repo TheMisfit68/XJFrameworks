@@ -336,6 +336,7 @@ Inherits COM.IDispatch
 			Name="Comment"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Id"
@@ -346,6 +347,11 @@ Inherits COM.IDispatch
 			Name="Periodicity"
 			Group="Behavior"
 			Type="epsrPeriodicity"
+			EditorType="Enum"
+			#tag EnumValues
+				"13792480017252352 - PSR_PERIODIC"
+				"29555198972133376 - PSR_CYCLIC"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="WatchDog"
